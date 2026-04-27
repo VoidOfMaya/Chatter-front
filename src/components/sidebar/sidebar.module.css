@@ -37,6 +37,7 @@
 .channelOption{
     display: grid;
     height: fit-content;
+    width: 10em;
     grid-template-columns: 1fr 4fr;
     grid-template-rows:auto;
     padding: 5px 0px 5px 5px;
@@ -72,9 +73,6 @@
 @media (max-width: 1200px){
     .closeChannels{
         left: 13em;
-    }
-    .channelOption{
-        width: 10em;
     }
 }
 /*tablet*/
