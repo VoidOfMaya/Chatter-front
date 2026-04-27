@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import {SendIcon} from '../iconhelper/iconHelper';
+import {LogoIcon, SendIcon} from '../iconhelper/iconHelper';
 import style from './signup.module.css'
 import { LoginDialog, SignupDialog } from '../dialogs/dialogs';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -45,13 +45,21 @@ const Signup = () =>{
                 <div className={style.signupLeft}>
                     <div style={{padding:'10px'}}
                         onClick={()=>signUpPrompt()}
-                    >sign up </div>
+                        className={style.signupBtn}
+                        >sign up 
+                        </div>
                 </div>
                 <div className={style.signupRight}>
                     <div style={{fontSize: '28px'}}
                         onClick={()=>logInPrompt()}
-                    > Log in</div>
-                        <SendIcon size={50} color={'white'} focusColor={'#E84545'}/>
+                        className={style.loginBtn}
+                    >
+                        Log in
+                        <div className={style.logoIcon}>
+                            <LogoIcon size={50} color={'white'} focusColor={'#E84545'}/>  
+                        </div>
+                        
+                    </div>
                 </div>
             </main>
             {login? (

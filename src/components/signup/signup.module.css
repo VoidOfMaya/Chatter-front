@@ -9,26 +9,31 @@
     'signup login'
     'signup login';
 }
-
+/*Log in button and logo*/
 .signupRight{
     height: 100%;
     width: 100%;
     grid-area: login; 
-
     /*content alignment*/
     display: flex;
+    flex-direction: row;
     justify-content: start;
     align-items: center;
-
     /*color*/
     background-color: #0c0c0c;
-
-
 }
-.signupRight:hover{
+.loginBtn{
+    display: flex;
+    align-items: center;
+}
+.logoIcon{
+    display: inline-block;
+    transform: rotate(46deg);
+}
+.loginBtn:hover{
     color: #E84545;
-    /*background-color: #1b1d30;*/
 }
+/*Signup button*/
 .signupLeft{
     height: 100%;
     width: 100%;
@@ -43,9 +48,9 @@
     justify-content: end;
     align-items: center;
 }
-.signupLeft:hover{
-    /*background-color: #1b1d30;*/
-    color: #E84545;
+.signupBtn:hover{
+  color: #E84545;
 }
+
 
 
