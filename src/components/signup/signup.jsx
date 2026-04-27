@@ -14,18 +14,6 @@ const Signup = () =>{
     const loginRef = useRef(null);
     const signupRef= useRef(null) ; 
 
-    const logInPrompt = () =>{
-        setLogin(true);
-    }
-    const handleLoginDialogClose = () =>{
-        setLogin(false)
-    }
-    const signUpPrompt = () =>{
-        setSignup(true);
-    }
-    const handleSignupDialogClose = () =>{
-        setSignup(false);
-    }
     useEffect(()=>{
         if(!login) return
         loginRef.current?.showModal()
@@ -43,13 +31,13 @@ const Signup = () =>{
         <>
             <main className={style.signupMain}>
                 <div className={style.signupLeft}>
-                    <div onClick={()=>signUpPrompt()} className={style.signupBtn}>
+                    <div onClick={()=>setSignup(true)} className={style.signupBtn}>
                         sign up 
                     </div>
                 </div>
                 <div className={style.signupRight}>
                     <div className={style.logenElement}>
-                        <div onClick={()=>logInPrompt()} className={style.loginBtn}>
+                        <div onClick={()=>setLogin(true)} className={style.loginBtn}>
                             Log in
                             <div className={style.logoIcon}>
                                 <LogoIcon size={50} 
@@ -62,12 +50,10 @@ const Signup = () =>{
                 </div>
             </main>
             {login? (
-                <LoginDialog referance={loginRef} 
-                             close={handleLoginDialogClose} 
-                            />                
+                <LoginDialog referance={loginRef} close={()=>setLogin(false)}/>                
             ):(<></>)}
             {signup? (
-                <SignupDialog referance={signupRef} close={handleSignupDialogClose}/>         
+                <SignupDialog referance={signupRef} close={()=>setSignup(false)}/>         
             ):(<></>)}
         </>
     )
