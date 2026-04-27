@@ -23,6 +23,7 @@ function App() {
   }
   const onLoginSuccess = (user, token) =>{
     setAuth({user: user, token: token})
+    redirect('/chatter')
   }
   useEffect(()=>{
     setChnls(channels);
