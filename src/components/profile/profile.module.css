@@ -1,20 +1,39 @@
 .main{
-    outline: 1px solid red;
     display: flex;
-    max-width: 450;
+    width: 550px;
+    justify-self: center;
     justify-content: center;
 }
 .profile{
+    width: 450px;
     align-self: center;
-    outline: 1px solid blue;
+    background-color: #282828;
+    padding: 20px;
+    border-radius: 30px;
+
+    display: flex;
+    flex-direction: column;
 }
 .pfp{
-    outline: 3px solid rgb(80, 80, 80);
+    outline: 3px solid rgb(35, 32, 32);
     border-radius: 50px;
+    outline-offset: -3px;
 }
 .isOnline{
     outline: 3px solid rgb(72, 255, 0);
 }
 .isOffline{
     outline: 3px solid rgb(185, 0, 0);    
+}
+.profileData{
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #afafaf;
+    padding: 10px;
+}
+.dataTxt{
+    font-size: 16px;
+    display: inline-block;
+    color: #5a5a5a;
 }

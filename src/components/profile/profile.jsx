@@ -41,12 +41,17 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         <> 
             <main className={style.main}> 
                 <div className={style.profile}>
-                    is online:<div>{user.is_online}</div>
-                    {photoLogo()}
-                    user:<div>{user.email}</div>
-                    name:<div>{user.name}</div>
-                    bio:<p>{user.bio}</p>
-                    created at:<div>{user.created_at}</div>
+                    <div style={{display: 'flex', padding: '10px'}}>
+                        {photoLogo()}
+                        <div style={{padding: '10px'}} >bio: <p className={style.dataTxt}>{user.bio}</p></div>
+                    </div>
+                    <div className={style.profileData}>
+                        user:<div className={style.dataTxt}>{user.email}</div>
+                        name:<div className={style.dataTxt}>{user.name}</div>
+                       
+                        created at:<div className={style.dataTxt}>{user.created_at}</div>                        
+                    </div>
+
                 </div>
             </main>
         </>
