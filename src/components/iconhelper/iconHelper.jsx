@@ -77,12 +77,16 @@ const GroupIcon = ({fn, color ='#27282c', focusColor='#62646b', size=25})=>{
         </svg>
     )
 }
-const LogoIcon = ({fn, color, size})=>{
+const LogoIcon = ({fn, color, focusColor, size})=>{
+    const [focuse, setFocus]= useState(false);
     return(
-        <svg width={`${size}px`}
+        <svg className={style.logoIconIcon}
+             width={`${size}px`}
              height={`${size}px`} 
              viewBox="0 0 512 512" 
-             fill={color} 
+             fill={focuse? focusColor : color}
+                onMouseEnter={()=>setFocus(true)}
+                onMouseLeave={()=>setFocus(false)} 
              xmlns="http://www.w3.org/2000/svg"
              onClick={()=>fn()}>
             <path 

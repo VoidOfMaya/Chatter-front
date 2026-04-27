@@ -14,6 +14,7 @@
     height: 100%;
     width: 100%;
     grid-area: login; 
+
     /*content alignment*/
     display: flex;
     flex-direction: row;
@@ -25,13 +26,22 @@
 .loginBtn{
     display: flex;
     align-items: center;
+    position: relative;
+
+    font-size: 28px;
 }
 .logoIcon{
+    position: absolute;
     display: inline-block;
     transform: rotate(46deg);
+    top: -6px;
+    left: 75px;
 }
 .loginBtn:hover{
-    color: #E84545;
+
+}
+.logenElement:hover{
+    color: #E84545;   
 }
 /*Signup button*/
 .signupLeft{
@@ -47,6 +57,9 @@
     display: flex;
     justify-content: end;
     align-items: center;
+}
+.signupBtn{
+    padding: 10px;
 }
 .signupBtn:hover{
   color: #E84545;

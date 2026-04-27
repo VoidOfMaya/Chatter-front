@@ -43,23 +43,22 @@ const Signup = () =>{
         <>
             <main className={style.signupMain}>
                 <div className={style.signupLeft}>
-                    <div style={{padding:'10px'}}
-                        onClick={()=>signUpPrompt()}
-                        className={style.signupBtn}
-                        >sign up 
-                        </div>
+                    <div onClick={()=>signUpPrompt()} className={style.signupBtn}>
+                        sign up 
+                    </div>
                 </div>
                 <div className={style.signupRight}>
-                    <div style={{fontSize: '28px'}}
-                        onClick={()=>logInPrompt()}
-                        className={style.loginBtn}
-                    >
-                        Log in
-                        <div className={style.logoIcon}>
-                            <LogoIcon size={50} color={'white'} focusColor={'#E84545'}/>  
-                        </div>
-                        
+                    <div className={style.logenElement}>
+                        <div onClick={()=>logInPrompt()} className={style.loginBtn}>
+                            Log in
+                            <div className={style.logoIcon}>
+                                <LogoIcon size={50} 
+                                    color={'white'} 
+                                    focusColor={'#E84545'}/>  
+                            </div>
+                        </div>                        
                     </div>
+
                 </div>
             </main>
             {login? (
