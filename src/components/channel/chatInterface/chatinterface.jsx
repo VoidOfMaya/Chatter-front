@@ -13,12 +13,12 @@ required backend handelling functionality:-
 const ChatInterface = () =>{
     return(
         <div className={style.chatInterface}>
-            <button for='message' className={`${style.msgButton} ${style.rightBtn}`}>+</button>
+            <button htmlFor='message' className={`${style.msgButton} ${style.rightBtn}`}>+</button>
             <div className={style.textWrapper}>
                 <textarea id='message' name='message' className={style.msgTxtArea} placeholder='message @Group'>
                 </textarea>
             </div>
-            <button for='message' className={`${style.msgButton} ${style.leftBtn}`}>
+            <button htmlFor='message' className={`${style.msgButton} ${style.leftBtn}`}>
                 {/*to change focuse color, open local css file*/}
                 <SendIcon color={'white'} 
                          size={24} />
