@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
-import { UserIcon } from "../iconhelper/iconHelper";
+import { EditeProfile, UserIcon } from "../iconhelper/iconHelper";
 import style from './profile.module.css';
 import { user as userData } from '../../mock/data'
 import { useEffect, useState } from "react";
@@ -12,11 +12,13 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     const redirect = useNavigate();
     const{profileId}= useParams();
     const [user, setUser] = useState(userData);
+    const [editMode, setEditMode] = useState(false);
     const [onlineStatus, setOnlineStatus] = useState(null);
-
-    useEffect(()=>{
-       setOnlineStatus(user.is_online) 
-    },[])
+    const [formData, setFormData] = useState({
+        name: user.name,
+        bio: user.bio,
+        photo: user.photo
+    })
     const photoLogo = () =>{
         return(
             <>
@@ -33,27 +35,100 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
 
         )
     }
+    const editProfile = ()=>{
+        return(
+            <>
+            {/*
+            Edit Profile form
+            reminder: set profile method for api call
+            */}
+            <form className={style.profile}
+                onSubmit={(e)=> e.preventDefault()}>
+                <div style={{display: 'flex', padding: '10px'}}>
+                    {photoLogo()}
+                    <label style={{padding: '10px'}}>bio:</label>
+                    <textarea  
+                        maxLength={250}
+                        className={`${style.dataTxt} ${style.bioInput}`}
+                        value={formData.bio}
+                        onChange={(e)=>{
+                            setFormData({...formData, bio: e.target.value})
+                            }
+                        } 
+                    ></textarea>                                    
+                </div>
+                <div className={style.profileData}>
+                    user:<div className={style.dataTxt}>{user.email}</div>
+                    <label>username:</label>
+                    <input 
+                        className={style.dataTxt}
+                        value={formData.name}
+                        onChange={(e)=>{
+                            setFormData({...formData, name: e.target.value})
+                            }
+                        }>        
+                    </input>
+                    created at:<div className={style.dataTxt}>{user.created_at}</div>  
+                </div>
+                <div style={{display: 'flex', width: '100%'}}>
+                    <button 
+                        type="submit"
+                        style={{flex: '1'}}
+                        onClick={()=>submitProfileInfo()}>save change</button>
+                    <button
+                        type="button" 
+                        style={{flex: '1'}}
+                        onClick={()=>{    
+                            setFormData({
+                                name: user.name,
+                                bio: user.bio,
+                                photo: user.photo
+                            })
+                            setEditMode(false)
+                        }}>discard changes</button>                                
+                </div>
+            </form>
+            </>
+        )
+    }
+    const submitProfileInfo =()=>{
+        //placeholder for data submition to api
+        console.log(formData)
+    }
+
+    useEffect(()=>{
+       setOnlineStatus(user.is_online) 
+    },[])
     useEffect(()=>{
         if (!auth) return redirect('/')
         setUser(userData)
     },[])
     return(
         <> 
-            <main className={style.main}> 
-                <div className={style.profile}>
-                    <div style={{display: 'flex', padding: '10px'}}>
-                        {photoLogo()}
-                        <div style={{padding: '10px'}} >bio: <p className={style.dataTxt}>{user.bio}</p></div>
+        <main className={style.main}> 
+                {editMode? (
+                    <>{editProfile()}</>
+                ):(
+                    <>
+                    <div className={style.profile}>
+                            <div className={style.editICon}
+                                onClick={()=> setEditMode(true)}>
+                                <EditeProfile size={35} color="#5a5a5a" focusColor="#ffffff" />                    
+                            </div>
+                            <div style={{display: 'flex', padding: '10px'}}>
+                                {photoLogo()}
+                                <div style={{padding: '10px'}} >bio: <p className={style.dataTxt}>{user.bio}</p></div>
+                            </div>
+                            <div className={style.profileData}>
+                                user:<div className={style.dataTxt}>{user.email}</div>
+                                name:<div className={style.dataTxt}>{user.name}</div>
+                            
+                                created at:<div className={style.dataTxt}>{user.created_at}</div>                        
+                            </div>
                     </div>
-                    <div className={style.profileData}>
-                        user:<div className={style.dataTxt}>{user.email}</div>
-                        name:<div className={style.dataTxt}>{user.name}</div>
-                       
-                        created at:<div className={style.dataTxt}>{user.created_at}</div>                        
-                    </div>
-
-                </div>
-            </main>
+                    </>
+                )}
+        </main>
         </>
     )
 }
