@@ -43,9 +43,9 @@
     padding: 5px 0px 5px 5px;
     border-bottom: 1px solid #62646b;
     /*font-text*/
-    font-weight: 200;
+    font-weight: 350;
     color: #62646b;
-    font-size: 1em;
+    font-size: .9em;
 
 }
 .channelOption:hover{

@@ -29,9 +29,11 @@ const MembersBar = ({data, membersView, triggerViewMember,auth}) =>{
                 <div className={style.membersContainer} {...swipeMembersBar}>
                     <div className={`${style.groupMembers} 
                     ${membersView? style.open: style.close}`}>
+                        <div className={style.title}>
+                            <GroupIcon size={35} />
+                            Members                            
+                        </div>
 
-                        <GroupIcon size={35} />
-                        Group members
                         {populateMembers()}
                     </div>
                     {!membersView? (

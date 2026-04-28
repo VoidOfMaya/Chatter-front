@@ -3,12 +3,21 @@
     grid-area: members; 
     position: relative;
     min-width: 150px;
+    display: flex;
+}
+.title{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
 }
 .groupMembers{
+    padding: 10px;
     font-weight: 200;
     color: #62646b;
-    font-size: 1em;
+    font-size: .8em;
 }
+
 .membersBtn{
     display: none;
 }
