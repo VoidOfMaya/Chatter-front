@@ -3,13 +3,46 @@ import style from './dialogs.module.css'
 import { useOutletContext, useNavigate } from 'react-router-dom';
 
 const LoginDialog = ({referance, close})=>{
-    const {onLoginSuccess}= useOutletContext();
+    const [data, setData] = useState({
+        email: '',
+        password: ''
+    })
+    const {
+        onLoginSuccess,
+        noteSuccessHandler,
+        noteWarningHandler,
+        noteErrorHandler}= useOutletContext();
 
-    const handleSubmit = (e) =>{
-        const formData = new FormData(e.target)
-        const email = formData.get("Email");
-        const password = formData.get("password");
-        onLoginSuccess(email, password);
+    const handleSubmit = async (e) =>{
+        //creates the form body to submit to server
+        const registerData = new URLSearchParams();
+        registerData.append('email', data.email);
+        registerData.append('password', data.password);
+        //submits 
+        try{
+            const result = fetch('http://localhost:3000/auth/login',{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body:registerData,
+            })
+            .then((response)=>{
+                if(!response.ok) throw new Error(response.msg);
+                return response.json();
+            })
+            .catch((error) => {
+                console.error('Fetch failed:', error);
+                noteErrorHandler(`${error.message}`)
+            });
+            const {threadId, user, accessToken,refreshToken} = await result
+            onLoginSuccess(threadId, user,accessToken,refreshToken)
+            noteSuccessHandler(`Authentication Successfull!`)
+            referance.current.close()
+            close()                            
+        }catch(err){
+            console.error(err.message)
+        }
     }
     return(
         <dialog ref={referance}>
@@ -19,15 +52,39 @@ const LoginDialog = ({referance, close})=>{
                     className={style.loginForm}
                     onSubmit={(e)=> {
                         e.preventDefault();
+
                         handleSubmit(e);
                         referance.current.close();
                         close()
                     }}
                     >
-                <label htmlFor='Email'>Email: </label>
-                <input type='email' id='Email' name='Email' placeholder="example@example.com" required></input>
+                <label htmlFor='email'>Email: </label>
+                <input  type='email' 
+                        id='email' 
+                        name='email' 
+                        placeholder="example@example.com" 
+                        required
+                        onChange={(e) =>
+                            setData((prev)=>({
+                                ...prev,email : e.target.value
+                            }))
+                        }
+                ></input>
+
                 <label htmlFor='password'>Password: </label>
-                <input type='password' id='password' name='password' placeholder="********" min='8' required></input>
+                <input  type='password' 
+                        id='password'
+                        name='password' 
+                        placeholder="********" 
+                        min='8' 
+                        required
+                        onChange={(e) =>
+                            setData((prev)=>({
+                                ...prev,password : e.target.value
+                            }))
+                        }
+                ></input>
+
                 <button type='button'
                     onClick={()=>{
                         referance.current.close();
@@ -43,12 +100,45 @@ const LoginDialog = ({referance, close})=>{
 }
 
 const SignupDialog = ({referance, close}) =>{
+    const {notifyHandler}= useOutletContext();
     const [data, setData]= useState({
         name: '',
         email: '',
         password: '',
         confirmPassword:''
     })
+    const handleSubmit = (e) =>{
+        e.preventDefault();
+        //creates the form body to submit to server
+        const registerData = new URLSearchParams();
+        registerData.append('email', data.email);
+        registerData.append('name', data.name);
+        registerData.append('password', data.password);
+        registerData.append('confirmPassword', data.confirmPassword);
+        //submits 
+        try{
+            fetch('http://localhost:3000/auth/register',{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body:registerData,
+            })
+            .then((response)=>{
+                if(!response.ok) throw new Error(response.msg);
+                return response.json()
+            })
+            .catch((error) => {
+                console.error('Fetch failed:', error);
+                notifyHandler(error)
+            });
+            referance.current.close()
+            close()                            
+        }catch(err){
+            console.error(err.message)
+        }
+ 
+    }
     return(
         <dialog ref={referance}>
             <div style={{gridArea:'title', justifySelf: 'center'}}>Signup</div>
@@ -56,41 +146,7 @@ const SignupDialog = ({referance, close}) =>{
             <form   action='http://localhost:3000/auth/register' method='POST'
                     style={{gridArea:'form'}} 
                     className={style.signupForm}
-                    onSubmit={async (e)=>{
-                        e.preventDefault();
-                        //creates the form body to submit to server
-                        const registerData = new URLSearchParams();
-                        registerData.append('email', data.email);
-                        registerData.append('name', data.name);
-                        registerData.append('password', data.password);
-                        registerData.append('confirmPassword', data.confirmPassword);
-                        //submits 
-                        try{
-                        fetch('http://localhost:3000/auth/register',{
-                                method: 'POST',
-                                headers:{
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                },
-                                body:registerData,
-                            })
-                            .then((response)=>{
-                                if(!response.ok) throw new Error(response.msg);
-                                return response.json()
-                            })
-                            .then((data) => {
-                                console.log('Success! Data received:', data);
-                            })
-                            .catch((error) => {
-                                console.error('Fetch failed:', error);
-                            });
-
-                            referance.current.close()
-                            close()                            
-                        }catch(err){
-                            console.error(err.message)
-                        }
- 
-                    }}>
+                    onSubmit={async (e)=> handleSubmit(e)}>
                 <label htmlFor='email'>Email :</label>
                 <input  type='email' id='email' name='email' placeholder="email" required 
                     value={data.email}
