@@ -15,7 +15,6 @@ function App() {
   const [authLoading, setLoadingAuth] = useState(true)
 
   //LOGIC====================
-
   const redirect = useNavigate();
   const onLogout= ()=>{
     localStorage.clear();
@@ -29,36 +28,59 @@ function App() {
     })
     redirect('/chatter')
   }
-  useEffect(()=>{
-    console.log(auth);
-  },[auth]);
-  useEffect(()=>{
-    const refresh = async ()=>{
-      try{
-        const response = await fetch('http://localhost:3000/auth/refresh',{
-          method: "POST",
-          credentials: 'include', //<= Important, this  is required to pass cookies
-        })
-        console.log(response.status)
-        if(response.status === 401){
-          setAuth(null);
-          noteErrorHandler('Session not found!')
-          return
-        }
-        const result = await response.json()
-        console.log(result)
-        noteSuccessHandler('Session Restored')
-        setAuth({
-          user:result.user,
-          accessToken: result.accessToken
-        })
-        redirect('/chatter')
-      }catch(err){
-        console.log(err)
-        noteErrorHandler(err.message)
-        setAuth(null)
+  //handels reauthentication without login{so long as refresh token valid}
+  const refresh = async ()=>{
+    try{
+      const response = await fetch('http://localhost:3000/auth/refresh',{
+        method: "POST",
+        credentials: 'include', //<= Important, this  is required to pass cookies
+      })
+      console.log(response.status)
+      if(response.status === 401){
+        setAuth(null);
+        noteErrorHandler('Session not found!')
+        return
       }
+      const result = await response.json()
+      //console.log(result)
+      noteSuccessHandler('Session Restored')
+      setAuth({
+        user:result.user,
+        accessToken: result.accessToken
+      })
+      redirect('/chatter')
+    }catch(err){
+      console.log(err)
+      noteErrorHandler(err.message)
+      setAuth(null)
     }
+  }
+  //fetches user, cahnnels,friends info to populate user dashboard
+  const getDashbaordData = async()=>{
+    const response = await fetch('http://localhost:3000/user/me',{
+      method: "GET",
+      headers: {
+        "Content-Type": 'Application/json',
+        "Authorization": `Bearer ${auth.accessToken}`,
+      },
+    })
+    console.log(response.status)
+      if(response.status === 401){
+        noteErrorHandler('dashboar data not found!')
+        redirect('/')
+        return
+      }
+      const result = await response.json()
+      console.log(result)
+      setChnls(result.channels)
+      
+  }
+  useEffect(()=>{
+    if(auth){
+      getDashbaordData();
+    }
+  },[auth])
+  useEffect(()=>{
     refresh();
   },[])
 

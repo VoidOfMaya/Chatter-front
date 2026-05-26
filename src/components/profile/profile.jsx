@@ -11,7 +11,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     const {auth}= useOutletContext();
     const redirect = useNavigate();
     const{profileId}= useParams();
-    const [user, setUser] = useState(userData);
+    const [user, setUser] = useState(auth.user);
     const [editMode, setEditMode] = useState(false);
     const [onlineStatus, setOnlineStatus] = useState(null);
     const [formData, setFormData] = useState({
