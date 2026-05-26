@@ -12,6 +12,7 @@ function App() {
   const [members, setMembers] = useState(null);
   const [viewMembers,setViewMembers]=useState(true)
   const [auth, setAuth]= useState(null);
+  const [authLoading, setLoadingAuth] = useState(true)
 
   //LOGIC====================
 
@@ -21,18 +22,45 @@ function App() {
     setAuth({token: null, user: null});
     redirect('/');
   }
-  const onLoginSuccess = (threadId, user, accessToken,refreshToken) =>{
+  const onLoginSuccess = (user, accessToken) =>{
     setAuth({
-      threadId: threadId,
       user: user, 
       accessToken: accessToken, 
-      refreshToken: refreshToken 
     })
     redirect('/chatter')
   }
   useEffect(()=>{
     console.log(auth);
   },[auth]);
+  useEffect(()=>{
+    const refresh = async ()=>{
+      try{
+        const response = await fetch('http://localhost:3000/auth/refresh',{
+          method: "POST",
+          credentials: 'include', //<= Important, this  is required to pass cookies
+        })
+        console.log(response.status)
+        if(response.status === 401){
+          setAuth(null);
+          noteErrorHandler('Session not found!')
+          return
+        }
+        const result = await response.json()
+        console.log(result)
+        noteSuccessHandler('Session Restored')
+        setAuth({
+          user:result.user,
+          accessToken: result.accessToken
+        })
+        redirect('/chatter')
+      }catch(err){
+        console.log(err)
+        noteErrorHandler(err.message)
+        setAuth(null)
+      }
+    }
+    refresh();
+  },[])
 
   //notrfication handling with toastify
   const noteSuccessHandler = (message) =>{

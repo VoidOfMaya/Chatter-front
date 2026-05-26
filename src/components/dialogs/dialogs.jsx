@@ -10,7 +10,6 @@ const LoginDialog = ({referance, close})=>{
     const {
         onLoginSuccess,
         noteSuccessHandler,
-        noteWarningHandler,
         noteErrorHandler}= useOutletContext();
 
     const handleSubmit = async (e) =>{
@@ -22,9 +21,11 @@ const LoginDialog = ({referance, close})=>{
         try{
             const result = fetch('http://localhost:3000/auth/login',{
                 method: 'POST',
+                credentials: 'include',
                 headers:{
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
+                
                 body:registerData,
             })
             .then((response)=>{
@@ -35,8 +36,8 @@ const LoginDialog = ({referance, close})=>{
                 console.error('Fetch failed:', error);
                 noteErrorHandler(`${error.message}`)
             });
-            const {threadId, user, accessToken,refreshToken} = await result
-            onLoginSuccess(threadId, user,accessToken,refreshToken)
+            const {user, accessToken} = await result
+            onLoginSuccess(user,accessToken)
             noteSuccessHandler(`Authentication Successfull!`)
             referance.current.close()
             close()                            
