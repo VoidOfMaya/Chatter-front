@@ -55,7 +55,7 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
                 <>  
                     <div className={`${style.channelList} 
                         ${channelView? style.open: style.close}`}>
-                            Friends
+                            <h3 style={{textAlign:'center'}}>Friends</h3>
                             {chnls? (
                                 populateFrinds(chnls)
                             ):(
@@ -81,7 +81,7 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
                 <>  
                     <div className={`${style.channelList} 
                         ${channelView? style.open: style.close}`}>
-                            Groups
+                            <h3 style={{textAlign:'center'}}>Groups</h3>
                             {chnls? (
                                 populateGroups(chnls)
                             ):(
