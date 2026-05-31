@@ -33,7 +33,7 @@
 }
 .channelList{
     width: 100%;
-    border: 1px solid green
+    text-align: center;
 }
 .channelOption{
     display: grid;
@@ -42,7 +42,10 @@
     grid-template-columns: 1fr 4fr;
     grid-template-rows:auto;
     padding: 5px 0px 5px 5px;
-    border-bottom: 1px solid #62646b;
+    grid-template-areas:
+    'logo text'
+    ;
+
     /*font-text*/
     font-weight: 350;
     color: #62646b;

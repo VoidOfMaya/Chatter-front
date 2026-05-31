@@ -6,7 +6,8 @@ import { UserIcon,
          SendIcon,
          LogoIcon,
          LeftArrow,
-        RightArrow} from '../iconhelper/iconHelper';
+        RightArrow,
+        BlockeIcon} from '../iconhelper/iconHelper';
 
 import { useSwipeable } from 'react-swipeable';
 import { useNavigate } from 'react-router-dom';
@@ -31,12 +32,15 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
     const populateFrinds = (data) =>{
         const sortedData = dataCleaner(data, 'FRIEND')
 
-        if(sortedData.length === 0) return <div className={style.channelOption}> no data</div>
+        if(sortedData.length === 0) return <div className={style.channelOption}>
+            <div style={{gridArea: 'logo', alignContent: 'center'}}><BlockeIcon/></div>
+            <p style={{gridArea: 'text'}} >no data</p> 
+            </div>
         return sortedData.map(chnl=>{
             return (  
                 <div key={chnl.id} className={style.channelOption}>
-                    <div><UserIcon/></div>
-                    <div>{chnl.name}</div>
+                    <div style={{gridArea: 'logo'}}><UserIcon/></div>
+                    <div style={{gridArea: 'text'}}>{chnl.name}</div>
                 </div>                  
             )
 
@@ -44,12 +48,15 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
     }
     const populateGroups = (data) =>{
         const sortedData = dataCleaner(data, 'GROUP');
-        if(sortedData.length === 0)return <div>no Groups  yet</div>
+        if(sortedData.length === 0)return <div className={style.channelOption}>
+            <div style={{gridArea: 'logo', alignContent: 'center'}}><BlockeIcon/></div>
+            <p style={{gridArea: 'text'}} >no data</p> 
+        </div>
         return data.map(chnl=>{
             return(
                 <div key={chnl.id} className={style.channelOption}>
-                    <div><UserIcon/></div>
-                    <div>{chnl.name}</div>
+                    <div style={{gridArea: 'logo'}}><UserIcon/></div>
+                    <div style={{gridArea: 'text'}}>{chnl.name}</div>
                 </div>                 
             )
         })
@@ -74,9 +81,7 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
                 <>  
                     <div className={`${style.channelList} 
                         ${channelView? style.open: style.close}`}>
-                            <h3 style={{border: '1px solid green',textAlign:'center'}}>
-                                Friends
-                            </h3>
+                            <h3>Friends</h3>
                             {populateFrinds(chnls)}                         
                     </div>
                     {/*toggole channel sidebar view on and off via arrows:*/}
