@@ -33,6 +33,7 @@
 }
 .channelList{
     width: 100%;
+    border: 1px solid green
 }
 .channelOption{
     display: grid;

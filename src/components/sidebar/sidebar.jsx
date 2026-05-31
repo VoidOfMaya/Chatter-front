@@ -25,41 +25,52 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
         onSwipedRight: () => triggerChannelView(true),
     });
 
+    //selects and returns a data array with the specified type
+    const dataCleaner = (data,type)=>{
+        return data.filter(channel => channel.type === type)
+    }
+
     const populateFrinds = (data) =>{
-        console.log(data)
-        return data.map(chnl=>{
-            return chnl.type === 'FRIEND'?(
-                
+        const sortedData = dataCleaner(data, 'FRIEND')
+
+        if(sortedData.length === 0) return <div>no friends yet</div>
+        return sortedData.map(chnl=>{
+            return (  
                 <div key={chnl.id} className={style.channelOption}>
                     <div><UserIcon/></div>
                     <div>{chnl.name}</div>
                 </div>                  
-            ):('')
+            )
 
         })
     }
     const populateGroups = (data) =>{
+        const sortedData = dataCleaner(data, 'GROUP');
+        if(sortedData.length === 0)return <div>no Groups  yet</div>
         return data.map(chnl=>{
-            return chnl.type === 'GROUP'?(
-                
+            return(
                 <div key={chnl.id} className={style.channelOption}>
                     <div><UserIcon/></div>
                     <div>{chnl.name}</div>
-                </div>                  
-            ):('')
+                </div>                 
+            )
         })
     }
     const displayChannels=()=>{
+
         if(friends){
             return(
                 <>  
                     <div className={`${style.channelList} 
                         ${channelView? style.open: style.close}`}>
-                            <h3 style={{textAlign:'center'}}>Friends</h3>
-                            {chnls? (
+                            <h3 style={{border: '1px solid green',textAlign:'center'}}>Friends</h3>
+                            {chnls.length > 0? (
                                 populateFrinds(chnls)
                             ):(
-                                'no channels'
+                                <div>
+                                    {console.log(chnls.length)}
+                                    no channels
+                                </div>
                             )}                    
                     </div>
                     {channelView? (
@@ -82,7 +93,7 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
                     <div className={`${style.channelList} 
                         ${channelView? style.open: style.close}`}>
                             <h3 style={{textAlign:'center'}}>Groups</h3>
-                            {chnls? (
+                            {chnls.length > 0? (
                                 populateGroups(chnls)
                             ):(
                                 'no channels'
