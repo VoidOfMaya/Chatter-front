@@ -79,10 +79,8 @@ function App() {
       //intial onload page refresh
       try{
         const result = await refresh();
+        console.log('refresh results: ', result);
         if(result && result.accessToken){
-          const dashResult = await getDashbaordData(result.accessToken);
-          setChnls({channels: dashResult.channels, friends: dashResult.friends})
-          console.log(dashResult)
           redirect('/chatter')
         }else{
           throw new Error('Could not restor session, please log in')
@@ -97,6 +95,14 @@ function App() {
 
     initAuth();
   },[])
+  useEffect(()=>{
+    if (!auth) return;
+    const loadDashboard = async () =>{
+      const dashboard = await getDashbaordData(auth.accessToken);
+      setChnls({channels: dashboard.channels, friends: dashboard.friends})
+    }
+    loadDashboard()
+  },[auth])
 
   //notrfication handling with toastify
   const noteSuccessHandler = (message) =>{
