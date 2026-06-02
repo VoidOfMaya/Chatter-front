@@ -1,3 +1,4 @@
+    
 import { useNavigate, useParams } from "react-router-dom"
 import { EditeProfile, UserIcon } from "../iconhelper/iconHelper";
 import style from './profile.module.css';

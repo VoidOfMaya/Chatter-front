@@ -25,63 +25,77 @@ function App() {
     setAuth({
       user: user, 
       accessToken: accessToken, 
-    })
+    });
+    localStorage.setItem('has_session', 'true');
     redirect('/chatter')
   }
   //handels reauthentication without login{so long as refresh token valid}
   const refresh = async ()=>{
     try{
+      //checks if has session flag exists in local storage befor fetching data
+      if(localStorage.getItem('has_session') !== 'true') throw new Error('No session Found')
+      
       const response = await fetch('http://localhost:3000/auth/refresh',{
         method: "POST",
         credentials: 'include', //<= Important, this  is required to pass cookies
       })
-      console.log(response.status)
-      if(response.status === 401){
-        setAuth(null);
-        noteErrorHandler('Session not found!')
-        return
-      }
+      //console.log(response)
+      if(response.status === 401)throw new Error(`${response.statusText}`)
       const result = await response.json()
-      //console.log(result)
       noteSuccessHandler('Session Restored')
       setAuth({
         user:result.user,
         accessToken: result.accessToken
       })
-      redirect('/chatter')
+      return {        
+        user:result.user,
+        accessToken: result.accessToken
+      }
     }catch(err){
-      console.log(err)
-      noteErrorHandler(err.message)
+      console.log(err.message)
+      noteErrorHandler(`${err.message}`)
       setAuth(null)
     }
   }
   //fetches user, cahnnels,friends info to populate user dashboard
-  const getDashbaordData = async()=>{
+  const getDashbaordData = async(token)=>{
     const response = await fetch('http://localhost:3000/user/me',{
       method: "GET",
       headers: {
         "Content-Type": 'Application/json',
-        "Authorization": `Bearer ${auth.accessToken}`,
+        "Authorization": `Bearer ${token}`,
       },
     })
     console.log(response.status)
       if(response.status === 401){
         noteErrorHandler('dashboar data not found!')
-        redirect('/')
         return
       }
-      const result = await response.json()
-      console.log(result)
-      setChnls(result.channels)
-      
+    const result = await response.json()
+    setChnls({channels: result.channels, friends: result.friends})
+    return {channels: result.channels, friends: result.friends}
   }
   useEffect(()=>{
-    if(auth){
-      getDashbaordData();
+    const initAuth = async() =>{
+      //intial onload page refresh
+      try{
+        const result = await refresh();
+        if(result && result.accessToken){
+          const dashResult = await getDashbaordData(result.accessToken);
+          console.log(dashResult)
+          redirect('/chatter')
+        }else{
+          throw new Error('Could not restor session, please log in')
+        }
+        setLoadingAuth(false);
+      }catch(err){
+        noteWarningHandler(err.message)
+        setLoadingAuth(false);
+        redirect('/')
+      }      
     }
-  },[auth])
-  useEffect(()=>{
-    refresh();
+
+    initAuth();
   },[])
 
   //notrfication handling with toastify
@@ -124,14 +138,18 @@ function App() {
       transition: Bounce,
     })
   }
+  if(authLoading){
+    return <div>Loading ...</div>
+  }
+
   return (
     <>
     
       <div className={style.appContainer}>      
       <SideBar  channelView={channelView} 
       triggerChannelView={setChannelView}
-                chnls={chnls}
-                auth={auth} 
+                chnls={chnls} 
+                auth={auth}
                 />
       <Outlet context={{
         onLoginSuccess,

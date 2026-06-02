@@ -29,7 +29,7 @@ const LoginDialog = ({referance, close})=>{
                 body:registerData,
             })
             .then((response)=>{
-                if(!response.ok) throw new Error(response.msg);
+                if(!response.ok) throw new Error(`${response.msg}`);
                 return response.json();
             })
             .catch((error) => {

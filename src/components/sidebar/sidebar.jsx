@@ -8,10 +8,9 @@ import { UserIcon,
          LeftArrow,
         RightArrow,
         BlockeIcon} from '../iconhelper/iconHelper';
-
 import { useSwipeable } from 'react-swipeable';
 import { useNavigate } from 'react-router-dom';
-import { Friends } from '../friends/frinds';
+import { useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
 
 const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
@@ -25,42 +24,53 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
         onSwipedLeft: () => triggerChannelView(false),
         onSwipedRight: () => triggerChannelView(true),
     });
-    //selects and returns a data array with the specified type
-    const dataCleaner = (data,type)=>{
-        return data.filter(channel => channel.type === type)
-    }
+
     const populateFrinds = (data) =>{
-        const sortedData = dataCleaner(data, 'FRIEND')
-
-        if(sortedData.length === 0) return <div className={style.channelOption}>
-            <div style={{gridArea: 'logo', alignContent: 'center'}}><BlockeIcon/></div>
-            <p style={{gridArea: 'text'}} >no data</p> 
+        try{
+            if(!data.friends)throw new Error('data.friends object not found')
+            if(data.friends === 0)throw new Error(' no friends found')
+            return data.friends.map(chnl=>{
+                return (  
+                    <div key={chnl.id} className={style.channelOption}>
+                        <div style={{gridArea: 'logo'}}><UserIcon/></div>
+                        <div style={{gridArea: 'text'}}>{chnl.name}</div>
+                    </div>                  
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+            return <div className={style.channelOption}>
+                <div style={{gridArea: 'logo', alignContent: 'center'}}>
+                    <BlockeIcon/>
+                </div>
+                <p style={{gridArea: 'text'}} >no data</p> 
             </div>
-        return sortedData.map(chnl=>{
-            return (  
-                <div key={chnl.id} className={style.channelOption}>
-                    <div style={{gridArea: 'logo'}}><UserIcon/></div>
-                    <div style={{gridArea: 'text'}}>{chnl.name}</div>
-                </div>                  
-            )
+        }
+    }
 
-        })
-    }
     const populateGroups = (data) =>{
-        const sortedData = dataCleaner(data, 'GROUP');
-        if(sortedData.length === 0)return <div className={style.channelOption}>
-            <div style={{gridArea: 'logo', alignContent: 'center'}}><BlockeIcon/></div>
-            <p style={{gridArea: 'text'}} >no data</p> 
-        </div>
-        return data.map(chnl=>{
-            return(
-                <div key={chnl.id} className={style.channelOption}>
-                    <div style={{gridArea: 'logo'}}><UserIcon/></div>
-                    <div style={{gridArea: 'text'}}>{chnl.name}</div>
-                </div>                 
-            )
-        })
+        try{
+            if( !data.channels) throw new Error('data.channels object not found')
+            if(data.channels.length === 0)throw new Error('no channels found')
+            return data.channels.map(chnl=>{
+                return(
+                    <div key={chnl.id} className={style.channelOption}>
+                        <div style={{gridArea: 'logo'}}><UserIcon/></div>
+                        <div style={{gridArea: 'text'}}>{chnl.name}</div>
+                    </div>                 
+                )
+            })
+        }catch(err){
+            console.log(err.message)
+            return <div className={style.channelOption}>
+                <div style={{gridArea: 'logo', alignContent: 'center'}}>
+                    <BlockeIcon/>
+                </div>
+                <p style={{gridArea: 'text'}} >no data</p> 
+            </div>
+        }
     }
+
     // channel view toggle renderer:
     const toggleChannelBar = () =>{
         return channelView? (
@@ -81,7 +91,7 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
                 <>  
                     <div className={`${style.channelList} 
                         ${channelView? style.open: style.close}`}>
-                            <h3>Friends</h3>
+                            <h3 style={{color: '#62646b'}}>Friends</h3>
                             {populateFrinds(chnls)}                         
                     </div>
                     {/*toggole channel sidebar view on and off via arrows:*/}
@@ -94,7 +104,7 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
                 <>  
                     <div className={`${style.channelList} 
                         ${channelView? style.open: style.close}`}>
-                            <h3 style={{textAlign:'center'}}>Groups</h3>
+                            <h3 style={{color: '#62646b'}}>Groups</h3>
                             {populateGroups(chnls)}                    
                     </div>
                     {/*toggole channel sidebar view on and off via arrows:*/}
