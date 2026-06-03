@@ -5,6 +5,7 @@ import { SideBar } from './components/sidebar/sidebar';
 import { MembersBar } from './components/members/members';
 import { useSwipeable} from 'react-swipeable';
 import {ToastContainer, toast, Bounce} from 'react-toastify'
+import { notify } from './components/norifications/notifications';
 
 function App() {
   const [channelView,setChannelView]=useState(true)
@@ -42,7 +43,8 @@ function App() {
       //console.log(response)
       if(response.status === 401)throw new Error(`${response.statusText}`)
       const result = await response.json()
-      noteSuccessHandler('Session Restored')
+      
+      notify.success('Session Restored')
       setAuth({
         user:result.user,
         accessToken: result.accessToken
@@ -53,7 +55,7 @@ function App() {
       }
     }catch(err){
       console.log(err.message)
-      noteErrorHandler(`${err.message}`)
+      notify.error(`${err.message}`)
       setAuth(null)
     }
   }
@@ -68,7 +70,7 @@ function App() {
     })
     console.log(response.status)
       if(response.status === 401){
-        noteErrorHandler('dashboar data not found!')
+        notify.error('dashboar data not found!')
         return
       }
     const result = await response.json()
@@ -87,7 +89,7 @@ function App() {
         }
         setLoadingAuth(false);
       }catch(err){
-        noteWarningHandler(err.message)
+        notify.warn(err.message)
         setLoadingAuth(false);
         redirect('/')
       }      
@@ -104,46 +106,6 @@ function App() {
     loadDashboard()
   },[auth])
 
-  //notrfication handling with toastify
-  const noteSuccessHandler = (message) =>{
-    toast.success(message,{
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true, 
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-    })
-  }
-  const noteWarningHandler = (message) =>{
-    toast.warn(message,{
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-    })
-  }
-  const noteErrorHandler = (message) =>{
-    toast.error(message,{
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-    })
-  }
   if(authLoading){
     return <div>Loading ...</div>
   }
@@ -161,9 +123,6 @@ function App() {
         onLoginSuccess,
         onLogout,
         auth,
-        noteSuccessHandler,
-        noteWarningHandler,
-        noteErrorHandler
       }}/>
       <MembersBar data={members} 
                   membersView={viewMembers}
