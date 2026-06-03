@@ -1,17 +1,13 @@
 import { useState } from 'react'
 import style from './dialogs.module.css'
 import { useOutletContext, useNavigate } from 'react-router-dom';
+import { notify } from '../norifications/notifications';
 
 const LoginDialog = ({referance, close})=>{
     const [data, setData] = useState({
         email: '',
         password: ''
     })
-    const {
-        onLoginSuccess,
-        noteSuccessHandler,
-        noteErrorHandler}= useOutletContext();
-
     const handleSubmit = async (e) =>{
         //creates the form body to submit to server
         const registerData = new URLSearchParams();
@@ -34,11 +30,11 @@ const LoginDialog = ({referance, close})=>{
             })
             .catch((error) => {
                 console.error('Fetch failed:', error);
-                noteErrorHandler(`${error.message}`)
+                notify.error(`${error.message}`)
             });
             const {user, accessToken} = await result
             onLoginSuccess(user,accessToken)
-            noteSuccessHandler(`Authentication Successfull!`)
+            notify.success(`Authentication Successfull!`)
             referance.current.close()
             close()                            
         }catch(err){

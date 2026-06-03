@@ -3,8 +3,7 @@ import style from './App.module.css'
 import { Outlet ,useNavigate } from 'react-router-dom'
 import { SideBar } from './components/sidebar/sidebar';
 import { MembersBar } from './components/members/members';
-import { useSwipeable} from 'react-swipeable';
-import {ToastContainer, toast, Bounce} from 'react-toastify'
+import {ToastContainer, Bounce} from 'react-toastify'
 import { notify } from './components/norifications/notifications';
 
 function App() {
@@ -80,8 +79,8 @@ function App() {
     const initAuth = async() =>{
       //intial onload page refresh
       try{
-        const result = await refresh();
-        console.log('refresh results: ', result);
+        //const result = await refresh();
+        //console.log('refresh results: ', result);
         if(result && result.accessToken){
           redirect('/chatter')
         }else{
