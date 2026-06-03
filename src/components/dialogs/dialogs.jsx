@@ -36,7 +36,7 @@ const LoginDialog = ({referance, close})=>{
             onLoginSuccess(user,accessToken)
             notify.success(`Authentication Successfull!`)
             referance.current.close()
-            close()                            
+            //close()                            
         }catch(err){
             console.error(err.message)
         }
@@ -123,14 +123,15 @@ const SignupDialog = ({referance, close}) =>{
             })
             .then((response)=>{
                 if(!response.ok) throw new Error(response.msg);
+                notify.success('User registered')
                 return response.json()
             })
             .catch((error) => {
                 console.error('Fetch failed:', error);
-                notifyHandler(error)
+                notify.error(error)
             });
             referance.current.close()
-            close()                            
+            //close()                            
         }catch(err){
             console.error(err.message)
         }
