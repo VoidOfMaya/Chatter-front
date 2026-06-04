@@ -9,7 +9,7 @@ const Profile = () =>{
 /*
 user data:{id, email, name, bio, photo, is_online, last_login, created_at}
 */
-    const {auth}= useOutletContext();
+    const {auth, reAuth}= useOutletContext();
     const redirect = useNavigate();
     const{profileId}= useParams();
     const [user, setUser] = useState({       
@@ -142,7 +142,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                     "Authorization": `Bearer ${auth.accessToken}`,
                 },
             })
-            if(!response.ok) throw new Error('could not fetch profile data')
+            reAuth(response);
             return await response.json()
 
         }catch(err){

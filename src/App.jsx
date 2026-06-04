@@ -7,12 +7,17 @@ import {ToastContainer, Bounce} from 'react-toastify'
 import { notify } from './components/norifications/notifications';
 
 function App() {
-  const [channelView,setChannelView]=useState(true)
-  const [chnls, setChnls] = useState(null);
-  const [members, setMembers] = useState(null);
-  const [viewMembers,setViewMembers]=useState(true)
-  const [auth, setAuth]= useState(null);
+  const [channelView,setChannelView]=useState(true)//sidebar channel list display toggle
+  const [chnls, setChnls] = useState(null);//holds channel data user has
+  const [members, setMembers] = useState(null);//list of channel members per channel
+  const [viewMembers,setViewMembers]=useState(true)//members list display toggle
+  const [auth, setAuth]= useState(null);//holds user auth data and tokens
+  // temporary loading state
   const [authLoading, setLoadingAuth] = useState(true)
+  //holds internal channel data, defaults to global channel
+  const [currentChannel, setCurrentChannel]= useState(1)
+  //temporary  render untill currentChannel gets data
+  const [channelLoading, setChannelLoading] = useState(true)
 
   //LOGIC====================
   const redirect = useNavigate();
@@ -58,6 +63,26 @@ function App() {
       setAuth(null)
     }
   }
+  //re-authenticate//handels both 401 and 403 casses
+  const reAuth = async (response)=>{
+    if(response.ok) return
+    //handels forbidden access
+      if(response.status === 403){
+        notify.error('Forbidden')
+        return redirect('/chatter')
+      }
+    // handels unauthentiated use
+      if(response.status === 401){
+        try{
+          //retry to refresh access token logic:-
+          const result = await refresh();
+          return redirect('/chatter')
+        }catch(err){
+          notify.error(err.message)
+        }
+        return
+      }
+  }
   //fetches user, cahnnels,friends info to populate user dashboard
   const getDashbaordData = async(token)=>{
     const response = await fetch('http://localhost:3000/user/me',{
@@ -67,17 +92,15 @@ function App() {
         "Authorization": `Bearer ${token}`,
       },
     })
-    console.log(response.status)
-      if(response.status === 401){
-        notify.error('dashboar data not found!')
-        return
-      }
+    await reAuth(response);//handels 401 and 403 cases
     const result = await response.json()
     return {channels: result.channels, friends: result.friends}
   }
   useEffect(()=>{
     const initAuth = async() =>{
       //intial onload page refresh
+
+      refresh()
       try{
         //const result = await refresh();
         //console.log('refresh results: ', result);
@@ -122,6 +145,8 @@ function App() {
         onLoginSuccess,
         onLogout,
         auth,
+        reAuth,
+        currentChannel
       }}/>
       <MembersBar data={members} 
                   membersView={viewMembers}

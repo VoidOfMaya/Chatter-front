@@ -31,7 +31,10 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
             if(data.friends === 0)throw new Error(' no friends found')
             return data.friends.map(chnl=>{
                 return (  
-                    <div key={chnl.id} className={style.channelOption}>
+                    <div key={chnl.id} className={style.channelOption}
+                        onClick={()=>{
+                            console.log(`selected channel ${chnl.name} at id: ${chnl.id}`)
+                        }}>
                         <div style={{gridArea: 'logo'}}><UserIcon/></div>
                         <div style={{gridArea: 'text'}}>{chnl.name}</div>
                     </div>                  
@@ -54,7 +57,10 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
             if(data.channels.length === 0)throw new Error('no channels found')
             return data.channels.map(chnl=>{
                 return(
-                    <div key={chnl.id} className={style.channelOption}>
+                    <div key={chnl.id} className={style.channelOption}
+                        onClick={()=>{
+                            console.log(`selected channel ${chnl.name} at id: ${chnl.id}`)
+                        }}>
                         <div style={{gridArea: 'logo'}}><UserIcon/></div>
                         <div style={{gridArea: 'text'}}>{chnl.name}</div>
                     </div>                 

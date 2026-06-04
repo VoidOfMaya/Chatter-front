@@ -1,18 +1,21 @@
 
 .msgCard{
+    background-color: #161616;
+    border-radius: 10px;
     /*border*/
     padding: 10px;
     margin: 1em;
     max-width: 550px;
-
-
+    min-width: 350px;
     /*layout*/
     display: grid;
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: 1fr 9fr;
     grid-template-rows: 1fr auto;
     grid-template-areas:
-    'author date'
-    '. txt';
+    'author author'
+    'text txt'
+    '. date';
+    gap: 1px;
 
     /*break behaviour*/
     white-space: normal;
@@ -25,38 +28,48 @@
     padding: 10px;
     margin: 1em;
     max-width: 550px;
+    background-color: #161616;
+    border-radius: 10px;
 
     display: grid;
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: 1fr 9fr;
     grid-template-rows: 1fr 1fr auto;
     grid-template-areas:
-    'reply replyMsg'
-    'author date'
-    '. txt';
+    'replyMsg replyMsg'
+    'author author'
+    'txt txt'
+    '. date';
     /*break behaviour*/
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
-.replyIcon{
-    grid-area: reply;
-    position: absolute;
-    top: 20%;
-    left: 35%;
-}
 .replyMsg{
     grid-area: replyMsg;
     background-color: #070809;
-    font-size: .7em;
+    border-radius: 10px;
+    font-size: .8em;
     font-weight: 200;
     color: #545559;
+    padding: 5px;
+}
+.replyText{
+    color: #d2d2d5;
+    padding: 5px;
 }
 .msgSuthor{
     grid-area: author;
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+    align-items: center;
+}
+.authorname{
+    display: inline;
+    
 }
 .msgDate{
     grid-area: date;
-
+    justify-self: end;
     font-size: .8em;
     color: #27282c;
 }
@@ -65,6 +78,7 @@
     color: white;
     font-weight: 200;
     font-size: .9em;
+    padding: 5px;
    
 }
 @media (max-width: 800px) {

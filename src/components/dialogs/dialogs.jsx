@@ -4,6 +4,9 @@ import { useOutletContext, useNavigate } from 'react-router-dom';
 import { notify } from '../norifications/notifications';
 
 const LoginDialog = ({referance, close})=>{
+
+    const{onLoginSuccess} = useOutletContext();
+    
     const [data, setData] = useState({
         email: '',
         password: ''

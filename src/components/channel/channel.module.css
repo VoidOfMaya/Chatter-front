@@ -19,6 +19,7 @@
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
+    width: 550px;
     overflow-y: scroll;
     flex: 1;
     min-height: 0;
