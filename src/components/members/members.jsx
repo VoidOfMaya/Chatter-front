@@ -17,8 +17,8 @@ const MembersBar = ({data, membersView, triggerViewMember,auth}) =>{
         if (!data) return 'no members yet!'
         return data.map(member =>{
                     return(
-                        <div key={member.id} style={member.is_mod? {color: 'green'}:{color: 'white'}}>
-                            @{member.id}
+                        <div key={member.user.id} style={member.is_mod? {color: 'green'}:{color: 'white'}}>
+                            @{member.user.name}
                         </div>
                     )
                 }) 

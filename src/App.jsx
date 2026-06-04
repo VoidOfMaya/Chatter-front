@@ -131,6 +131,10 @@ function App() {
     }
     loadDashboard()
   },[auth])
+  useEffect(()=>{
+    if(!channelData)return
+    setMembers(channelData.members)
+  },[channelData])
 
   if(authLoading){
     return <div>Loading ...</div>

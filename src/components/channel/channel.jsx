@@ -15,9 +15,9 @@ const Channel = () =>{
         channelData,
         handleChannelData 
     }= useOutletContext();
-    //const [channelData, setChannelData] = useState(null);
     const [loadingData, setLoadingData] = useState(true);
     const direct = useNavigate();
+    
     //handels sidebar interactive actions touch and click
     const [chnlMsgs, setChnlMsgs] = useState(null);
     /*get data*/
