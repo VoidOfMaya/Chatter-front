@@ -10,51 +10,20 @@ const Channel = () =>{
     //context
     const{ 
         auth, 
-        reAuth, 
-        currentChannel,
         channelData,
-        handleChannelData 
+        chatLoader
     }= useOutletContext();
-    const [loadingData, setLoadingData] = useState(true);
     const direct = useNavigate();
-    
+
     //handels sidebar interactive actions touch and click
     const [chnlMsgs, setChnlMsgs] = useState(null);
-    /*get data*/
-    const getData = async(id) =>{
-        try{
-            const response = await fetch(`http://localhost:3000/channel/${id}`,{
-                method: 'GET',
-                headers: {
-                    "Content-Type": 'Application/json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                    },
-            })
-            await reAuth(response);//handels 401 and 403 cases
-            const result = await response.json()
-            setLoadingData(false)
-            return result
-        }catch(err){
-            notify.error(err.message)
-            redirect('/')
-        }
-    }
-    //on auth state change
-    useEffect(()=>{
-        if(!auth) return
-        const loadChannel = async() =>{
-            const result = await getData(currentChannel);
-            handleChannelData(result)
-        }
-        loadChannel();
-        
-    },[auth])
     //on initialization
     useEffect(()=>{
         if(!auth) direct('/')
         setChnlMsgs(messages);
     },[])
-    if(loadingData){
+
+    if(chatLoader){
         return(
             <div style={{
                 justifySelf: 'center', 

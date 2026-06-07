@@ -16,12 +16,15 @@ function App() {
   const [authLoading, setLoadingAuth] = useState(true)
   //current channelid being displayed
   const [currentChannel, setCurrentChannel]= useState(1)
+  const handleCurrentChannel = (id) =>{
+    setCurrentChannel(id);
+  }
  //channel data
   const [channelData, setChannelData] = useState(null) ;
-  const handleChannelData = (data) =>{
-    setChannelData(data);
+  const [chatLoader, setChatLoader] = useState(true);
+  const handleChatLoader = () =>{
+    setChatLoader(!chatLoader);
   }
-
 
   //LOGIC====================
   const redirect = useNavigate();
@@ -100,6 +103,25 @@ function App() {
     const result = await response.json()
     return {channels: result.channels, friends: result.friends}
   }
+  const getChatlog = async(id) =>{
+      try{
+          const response = await fetch(`http://localhost:3000/channel/${id}`,{
+              method: 'GET',
+              headers: {
+                  "Content-Type": 'Application/json',
+                  "Authorization": `Bearer ${auth.accessToken}`,
+                  },
+          })
+          await reAuth(response);//handels 401 and 403 cases
+          const result = await response.json()
+          setChatLoader(false);
+          return result
+      }catch(err){
+          notify.error(err.message)
+          redirect('/')
+      }
+  }
+
   useEffect(()=>{
     const initAuth = async() =>{
       //intial onload page refresh
@@ -127,15 +149,33 @@ function App() {
     if (!auth) return;
     const loadDashboard = async () =>{
       const dashboard = await getDashbaordData(auth.accessToken);
+      console.log(dashboard)
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
     }
+    if(!currentChannel) return
+      const loadChannel = async() =>{
+          const result = await getChatlog(currentChannel);
+          setChannelData(result)
+      }
+      
     loadDashboard()
+    loadChannel();
   },[auth])
+  useEffect(()=>{
+    if (!auth) return;
+    if(!currentChannel) return
+      const loadChannel = async() =>{
+          const result = await getChatlog(currentChannel);
+          setChannelData(result)
+          redirect('/chatter')
+      }
+      loadChannel();
+      
+  },[currentChannel])
   useEffect(()=>{
     if(!channelData)return
     setMembers(channelData.members)
   },[channelData])
-
   if(authLoading){
     return <div>Loading ...</div>
   }
@@ -148,6 +188,7 @@ function App() {
       triggerChannelView={setChannelView}
                 chnls={chnls} 
                 auth={auth}
+                loadChannel={handleCurrentChannel}
                 />
       <Outlet context={{
         onLoginSuccess,
@@ -155,8 +196,10 @@ function App() {
         auth,
         reAuth,
         currentChannel,
+        handleCurrentChannel,
         channelData,
-        handleChannelData
+        chatLoader
+
       }}/>
       <MembersBar data={members} 
                   membersView={viewMembers}

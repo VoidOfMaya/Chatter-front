@@ -26,7 +26,8 @@ const Signup = () =>{
     },[signup])
     useEffect(()=>{
         if(auth) direct('/chatter')
-    },[])
+    })
+
     return(
         <>
             <main className={style.signupMain}>

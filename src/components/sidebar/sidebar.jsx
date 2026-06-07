@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
 
-const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
+const SideBar = ({chnls, channelView, triggerChannelView, auth,loadChannel}) =>{
     const [friends, setFriends]= useState(true);
     const [groups, setGroups]= useState(false)
     const redirect = useNavigate();
@@ -27,13 +27,14 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
 
     const populateFrinds = (data) =>{
         try{
+
             if(!data.friends)throw new Error('data.friends object not found')
             if(data.friends === 0)throw new Error(' no friends found')
             return data.friends.map(chnl=>{
                 return (  
                     <div key={chnl.id} className={style.channelOption}
                         onClick={()=>{
-                            console.log(`selected channel ${chnl.name} at id: ${chnl.id}`)
+                            loadChannel(chnl.channelId);
                         }}>
                         <div style={{gridArea: 'logo'}}><UserIcon/></div>
                         <div style={{gridArea: 'text'}}>{chnl.name}</div>
@@ -56,10 +57,11 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
             if( !data.channels) throw new Error('data.channels object not found')
             if(data.channels.length === 0)throw new Error('no channels found')
             return data.channels.map(chnl=>{
+                if(chnl.type === "FRIEND")return
                 return(
                     <div key={chnl.id} className={style.channelOption}
                         onClick={()=>{
-                            console.log(`selected channel ${chnl.name} at id: ${chnl.id}`)
+                            loadChannel(chnl.id)
                         }}>
                         <div style={{gridArea: 'logo'}}><UserIcon/></div>
                         <div style={{gridArea: 'text'}}>{chnl.name}</div>
@@ -76,7 +78,6 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
             </div>
         }
     }
-
     // channel view toggle renderer:
     const toggleChannelBar = () =>{
         return channelView? (
@@ -119,10 +120,11 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth}) =>{
             )
         }
     }
+
     return(
         <div className={style.sideNav} {...swipeSidebar}>
             <div className={style.userNav}> 
-                <div className={style.logo} onClick={()=> redirect('/')}>
+                <div className={style.logo} onClick={()=> redirect('/Chatter')}>
                     Chatter<LogoIcon color={'#E84545'} size={25} />
                 </div> 
                 {auth? (

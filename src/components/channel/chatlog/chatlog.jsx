@@ -57,7 +57,7 @@ const ChatLog=({messages})=>{
             )                   
         })
     }
-    if(messages.length <= 0){
+    if(messages.length <= 0 || !messages){
         return(
         <p>No messages found,Be the first to send a message!</p>
         )

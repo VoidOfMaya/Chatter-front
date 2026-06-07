@@ -9,7 +9,7 @@ const Profile = () =>{
 /*
 user data:{id, email, name, bio, photo, is_online, last_login, created_at}
 */
-    const {auth, reAuth}= useOutletContext();
+    const {auth, reAuth,currentChannel}= useOutletContext();
     const redirect = useNavigate();
     const{profileId}= useParams();
     const [user, setUser] = useState({       
@@ -149,6 +149,8 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             console.log(err)
         }
     }
+    useEffect(()=>{
+    },[currentChannel])
     useEffect(()=>{
         if (!auth) return redirect('/');
         
