@@ -7,14 +7,14 @@ import { notify } from '../../norifications/notifications'
 /*
 required backend handelling functionality:-
 * if outlet context user object and jwt token exists
--> on message button click it takes user object and
-    chat object then uploads message with user id and channel id
-    * always checks for if message is a reply to an other message
-      in that case it will also attach the messages id
+-> required: handle reply to messages
+-> required: rerender chat log on message changes
+-> required: enable edit and delete message functions for message owners
+-> required: enable delete message function for users who are mods(in that channel)
 -> EXTRA: enable adding photos in the chat as messages or gifs and or emojies!
 */
-const ChatInterface = () =>{
-    const{auth, reAuth,currentChannel, getChatlog, goTo} = useOutletContext();
+const ChatInterface = ({needsUpdate}) =>{
+    const{auth, reAuth,currentChannel} = useOutletContext();
     const [message, setMessage]= useState({txt:'', parentId: null})
     const sendMessage= async(message, parentId = null)=>{
         try{
@@ -42,6 +42,7 @@ const ChatInterface = () =>{
                 console.log(errBody)
                 throw new Error (`${errBody.msg}`)
             }
+            needsUpdate(true)
             return await result.json();
         }catch(err){
             notify.error(err.message)
@@ -69,9 +70,7 @@ const ChatInterface = () =>{
             <button htmlFor='message' 
                     className={`${style.msgButton} ${style.leftBtn}`}
                     onClick={ async()=> {
-                        await sendMessage(message.txt, message.parentId)
-                        await getChatlog(currentChannel)
-                        
+                        await sendMessage(message.txt, message.parentId)     
                     }}
                     >
                 {/*to change focuse color, open local css file*/}

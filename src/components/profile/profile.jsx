@@ -237,7 +237,6 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     }else{
         return(
             <> 
-            {console.log(`current channel: ${currentChannel}`)}
             <main className={style.main}> 
                 <div className={style.profile}>
                         <div style={{display: 'flex', padding: '10px'}}>

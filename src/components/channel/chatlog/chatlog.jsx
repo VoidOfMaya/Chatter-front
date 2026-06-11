@@ -66,7 +66,7 @@ const ChatLog=({messages})=>{
     useEffect(()=>{
         chatRef.current?.scrollTo({
             top:chatRef.current.scrollHeight,
-            behavior: 'smooth'
+            behavior: 'auto'
         })
     },[messages])
     return(

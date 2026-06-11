@@ -30,6 +30,9 @@ function App() {
   const handleCurrentChannel = (id) =>{
     setCurrentChannel(id);
   }
+  const populateChannelData = (data) =>{
+    setChannelData(data)
+  }
   //authentication:-
   const redirect = useNavigate();
   const onLogout= ()=>{
@@ -208,6 +211,7 @@ function App() {
           handleCurrentChannel,
           getChatlog,
           channelData,
+          populateChannelData,
           chatLoader,
           goTo
 

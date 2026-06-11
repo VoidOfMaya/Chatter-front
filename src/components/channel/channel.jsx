@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import style from './channel.module.css';
 import { ChatInterface } from './chatInterface/chatinterface';
-import {messages} from '../../mock/data'; // is a mock file simulating backend data
 import { ChatLog } from './chatlog/chatlog';
 import { redirect, useNavigate, useOutletContext } from 'react-router-dom';
 import { notify } from '../norifications/notifications';
@@ -13,12 +12,16 @@ const Channel = () =>{
         auth, 
         channelData,
         chatLoader,
+        populateChannelData,
+        getChatlog,
+        currentChannel,
         goTo
     }= useOutletContext();
     const direct = useNavigate();
 
     //handels sidebar interactive actions touch and click
     const [chnlMsgs, setChnlMsgs] = useState(null);
+    const [messageIndicator, setMessageIndicator]= useState(false)
     //on initialization
     //get friend id:
     const getFriendId = (data) =>{
@@ -26,10 +29,21 @@ const Channel = () =>{
 
     }
     useEffect(()=>{
-        if(!auth) direct('/')
-        setChnlMsgs(messages);
-    },[])
+        if(!auth) return redirect('/');
+        const loadChannel = async() =>{
+            const result = await getChatlog(currentChannel)
+            populateChannelData(result)
+        }
+        loadChannel()
 
+        setMessageIndicator(false)
+    },[messageIndicator])
+    useEffect(()=>{
+        if(!auth) return direct('/')
+        if(!channelData)return
+        console.log('inside channel component')
+        setChnlMsgs(channelData.messages)
+    },[channelData])
     if(chatLoader){
         return(
             <div style={{
@@ -80,7 +94,7 @@ const Channel = () =>{
                     <ChatLog messages={channelData.messages} users={channelData.members} />                       
                 ):('no chat open!')}    
             </div>
-            <ChatInterface />
+            <ChatInterface needsUpdate={setMessageIndicator}/>
         </main>
         
     )
