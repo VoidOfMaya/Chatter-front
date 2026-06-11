@@ -44,7 +44,8 @@ const Channel = () =>{
         console.log('inside channel component')
         setChnlMsgs(channelData.messages)
     },[channelData])
-    if(chatLoader){
+    //handels loading states on init and on new message
+    if(chatLoader && !chnlMsgs){
         return(
             <div style={{
                 justifySelf: 'center', 
