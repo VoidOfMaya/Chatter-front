@@ -1,4 +1,6 @@
-
+.ChatLog{
+    overflow-y: auto;
+}
 .msgCard{
     background-color: #161616;
     border-radius: 10px;

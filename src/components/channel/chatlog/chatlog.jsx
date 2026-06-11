@@ -1,12 +1,13 @@
 import { useOutletContext } from 'react-router-dom'
 import { ReplyIcon, UserIcon } from '../../iconhelper/iconHelper'
 import style from './chatlog.module.css'
-
+import { useRef, useEffect } from 'react'
 const ChatLog=({messages})=>{
-    const {auth} = useOutletContext()
+    const {auth} = useOutletContext();
+    const chatRef = useRef(null);
+
     const populateChat =(messages)=>{
         return messages.map( msg=>{
-
             return msg.parent? (
                 <div key={msg.id} className={style.msgCardReply}>       
                     <div key={msg.parent.id} className={style.replyMsg}>
@@ -62,10 +63,16 @@ const ChatLog=({messages})=>{
         <p>No messages found,Be the first to send a message!</p>
         )
     }
+    useEffect(()=>{
+        chatRef.current?.scrollTo({
+            top:chatRef.current.scrollHeight,
+            behavior: 'smooth'
+        })
+    },[messages])
     return(
-        <>
+        <div ref={chatRef} className={style.ChatLog}>
         {populateChat(messages)}
-        </>
+        </div>
     )
 }
 export{

@@ -109,6 +109,7 @@ function App() {
   }
   const getChatlog = async(id) =>{
       try{
+        setChatLoader(true);
           const response = await fetch(`http://localhost:3000/channel/${id}`,{
               method: 'GET',
               headers: {
@@ -205,6 +206,7 @@ function App() {
           reAuth,
           currentChannel,
           handleCurrentChannel,
+          getChatlog,
           channelData,
           chatLoader,
           goTo

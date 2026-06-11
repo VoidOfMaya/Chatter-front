@@ -38,4 +38,4 @@ required for app functionality orgenized by feature
     -[X]getChatlog
     -[]edit message
     -[]delete message
-    -[]send message
+    -[X]send message

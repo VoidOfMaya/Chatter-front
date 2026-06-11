@@ -1,7 +1,7 @@
 import style from './chatinterface.module.css'
 import sendMsg from '../../../assets/icons/send.svg'
 import { SendIcon } from '../../iconhelper/iconHelper'
-import { useOutletContext } from 'react-router-dom'
+import { redirect, useOutletContext } from 'react-router-dom'
 import { useState } from 'react'
 import { notify } from '../../norifications/notifications'
 /*
@@ -14,11 +14,11 @@ required backend handelling functionality:-
 -> EXTRA: enable adding photos in the chat as messages or gifs and or emojies!
 */
 const ChatInterface = () =>{
-    const{auth, reAuth,currentChannel} = useOutletContext();
+    const{auth, reAuth,currentChannel, getChatlog, goTo} = useOutletContext();
     const [message, setMessage]= useState({txt:'', parentId: null})
     const sendMessage= async(message, parentId = null)=>{
         try{
-            
+            console.log(`message to send: ${message}, is response to ${parentId}`)
             const result = await fetch(`http://localhost:3000/channel/${currentChannel}/msgs`,{
                 method: "POST",
                 body: JSON.stringify({
@@ -30,15 +30,17 @@ const ChatInterface = () =>{
                     "Authorization": `Bearer ${auth.accessToken}`,
                 },
             })
+            reAuth(result)
             if(!result.ok){
+
                 const errBody = await result.json();
                 if(Array.isArray(errBody.errors)){
                     errBody.errors.map(error =>{ 
-                        
                         notify.error(error.msg)
                     })
                 }
-                throw new Error (`something went wrong`)
+                console.log(errBody)
+                throw new Error (`${errBody.msg}`)
             }
             return await result.json();
         }catch(err){
@@ -66,7 +68,11 @@ const ChatInterface = () =>{
             </div>
             <button htmlFor='message' 
                     className={`${style.msgButton} ${style.leftBtn}`}
-                    onClick={()=> sendMessage(message.txt, message.parentId)}
+                    onClick={ async()=> {
+                        await sendMessage(message.txt, message.parentId)
+                        await getChatlog(currentChannel)
+                        
+                    }}
                     >
                 {/*to change focuse color, open local css file*/}
                 <SendIcon color={'white'} 

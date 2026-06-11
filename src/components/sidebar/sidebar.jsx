@@ -42,7 +42,6 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth,loadChannel}) =>{
                 )
             })
         }catch(err){
-            console.log(err.message)
             return <div className={style.channelOption}>
                 <div style={{gridArea: 'logo', alignContent: 'center'}}>
                     <BlockeIcon/>
