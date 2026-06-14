@@ -34,10 +34,11 @@
     border-radius: 10px;
 
     display: grid;
-    grid-template-columns: 1fr 9fr;
-    grid-template-rows: 1fr 1fr auto;
+    grid-template-columns: 1fr 7fr auto;
+    grid-template-rows: 1fr auto auto;
     grid-template-areas:
-    'replyMsg replyMsg'
+    '.   options'
+    'replyMsg replyMsg '
     'author author'
     '. txt'
     '. date';

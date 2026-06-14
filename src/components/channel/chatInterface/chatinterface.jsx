@@ -15,7 +15,7 @@ required backend handelling functionality:-
 */
 const ChatInterface = ({needsUpdate, reply, cancleReply}) =>{
     const{auth, reAuth,currentChannel} = useOutletContext();
-    const [message, setMessage]= useState({txt:'', parentId: null})
+    const [message, setMessage]= useState('')
     const sendMessage= async(message, parentId = null)=>{
         try{
             console.log(`message to send: ${message}, is response to ${parentId}`)
@@ -43,6 +43,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply}) =>{
                 throw new Error (`${errBody.msg}`)
             }
             needsUpdate(true)
+            setMessage('');
             return await result.json();
         }catch(err){
             notify.error(err.message)
@@ -69,12 +70,9 @@ const ChatInterface = ({needsUpdate, reply, cancleReply}) =>{
                     name='message' 
                     className={style.msgTxtArea} 
                     placeholder='message @Group'
-                    value={message.txt}
+                    value={message}
                         onChange={(e)=>
-                            setMessage((prev)=>({
-                                ...prev, 
-                                txt: e.target.value,
-                            }))
+                            setMessage(e.target.value)
                         }
                     >
                 </textarea>
@@ -82,7 +80,9 @@ const ChatInterface = ({needsUpdate, reply, cancleReply}) =>{
             <button htmlFor='message' 
                     className={`${style.msgButton} ${style.leftBtn}`}
                     onClick={ async()=> {
-                        await sendMessage(message.txt, message.parentId)     
+                        await sendMessage(message, reply.id) 
+                        if(reply) cancleReply();
+                        
                     }}
                     >
                 {/*to change focuse color, open local css file*/}

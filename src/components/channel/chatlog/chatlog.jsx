@@ -9,7 +9,14 @@ const ChatLog=({messages, handleReply})=>{
     const populateChat =(messages)=>{
         return messages.map( msg=>{
             return msg.parent? (
-                <div key={msg.id} className={style.msgCardReply}>       
+                <div key={msg.id} className={style.msgCardReply}>
+                    <div className={style.options}>
+                        <ReplyTo size={25} focusColor='#f34900' fn={()=>{
+                            handleReply({id: msg.id, name: msg.user.name})
+                        }}/>
+                        <EditeProfile size={25} focusColor='#f34900' />
+                        <BlockeIcon size={25} focusColor='#f34900'/>
+                    </div>       
                     <div key={msg.parent.id} className={style.replyMsg}>
                         reply to: 
                             <p 
