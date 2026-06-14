@@ -39,3 +39,4 @@ required for app functionality orgenized by feature
     -[]edit message
     -[]delete message
     -[X]send message
+    -[X]send reply message

@@ -2,12 +2,14 @@ import { useOutletContext } from 'react-router-dom'
 import { BlockeIcon, DeletetIcon, EditMessage, ReplyTo, UserIcon } from '../../iconhelper/iconHelper'
 import style from './chatlog.module.css'
 import { useRef, useEffect } from 'react'
-const ChatLog=({messages, handleReply, Mods})=>{
+const ChatLog=({messages, handleReply, Mods, handleEditing})=>{
     const {auth} = useOutletContext();
     const chatRef = useRef(null);
+    const mods = Mods();
+    const deleteMessage = () =>{
 
+    }
     const populateChat =(messages)=>{
-        const mods = Mods();
         return messages.map( msg=>{
             return msg.parent? (
                 <div key={msg.id} className={style.msgCardReply}>
@@ -17,7 +19,7 @@ const ChatLog=({messages, handleReply, Mods})=>{
                         }}/>
                         {/*Author only privilage*/}
                         {msg.user.id === auth.user.id?(
-                            <EditMessage size={25} focusColor='#f34900' />                            
+                            <EditMessage size={25} focusColor='#f34900' fn={()=> handleEditing(msg.id, msg.content)} />                            
                         ):('')}
                         {/*Author and Mod only privilage*/}
                         {msg.user.id === auth.user.id || mods.some(mod => mod.user.id === auth.user.id)?
@@ -75,7 +77,7 @@ const ChatLog=({messages, handleReply, Mods})=>{
                         }}/>
                         {/*Author only privilage*/}
                         {msg.user.id === auth.user.id?(
-                        <EditMessage size={25} focusColor='#f34900' />                            
+                        <EditMessage size={25} focusColor='#f34900' fn={()=> handleEditing(msg.id, msg.content)}/>                            
                         ):('')}
                         {/*Author and Mod only privilage*/}
                         {msg.user.id === auth.user.id || mods.some(mod => mod.user.id === auth.user.id)?

@@ -23,6 +23,7 @@ const Channel = () =>{
     const [chnlMsgs, setChnlMsgs] = useState(null);
     const [messageIndicator, setMessageIndicator]= useState(false);
     const [reply, setReply] = useState(null)
+    const [editMode, setEditMode] = useState(null);
     //on initialization
     //get friend id:
     const getFriendId = (data) =>{
@@ -38,6 +39,15 @@ const Channel = () =>{
     const getMods = () =>{
         return channelData.members.filter(user => user.isMod)
     }
+    const handleEditing = (id, message)=>{
+        setEditMode({id, message})
+    }
+    const resetEditor = () =>{
+        setEditMode(null)
+    }
+    useEffect(()=>{
+        console.log(editMode)
+    },[editMode])
   
     useEffect(()=>{
         if(!auth) return redirect('/');
@@ -106,10 +116,17 @@ const Channel = () =>{
             </div>
             <div className={style.chatDisplay}> 
                 {chnlMsgs? (
-                    <ChatLog messages={channelData.messages} handleReply={handleReply} Mods={getMods}/*users={channelData.members}*/ />                       
+                    <ChatLog messages={channelData.messages} 
+                            handleReply={handleReply} 
+                            Mods={getMods} 
+                            handleEditing={handleEditing}/>                       
                 ):('no chat open!')}    
             </div>
-            <ChatInterface needsUpdate={setMessageIndicator}  reply={reply} cancleReply={cancleReply}/>
+            <ChatInterface needsUpdate={setMessageIndicator}  
+                        reply={reply} 
+                        cancleReply={cancleReply}
+                        editMode={editMode}
+                        resetEditor={resetEditor}/>
         </main>
         
     )
