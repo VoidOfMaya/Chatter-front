@@ -13,7 +13,7 @@ required backend handelling functionality:-
 -> required: enable delete message function for users who are mods(in that channel)
 -> EXTRA: enable adding photos in the chat as messages or gifs and or emojies!
 */
-const ChatInterface = ({needsUpdate}) =>{
+const ChatInterface = ({needsUpdate, reply, cancleReply}) =>{
     const{auth, reAuth,currentChannel} = useOutletContext();
     const [message, setMessage]= useState({txt:'', parentId: null})
     const sendMessage= async(message, parentId = null)=>{
@@ -51,6 +51,18 @@ const ChatInterface = ({needsUpdate}) =>{
     }
     return(
         <div className={style.chatInterface}>
+            {reply?(
+                <div className={style.replyIndecator}>
+                    replying to {reply.name}
+                    <button style={{marginLeft: 'auto'}}
+                    type='button'
+                    onClick={()=>{
+                        if(!reply) return
+                        cancleReply()
+                    }}
+                    >x</button>
+                </div>
+            ):('')}
             <button htmlFor='message' className={`${style.msgButton} ${style.rightBtn}`}>+</button>
             <div className={style.textWrapper}>
                 <textarea id='message' 

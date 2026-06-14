@@ -21,12 +21,19 @@ const Channel = () =>{
 
     //handels sidebar interactive actions touch and click
     const [chnlMsgs, setChnlMsgs] = useState(null);
-    const [messageIndicator, setMessageIndicator]= useState(false)
+    const [messageIndicator, setMessageIndicator]= useState(false);
+    const [reply, setReply] = useState(null)
     //on initialization
     //get friend id:
     const getFriendId = (data) =>{
         return data.members.find(member=>member.user.id !== auth.user.id)
 
+    }
+    const handleReply = ({id, name}) =>{
+        setReply({id, name})
+    }
+    const cancleReply = () =>{
+        setReply(null)
     }
   
     useEffect(()=>{
@@ -43,7 +50,6 @@ const Channel = () =>{
     useEffect(()=>{
         if(!auth) return direct('/')
         if(!channelData)return
-        console.log(channelData.messages)
         const sortedChat = channelData.messages.sort(
             (a,b)=> new Date(a.createdAt) - new Date(b.createdAt)
         )  
@@ -97,10 +103,10 @@ const Channel = () =>{
             </div>
             <div className={style.chatDisplay}> 
                 {chnlMsgs? (
-                    <ChatLog messages={channelData.messages} users={channelData.members} />                       
+                    <ChatLog messages={channelData.messages} handleReply={handleReply} /*users={channelData.members}*/ />                       
                 ):('no chat open!')}    
             </div>
-            <ChatInterface needsUpdate={setMessageIndicator}/>
+            <ChatInterface needsUpdate={setMessageIndicator}  reply={reply} cancleReply={cancleReply}/>
         </main>
         
     )

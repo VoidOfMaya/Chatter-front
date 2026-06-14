@@ -1,8 +1,8 @@
 import { useOutletContext } from 'react-router-dom'
-import { ReplyIcon, UserIcon } from '../../iconhelper/iconHelper'
+import { BlockeIcon, EditeProfile, ReplyIcon, ReplyTo, UserIcon } from '../../iconhelper/iconHelper'
 import style from './chatlog.module.css'
 import { useRef, useEffect } from 'react'
-const ChatLog=({messages})=>{
+const ChatLog=({messages, handleReply})=>{
     const {auth} = useOutletContext();
     const chatRef = useRef(null);
 
@@ -51,6 +51,13 @@ const ChatLog=({messages})=>{
                                        style={msg.user.id === auth.user.id?{color: '#4774e4'}:{} }>
                                         @{msg.user.name}
                                     </p>
+                    </div>
+                    <div className={style.options}>
+                        <ReplyTo size={25} focusColor='#f34900' fn={()=>{
+                            handleReply({id: msg.id, name: msg.user.name})
+                        }}/>
+                        <EditeProfile size={25} focusColor='#f34900' />
+                        <BlockeIcon size={25} focusColor='#f34900'/>
                     </div>
                     <div className={style.msgTxt}>{msg.content}</div>
                     <div className={style.msgDate}>{msg.createdAt}</div>

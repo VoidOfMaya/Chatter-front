@@ -1,5 +1,6 @@
 .chatInterface{
     /*layout*/
+    position: relative;
     display: flex;
     width: 550px;
     height: 50px;
@@ -11,6 +12,17 @@
     display: flex;
     align-items: flex-end;
     flex: 9;    
+}
+.replyIndecator{
+    font-size: 12px;
+    position: absolute;
+    top: -10px;
+    display: flex;
+    justify-content:start;
+    background-color: #E84545;
+    border-radius:12px;
+    padding: 2px;
+    width: 100%;
 }
 .msgTxtArea{
     border-radius: 0px;

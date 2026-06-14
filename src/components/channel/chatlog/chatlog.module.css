@@ -11,12 +11,12 @@
     min-width: 350px;
     /*layout*/
     display: grid;
-    grid-template-columns: 1fr 9fr;
-    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr 7fr auto;
+    grid-template-rows: 1fr auto auto;
     grid-template-areas:
-    'author author'
-    '. txt'
-    '. date';
+    'author author options'
+    '. txt text'
+    '.  . date';
     gap: 1px;
 
     /*break behaviour*/
@@ -64,6 +64,12 @@
     display: grid;
     grid-template-columns: 1fr 9fr;
     align-items: center;
+}
+.options{
+    grid-area: options;
+    display: flex;
+    justify-content: end;
+    gap: 5px;
 }
 .authorname{
     display: inline;
