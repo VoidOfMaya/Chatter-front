@@ -44,12 +44,11 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth,loadChannel, logo
                 )
             })
         }catch(err){
-            return <div className={style.channelOption}>
-                <div style={{gridArea: 'logo', alignContent: 'center'}}>
-                    <BlockeIcon/>
+            return( 
+                <div className={style.channelOption}>
+                    <p style={{gridArea: 'text'}} >no Friends!</p> 
                 </div>
-                <p style={{gridArea: 'text'}} >no data</p> 
-            </div>
+                )
         }
     }
 
@@ -180,7 +179,8 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth,loadChannel, logo
                                 fn={()=>{
                                     const confirm = window.confirm('This action will log you out of this device!')
                                     if(!confirm) return
-                                    logout()
+                                    logout();
+                                    redirect('/');
                                 }}
                             />                          
                         </div>   

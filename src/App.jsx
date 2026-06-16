@@ -38,7 +38,6 @@ function App() {
   const onLogout= ()=>{
     localStorage.clear();
     setAuth({token: null, user: null});
-    redirect('/');
   }
   const onLoginSuccess = (user, accessToken) =>{
     setAuth({
