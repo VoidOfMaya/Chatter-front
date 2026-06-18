@@ -176,7 +176,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     },[profileId])
     useEffect(()=>{
         if (!auth) return redirect('/');
-        
+        console.log(currentChannel)
         const loadProfile = async() =>{
             setLoadingData(true)
             const profileData = await getProfileData();

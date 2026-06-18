@@ -45,9 +45,6 @@ const Channel = () =>{
     const resetEditor = () =>{
         setEditMode(null)
     }
-    useEffect(()=>{
-        console.log(editMode)
-    },[editMode])
   
     useEffect(()=>{
         if(!auth) return redirect('/');

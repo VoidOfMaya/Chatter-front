@@ -1,6 +1,10 @@
 /*members sidebar*/
+.membersSidebar{
+   grid-area: members; 
+}
 .membersContainer{
-    grid-area: members; 
+    padding-left: 20px;
+    height: 100%;
     position: relative;
     min-width: 150px;
     display: grid;
@@ -38,20 +42,13 @@
 .modCard{ color: green;}
 .meCard{ color: #487cff}
 /*arrow functions*/
-.closeChannels{
+.displayChannels{
     position: absolute;
     top: 50%;
     right: 0%;
     z-index: 10;
-    border: 2px solid red;
 }
-.openChannels{
-    position: absolute;
-    top: 50%;
-    right: 100%;
-    z-index: 10;
-    border: 2px solid green;
-}
+
 /*variable for element display*/
 .close{
     display: none;
