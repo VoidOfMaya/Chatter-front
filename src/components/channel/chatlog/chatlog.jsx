@@ -5,7 +5,7 @@ import { useRef, useEffect } from 'react'
 import { notify
 
  } from '../../norifications/notifications'
-const ChatLog=({messages, handleReply, mods, needsUpdate, handleEditing})=>{
+const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
     const {auth, reAuth, currentChannel} = useOutletContext();
 
 
@@ -56,7 +56,7 @@ const ChatLog=({messages, handleReply, mods, needsUpdate, handleEditing})=>{
                             <EditMessage size={25} focusColor='#f34900' fn={()=> handleEditing(msg.id, msg.content)} />                            
                         ):('')}
                         {/*Author and Mod only privilage*/}
-                        {msg.user.id === auth.user.id || mods.some(mod => mod.user.id === auth.user.id)?
+                        {msg.user.id === auth.user.id || isMod?
                         (
                             <DeletetIcon size={25} focusColor='#f34900' fn={ async()=>{
                                 if(!window.confirm('Delete this message?')) return;
@@ -118,7 +118,7 @@ const ChatLog=({messages, handleReply, mods, needsUpdate, handleEditing})=>{
                         <EditMessage size={25} focusColor='#f34900' fn={()=> handleEditing(msg.id, msg.content)}/>                            
                         ):('')}
                         {/*Author and Mod only privilage*/}
-                        {msg.user.id === auth.user.id || mods.some(mod => mod.user.id === auth.user.id)?
+                        {msg.user.id === auth.user.id || isMod?
                         (
                             <DeletetIcon size={25} focusColor='#f34900'fn={ async()=>{
                                 if(!window.confirm('Delete this message?')) return;

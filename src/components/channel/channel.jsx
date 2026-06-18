@@ -19,7 +19,7 @@ const Channel = () =>{
     }= useOutletContext();
     const direct = useNavigate();
 
-    const [mods, setMods] = useState(null)
+    const [isMod, setIsMod] = useState(false)
     const [chnlMsgs, setChnlMsgs] = useState(null);
     const [messageIndicator, setMessageIndicator]= useState(false);
     const [reply, setReply] = useState(null)
@@ -39,9 +39,10 @@ const Channel = () =>{
     const getMods = () =>{
         return channelData.members.filter(user => user.isMod)
     }
-    const isUserMod = (userId)=>{
-        return mods.some(record => record.user.id === userId)
-    }
+    //const isUserMod = (userId)=>{
+    //    if(!mods) return
+    //    mods.some(record => record.user.id === userId)
+    //}
     const handleEditing = (id, message)=>{
         setEditMode({id, message})
     }
@@ -68,8 +69,10 @@ const Channel = () =>{
             (a,b)=> new Date(a.createdAt) - new Date(b.createdAt)
         )  
         setChnlMsgs(sortedChat)
+        console.log(`current user id: ${auth.user.id}`)
         const modsList = getMods();
-        setMods(modsList)
+        //checks if user exists within mod list
+        setIsMod(modsList.some(record => record.user.id === auth.user.id))
     },[channelData])
     //handels loading states on init and on new message
     if(chatLoader && !chnlMsgs){
@@ -117,7 +120,7 @@ const Channel = () =>{
                 )}
                 <div style={{alignSelf: 'center'}}> {channelData.name}</div>
                 {/*check if current user is a mod on this channel*/}
-                {isUserMod(auth.user.id)? (
+                {isMod? (
                    <ShieldIcon size={30}/>  
                 ):('')}
                 
@@ -127,7 +130,7 @@ const Channel = () =>{
                     <ChatLog messages={channelData.messages} 
                             needsUpdate={setMessageIndicator}
                             handleReply={handleReply} 
-                            mods={mods} 
+                            isMod={isMod} 
                             handleEditing={handleEditing}/>                       
                 ):('no chat open!')}    
             </div>

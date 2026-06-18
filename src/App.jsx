@@ -11,20 +11,22 @@ function App() {
   const [auth, setAuth]= useState(null);//holds user auth data and tokens
   
   //component hide/show state:-
-  const [channelView,setChannelView]=useState(true)//sidebar channel list display toggle
-  const [viewMembers,setViewMembers]=useState(false)//members list display toggle  
-  
+  const [channelView,setChannelView]=useState(true);//sidebar channel list display toggle
+  const [viewMembers,setViewMembers]=useState(false);//members list display toggle  
+  //const [search, setSearch]= useState(false);// handels displaying search dialog
+
   //dashboard data states:-
   const [chnls, setChnls] = useState(null);//holds channel data user has
   const [members, setMembers] = useState(null);//list of channel members per channel
-  
+
   //current Channel state:-
-  const [currentChannel, setCurrentChannel]= useState(1)
+  const [currentChannel, setCurrentChannel]= useState(1);
   const [channelData, setChannelData] = useState(null) ;
 
   // temporary loading states :-
   const [chatLoader, setChatLoader] = useState(true);
-  const [authLoading, setLoadingAuth] = useState(true)
+  const [authLoading, setLoadingAuth] = useState(true);
+
 
   //state handler Functions
   const handleCurrentChannel = (id) =>{

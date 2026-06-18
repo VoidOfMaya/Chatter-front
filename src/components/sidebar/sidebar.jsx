@@ -15,7 +15,16 @@ import { useNavigate } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
 
-const SideBar = ({chnls, channelView, triggerChannelView, auth,loadChannel, logout}) =>{
+const SideBar = (
+    {
+        chnls, 
+        channelView, 
+        triggerChannelView, 
+        auth,
+        loadChannel, 
+        logout,
+        search
+    }) =>{
     const [friends, setFriends]= useState(true);
     const [groups, setGroups]= useState(false)
     const redirect = useNavigate();
@@ -172,7 +181,7 @@ const SideBar = ({chnls, channelView, triggerChannelView, auth,loadChannel, logo
                             <GroupIcon color={'#27282c'} focusColor={'#62646b'} size={25} />
                         </div>
 
-                        <div title='search channels & users' >
+                        <div title='search channels & users'>
                             <SearchIcon color={'#27282c'} focusColor={'#62646b'} size={25} />                            
                         </div>
 
