@@ -182,7 +182,10 @@ const SideBar = (
                         </div>
 
                         <div title='search channels & users'>
-                            <SearchIcon color={'#27282c'} focusColor={'#62646b'} size={25} />                            
+                            <SearchIcon color={'#27282c'} focusColor={'#62646b'} size={25}
+                            fn={()=>{
+                                redirect('/search');
+                            }} />                            
                         </div>
 
                         <div style={{marginTop: 'auto', paddingBottom: '20px'}}
