@@ -13,6 +13,7 @@ const Search=()=>{
 
     const populateResults=(data, searchType)=>{
         if(!data) return
+        
         return(
             <Card key={data.id} data={data} searchType={searchType} />
         )
