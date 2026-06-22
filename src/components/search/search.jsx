@@ -13,11 +13,9 @@ const Search=()=>{
 
     const populateResults=(data, searchType)=>{
         if(!data) return
-        
         return(
             <Card key={data.id} data={data} searchType={searchType} />
         )
-
     }
     const searchUsers= async()=>{   
         try{
@@ -29,10 +27,10 @@ const Search=()=>{
                 },
             })
             reAuth(response);
-            const result = await response.json()
             if(!response.ok){
-             return result.status
+                throw new Error(`${response.status}`)
             }
+            const result = await response.json()
             return result
         }catch(err){
             console.log(err.message)

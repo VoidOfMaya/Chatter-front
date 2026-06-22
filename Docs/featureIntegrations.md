@@ -15,17 +15,15 @@ required for app functionality orgenized by feature
     -[X]edit current user profile
     -[X]get other user profile
 ### Friends
-    -[] get friends
-    -[]get friend by    
-      
-      
+    -[X] get friends
+    -[X]get friend by id
     -[]get pending friend requests
-    -[]send friend request
+    -[X]send friend request
     -[]accept friend request
     -[]reject friend request
     -[]terminate friendship connection
 ### Channels
-    -[]get channel by id 
+    -[X]get channel by id 
     -[]create group channel
     -[]leave channel
     -[]get channel info
