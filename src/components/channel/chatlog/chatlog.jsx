@@ -140,17 +140,18 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
             )                   
         })
     }
-    if(messages.length <= 0 || !messages){
-        return(
-        <p>No messages found,Be the first to send a message!</p>
-        )
-    }
+
     useEffect(()=>{
         chatRef.current?.scrollTo({
             top:chatRef.current.scrollHeight,
             behavior: 'smooth'
         })
     },[messages])
+    if(messages.length <= 0 || !messages){
+        return(
+        <p>No messages found,Be the first to send a message!</p>
+        )
+    }
     return(
         <div ref={chatRef} className={style.ChatLog}>
         {populateChat(messages)}

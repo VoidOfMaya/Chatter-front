@@ -87,16 +87,20 @@ function App() {
     //handels forbidden access
       if(response.status === 403){
         notify.error('Forbidden')
-        return redirect('/chatter')
+        console.log('reauth error 403')
+        return //redirect('/chatter')
       }
     // handels unauthentiated use
       if(response.status === 401){
         try{
           //retry to refresh access token logic:-
           const result = await refresh();
-          return redirect('/chatter')
+          if(!result) throw new Error('could not refresh')
+          return result
         }catch(err){
-          notify.error(err.message)
+          console.log('re-auth error')
+          console.log(err)
+          notify.error(err || err.message || err.msg)
         }
         return
       }
@@ -125,13 +129,16 @@ function App() {
                   "Authorization": `Bearer ${auth.accessToken}`,
                   },
           })
+          console.log('inside chatlog fetcher, pre Reauth')
           await reAuth(response);//handels 401 and 403 cases
+          console.log('inside chatlog fetcher, Post Reauth')
           const result = await response.json()
           setChatLoader(false);
           return result
       }catch(err){
           notify.error(err.message)
-          redirect('/')
+          console.log(err || err.messaage || err.msg)
+          //redirect('/')
       }
   }
   // fetch pending requests
@@ -159,11 +166,10 @@ function App() {
   useEffect(()=>{
     const initAuth = async() =>{
       //intial onload page refresh
-
-      refresh()
+      //refresh()
       try{
-        //const result = await refresh();
-        //console.log('refresh results: ', result);
+        const result = await refresh();
+        //console.log( result);
         if(result && result.accessToken){
           redirect('/chatter')
         }else{
@@ -200,19 +206,22 @@ function App() {
     loadChannel();
   },[auth])
   useEffect(()=>{
-    if (!auth) return;
+    if (!auth) return console.log(`attempting to load current channe;, no AUTH`);
     if(!currentChannel) return
       const loadChannel = async() =>{
+          console.log(`fetching chat data at: ${currentChannel}`)
           const result = await getChatlog(currentChannel);
           setChannelData(result)
-          redirect('/chatter')
+          //goTo('/chatter')
       }
       loadChannel();
       
   },[currentChannel])
   useEffect(()=>{
     if(!channelData)return
+    console.log(channelData.members)
     setMembers(channelData.members)
+    //console.log(channelData)
   },[channelData])
 // render while loading
   if(authLoading){
