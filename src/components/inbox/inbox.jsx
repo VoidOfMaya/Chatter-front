@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom"
 import { BlockeIcon, PlusIcon, UserIcon } from "../iconhelper/iconHelper";
 import style from './inbox.module.css';
 import { notify } from "../norifications/notifications";
 const Inbox = () =>{
     const{auth, reAuth,inbox, handleCurrentChannel} = useOutletContext();
-
+    const [inboxContent, setInboxContent] = useState(null)
     const populateRequests = (requestArray) =>{
+        if (!requestArray)return
         return requestArray.map((request)=>{
             //console.log(request)
             return(
@@ -80,14 +81,27 @@ const Inbox = () =>{
     }
     
     useEffect(()=>{
+        console.log(inbox)
         handleCurrentChannel(null)
+        setInboxContent(inbox);
+        
     },[])
+    useEffect(()=>{
+        console.log(inboxContent)
+    },[inboxContent])
+    if(!inbox){
+        return(
+            <>
+                <h1>Inbox is Empty</h1>
+            </>
+        )
+    }
     return(
         <div>
             <div>
                 <h1>Incoming</h1>
                 <div>
-                    {populateRequests(inbox)}
+                    {populateRequests(inboxContent)}
                 </div>
                 <h1>Outgoing</h1>                
             </div>

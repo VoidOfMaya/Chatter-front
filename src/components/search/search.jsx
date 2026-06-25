@@ -127,7 +127,7 @@ const Search=()=>{
                             {populateResults(results, searchFriend)}
                         </>
                     ):(
-                        `no results found for: "${searchValue}"`
+                        <h2>no results found</h2>
                     )}
 
                 </div>

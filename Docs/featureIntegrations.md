@@ -17,10 +17,10 @@ required for app functionality orgenized by feature
 ### Friends
     -[X] get friends
     -[X]get friend by id
-    -[]get pending friend requests
+    -[X]get pending friend requests
     -[X]send friend request
-    -[]accept friend request
-    -[]reject friend request
+    -[X]accept friend request
+    -[X]reject friend request
     -[]terminate friendship connection
 ### Channels
     -[X]get channel by id 
