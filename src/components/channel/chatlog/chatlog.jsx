@@ -147,6 +147,7 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
             behavior: 'smooth'
         })
     },[messages])
+    if (!auth?.user) return null;
     if(messages.length <= 0 || !messages){
         return(
         <p>No messages found,Be the first to send a message!</p>

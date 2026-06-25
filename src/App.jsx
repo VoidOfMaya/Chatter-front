@@ -42,6 +42,7 @@ function App() {
   //authentication:-
   const redirect = useNavigate();
   const onLogout= ()=>{
+    
     localStorage.clear();
     setAuth({token: null, user: null});
   }
@@ -100,7 +101,8 @@ function App() {
         }catch(err){
           console.log('re-auth error')
           console.log(err)
-          notify.error(err || err.message || err.msg)
+          notify.error( err.message);
+          redirect('/');
         }
         return
       }
@@ -108,6 +110,7 @@ function App() {
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
   const getDashbaordData = async(token)=>{
+    if(!auth.user)return
     const response = await fetch('http://localhost:3000/user/me',{
       method: "GET",
       headers: {
@@ -120,6 +123,7 @@ function App() {
     return {channels: result.channels, friends: result.friends}
   }
   const getChatlog = async(id) =>{
+    if(!auth.user)return
       try{
         setChatLoader(true);
           const response = await fetch(`http://localhost:3000/channel/${id}`,{
@@ -212,7 +216,7 @@ function App() {
           console.log(`fetching chat data at: ${currentChannel}`)
           const result = await getChatlog(currentChannel);
           setChannelData(result)
-          //goTo('/chatter')
+          goTo('/chatter')
       }
       loadChannel();
       

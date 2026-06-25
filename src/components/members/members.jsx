@@ -44,45 +44,38 @@ const MembersBar = ({data, membersView, triggerViewMember,auth,currentChannel}) 
             )
         }) 
     }
+    if (!auth?.user) return null;
     return(
         <>
-            {auth? (
-                <div className={style.membersSidebar}
-                     style={currentChannel? {display: 'block'}: {display: 'none'}} 
-                >  
-                    {!membersView?(
-                        //VIEW GROUP MEMBERS TOGGLER
-                        //if membersview is open then display close arrow
-                        <div className={style.displayChannels}>
-                            <LeftArrow size={40} fn={()=>toggelMembersView()}/>
-                        </div>   
-                    ):(
-                        //if membersview is closed then display open arrow
-                        <div className={style.displayChannels}>
-                            <RightArrow size={40} fn={()=>toggelMembersView()}/>
-                        </div>
-                    )} 
-                    <div className={`
-                            ${style.membersContainer}
-                            ${membersView? style.open: style.close}
-                        `}
-                        {...swipeMembersBar}>
-                            <div className={style.title}>
-                                <GroupIcon size={35} />
-                                Members                            
-                            </div>
-                        <div className={style.groupMembers}>
-
-                            {populateMembers()}
-                        </div>
-
+            <div className={style.membersSidebar}
+                style={currentChannel? {display: 'block'}: {display: 'none'}} 
+            >  
+                {!membersView?(
+                    //VIEW GROUP MEMBERS TOGGLER
+                    //if membersview is open then display close arrow
+                    <div className={style.displayChannels}>
+                        <LeftArrow size={40} fn={()=>toggelMembersView()}/>
+                    </div>   
+                ):(
+                    //if membersview is closed then display open arrow
+                    <div className={style.displayChannels}>
+                        <RightArrow size={40} fn={()=>toggelMembersView()}/>
                     </div>
-                   
-                    
-                </div>               
-            ):(
-                <></>
-            )}
+                )} 
+                <div className={`
+                        ${style.membersContainer}
+                        ${membersView? style.open: style.close}
+                    `}
+                    {...swipeMembersBar}>
+                        <div className={style.title}>
+                            <GroupIcon size={35} />
+                            Members                            
+                        </div>
+                    <div className={style.groupMembers}>
+                        {populateMembers()}
+                    </div>
+                </div>        
+            </div>               
         </>
 
 

@@ -39,10 +39,6 @@ const Channel = () =>{
     const getMods = () =>{
         return channelData.members.filter(user => user.isMod)
     }
-    //const isUserMod = (userId)=>{
-    //    if(!mods) return
-    //    mods.some(record => record.user.id === userId)
-    //}
     const handleEditing = (id, message)=>{
         setEditMode({id, message})
     }
@@ -52,7 +48,10 @@ const Channel = () =>{
 
   
     useEffect(()=>{
-        if(!auth) return redirect('/');
+        if(!auth){
+            redirect('/');
+            return
+        } 
         if(!messageIndicator) return;
         const loadChannel = async() =>{
             const result = await getChatlog(currentChannel)
@@ -63,17 +62,20 @@ const Channel = () =>{
         setMessageIndicator(false)
     },[messageIndicator])
     useEffect(()=>{
-        if(!auth) return direct('/')
+        if(!auth?.user){
+            redirect('/')
+            return
+        }
         if(!channelData)return
         const sortedChat = channelData.messages.sort(
             (a,b)=> new Date(a.createdAt) - new Date(b.createdAt)
         )  
         setChnlMsgs(sortedChat)
-        console.log(`current user id: ${auth.user.id}`)
         const modsList = getMods();
         //checks if user exists within mod list
         setIsMod(modsList.some(record => record.user.id === auth.user.id))
     },[channelData])
+    if (!auth?.user) return null;
     //handels loading states on init and on new message
     if(chatLoader && !chnlMsgs){
         return(
