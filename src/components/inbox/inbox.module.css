@@ -1,3 +1,23 @@
+.main{
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+
+}
+.title{
+    display: flex;
+
+}
+.title h4{
+    color: #686868;
+}
+.content{
+    display: flex;
+    flex-direction: column;
+    background-color: #010101;
+    padding: 10px;
+    border-radius: 20px;
+}
 .card{
     display: grid;
     

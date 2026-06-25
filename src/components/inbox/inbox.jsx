@@ -4,7 +4,7 @@ import { BlockeIcon, PlusIcon, UserIcon } from "../iconhelper/iconHelper";
 import style from './inbox.module.css';
 import { notify } from "../norifications/notifications";
 const Inbox = () =>{
-    const{auth, reAuth,inbox, handleCurrentChannel} = useOutletContext();
+    const{auth, reAuth,inbox, handleCurrentChannel,updateApp} = useOutletContext();
     const [inboxContent, setInboxContent] = useState(null)
     const populateRequests = (requestArray) =>{
         if (!requestArray)return
@@ -19,16 +19,25 @@ const Inbox = () =>{
                     )}
                     <h2>{request.friend.name}</h2>
                     <div className={style.options}>
-                        <div    title="accept request">
-                                <PlusIcon size={35} focusColor="green" fn={async()=>{
-                                    await acceptReq(request.id)
-                                }}/>
-                        </div>
-                        <div title="reject request">
-                                <BlockeIcon size={35} focusColor="red" fn={async()=>{
-                                    await rejectReq(request.id)
-                                }} />
-                        </div>
+                        {request.user.id === auth.user.id?(
+                            <h3 style={{color: '#686868'}}>{request.status}</h3>
+                        ):(
+                         <>
+                            <div    title="accept request">
+                                    <PlusIcon size={35} focusColor="green" fn={async()=>{
+                                        await acceptReq(request.id)
+                                        updateApp()
+                                    }}/>
+                            </div>
+                            <div title="reject request">
+                                    <BlockeIcon size={35} focusColor="red" fn={async()=>{
+                                        await rejectReq(request.id)
+                                        updateApp()
+                                    }} />
+                            </div>                         
+                         </>   
+                        )}
+
                     </div>
                 </div>
             )
@@ -88,25 +97,37 @@ const Inbox = () =>{
     },[])
     useEffect(()=>{
         console.log(inboxContent)
+        setInboxContent(inbox);
     },[inboxContent])
-    if(!inbox){
+    if(!inboxContent){
         return(
             <>
-                <h1>Inbox is Empty</h1>
+            Loading
             </>
         )
     }
     return(
         <div>
-            <div>
-                <h1>Incoming</h1>
-                <div>
-                    {populateRequests(inboxContent)}
+            <div className={style.main}>
+                <div className={style.title}>
+                    <h1>Inbox</h1><h4>{inboxContent.length}</h4>   
                 </div>
-                <h1>Outgoing</h1>                
-            </div>
-            <div>
-                requests go here
+                
+
+                {inboxContent.length? (
+                  <div className={style.content}>
+                    {populateRequests(inboxContent)} 
+                  </div>
+                   
+                ):(
+                    <div className={style.content}>
+                        <h2 style={{alignSelf: 'center', color: '#686868'}}>Empty</h2>                        
+                    </div>
+
+                )}
+                <div>
+                    
+                </div>             
             </div>
 
         </div>
