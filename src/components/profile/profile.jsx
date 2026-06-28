@@ -1,6 +1,6 @@
     
 import { useNavigate, useParams } from "react-router-dom"
-import { EditeProfile, UserIcon } from "../iconhelper/iconHelper";
+import { BlockeIcon, EditeProfile, UserIcon } from "../iconhelper/iconHelper";
 import style from './profile.module.css';
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
@@ -9,7 +9,7 @@ const Profile = () =>{
 /*
 user data:{id, email, name, bio, photo, is_online, last_login, created_at}
 */
-    const {auth, reAuth,currentChannel,handleCurrentChannel,goTo}= useOutletContext();
+    const {auth, reAuth, chnls, currentChannel,handleCurrentChannel,goTo, updateApp}= useOutletContext();
     const redirect = useNavigate();
     const{profileId}= useParams();
     const [user, setUser] = useState({       
@@ -17,12 +17,13 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         bio: '',
         photo: ''
     });
+    const [metadata, setMetadata]= useState(null);
     const [formData, setFormData] = useState({
         name: user.name,
         bio: user.bio,
         photo: user.photo
     })    
-
+    const [isFriend, setIsFriend] = useState(false)
     const [editMode, setEditMode] = useState(false);
     const [loadingData, setLoadingData] = useState(true);
     const [onlineStatus, setOnlineStatus] = useState(null);
@@ -168,9 +169,38 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         }
 
     }
+    //teminate friendship
+    const deleteFriend =  async(connectionId, channelId) =>{
+        if(!isFriend) return
+        try{
+            const response = await fetch(`http://localhost:3000/friend/`,{
+                    method: 'DELETE',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${auth.accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        relationId:Number(connectionId),
+                        channelId: Number(channelId)
+                    }),
+                })
+            reAuth(response);
+            if(!response.ok){
+                throw new Error(`${response.status}`)
+            }
+            const result = await response.json()
+            notify.success("request sent")
+            updateApp()          
+            setIsFriend(false)
+        }catch(err){
+            console.log(err.message)
+            notify.warn(err.message)
+        }
+
+        
+    }
     useEffect(()=>{
         if(profileId){
-            console.log(`user profile detected`)
             handleCurrentChannel(null)
         }
     },[profileId])
@@ -180,12 +210,23 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         const loadProfile = async() =>{
             setLoadingData(true)
             const profileData = await getProfileData();
+            const relation = chnls.friends.find(friend =>{
+                return friend.id === profileData.id
+            })
             setUser(profileData);
+            setMetadata({connectionId: relation.connectionId,channelId:relation.channelId})
             setOnlineStatus(user.is_online);
             setLoadingData(false)
         }
+        const handleFriend = () =>{
+            const result = chnls.friends.some(friend =>{
+                 return friend.id === Number(profileId)
+                })
+            setIsFriend(result)
+        }
 
         loadProfile()
+        handleFriend()
     },[])
     if(loadingData){
         return(<div>Loading ....</div>)
@@ -239,6 +280,18 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             <> 
             <main className={style.main}> 
                 <div className={style.profile}>
+                    {isFriend? (
+                        <div className={style.blockIcon} title="terminate friendship">
+                            <BlockeIcon size={35} color="#5a5a5a" focusColor="#ff0c0c"
+                                fn={async()=>{
+                                    const confirm = window.confirm('the following action will delete both your connection and conversation with this person!')
+                                    if(!confirm) return;
+                                    console.log(metadata)
+                                    await deleteFriend(metadata.connectionId, metadata.channelId )
+                                }} />    
+                        </div>
+                        ):(
+                        '')}
                         <div style={{display: 'flex', padding: '10px'}}>
                             {photoLogo()}
                             <div style={{padding: '10px'}} >

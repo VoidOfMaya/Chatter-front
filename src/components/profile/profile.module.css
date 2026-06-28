@@ -32,6 +32,19 @@
 .editICon:hover{
     background-color: #E84545;
 }
+.blockIcon{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width:60px;
+    height: 60px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px; 
+}
+
 .bioInput{
     width: 100%;
     height: 100%;

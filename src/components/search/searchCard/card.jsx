@@ -28,8 +28,6 @@ const Card = ({data, searchType})=>{
             console.log(err.message)
             notify.warn(err.message)
         }
-
-        
     };
     const sendGroupJoinRequest = async(id)=>{
         try{
