@@ -4,7 +4,7 @@ import { useOutletContext} from "react-router-dom";
 import { notify } from "../../norifications/notifications";
 
 const Card = ({data, searchType})=>{
-    const {auth, reAuth, goTo,UpdateApp, chnls} = useOutletContext();
+    const {auth, reAuth, goTo,UpdateApp,handleCurrentChannel, chnls} = useOutletContext();
     const sendFriendRequest = async(id) =>{
         try{
             const response = await fetch(`http://localhost:3000/friend/send-request`,{
@@ -111,7 +111,12 @@ const Card = ({data, searchType})=>{
                 <h3>{data.name}</h3>
                 <div className={style.options}>
                     {groupExists? (
-                    <button>visit profile</button>                        
+                    <button
+                    onClick={()=>{
+                      handleCurrentChannel(data.id) 
+                      goTo('/chatter')
+                    }}
+                    >go to channel</button>                        
                     ):(
                         <button
                         onClick={()=>{
