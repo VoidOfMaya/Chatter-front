@@ -23,7 +23,8 @@ const SideBar = (
         auth,
         loadChannel, 
         logout,
-        search
+        search,
+        inbox
     }) =>{
     const [friends, setFriends]= useState(true);
     const [groups, setGroups]= useState(false)
@@ -114,7 +115,10 @@ const SideBar = (
                                 onClick={()=>{
                                     redirect('/inbox');
                                 }}
-                            >request inbox</div>
+                            >Inbox
+                            <div className={style.inboxCount}>
+                                {inbox?(<>{inbox.length}</>):(<>0</>)}</div>
+                            </div>
                             
                             {populateFrinds(chnls)}
                     </div>

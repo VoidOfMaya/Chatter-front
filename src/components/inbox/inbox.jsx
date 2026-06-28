@@ -17,6 +17,33 @@ const Inbox = () =>{
                     ):(
                         <UserIcon size={60} />
                     )}
+                    {request.user.id === auth.user.id?(
+                        //where user is the sender
+                        <>
+                        <h2>{request.friend.name}</h2>
+                            <div className={style.options}>
+                                <h3 style={{color: '#686868'}}>{request.status}</h3>                                
+                            </div>
+                        </>
+                    ):(
+                        //where user is the recipient
+                        <>
+                            <h2>{request.user.name}</h2>
+                            <div className={style.options}>
+                                <div    title="accept request">
+                                        <PlusIcon size={35} focusColor="green" fn={async()=>{
+                                            await acceptReq(request.id)          
+                                        }}/>
+                                </div>
+                                <div title="reject request">
+                                        <BlockeIcon size={35} focusColor="red" fn={async()=>{
+                                            await rejectReq(request.id)
+                                        }} />
+                                </div>                         
+                            </div>
+                        </>
+                    )}
+                    {/*
                     <h2>{request.friend.name}</h2>
                     <div className={style.options}>
                         {request.user.id === auth.user.id?(
@@ -39,6 +66,7 @@ const Inbox = () =>{
                         )}
 
                     </div>
+                    */}
                 </div>
             )
         })
@@ -62,6 +90,7 @@ const Inbox = () =>{
             if(!response.ok) throw new Error(`${result.msg}`)
         
             notify.success('friend added')
+            updateApp()
         }catch(err){
             notify.error(err)
         }
@@ -83,7 +112,8 @@ const Inbox = () =>{
             const result = await response.json();
             if(!response.ok) throw new Error(`${result.msg}`)
         
-            notify.warn('friend request rejected')
+            notify.warn('friend request rejected');
+            updateApp()
         }catch(err){
             notify.error(err)
         }

@@ -5,7 +5,7 @@ import style from './search.module.css';
 import { useOutletContext } from 'react-router-dom';
 import { Card } from './searchCard/card';
 const Search=()=>{
-    const{ auth, reAuth, handleCurrentChannel}= useOutletContext();
+    const{ auth, reAuth, handleCurrentChannel,chnls}= useOutletContext();
     const [searchValue, setSearchValue]= useState('');
     const [results, setResults] = useState(null);
     const [searchFriend, setSearchFriend] = useState(true);
@@ -19,7 +19,7 @@ const Search=()=>{
     }
     const searchUsers= async()=>{   
         try{
-            if(searchValue === '') throw new Error('no value provided')
+            if(searchValue === '') return;
             const response = await fetch(`http://localhost:3000/user/${searchValue}`,{
                 method: 'GET',
                 headers: {
@@ -39,7 +39,7 @@ const Search=()=>{
     }
     const searchGroups= async()=>{
         try{
-            if(searchValue === '') throw new Error('no value provided')
+            if(searchValue === '') return;
             const response = await fetch(`http://localhost:3000/channel/${searchValue}/info`,{
                 method: 'GET',
                 headers: {
@@ -51,6 +51,7 @@ const Search=()=>{
             if(!response.ok){
              return result.status
             }
+            console.log(result)
             return result
         }catch(err){
             console.log(err.message)

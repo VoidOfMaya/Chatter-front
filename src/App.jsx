@@ -30,6 +30,9 @@ function App() {
   const [chatLoader, setChatLoader] = useState(true);
   const [authLoading, setLoadingAuth] = useState(true);
 
+  //global app update state :- should trigger refetch data
+  const [update, setUpdate] = useState(false)
+
 
 
   //state handler Functions
@@ -38,6 +41,9 @@ function App() {
   }
   const populateChannelData = (data) =>{
     setChannelData(data)
+  }
+  const UpdateApp =()=>{
+    setUpdate(prev => !prev);
   }
   //authentication:-
   const redirect = useNavigate();
@@ -190,7 +196,9 @@ function App() {
     initAuth();
   },[])
   useEffect(()=>{
+    console.log(`auth effect accessed`)
     if (!auth) return;
+    console.log('fetching app data')
     const loadDashboard = async () =>{
       const dashboard = await getDashbaordData(auth.accessToken);
       console.log(dashboard)
@@ -227,6 +235,19 @@ function App() {
     setMembers(channelData.members)
     //console.log(channelData)
   },[channelData])
+  useEffect(()=>{
+    const loadDashboard = async () =>{
+      const dashboard = await getDashbaordData(auth.accessToken);
+      console.log(dashboard)
+      setChnls({channels: dashboard.channels, friends: dashboard.friends})
+    }
+    const loadInbox = async() =>{
+      const result = await getPendingRequests(auth.accessToken);
+      setInbox(result);
+    }
+    loadDashboard();
+    loadInbox();
+  },[update])
 // render while loading
   if(authLoading){
     return <div>Loading ...</div>
@@ -241,6 +262,7 @@ function App() {
                   auth={auth}
                   loadChannel={handleCurrentChannel}
                   logout={onLogout}
+                  inbox={inbox}
                   />
         <Outlet context={{
           onLoginSuccess,
@@ -250,7 +272,9 @@ function App() {
           currentChannel,
           handleCurrentChannel,
           getChatlog,
+          chnls,
           channelData,
+          UpdateApp,
           populateChannelData,
           chatLoader,
           inbox,

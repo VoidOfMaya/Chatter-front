@@ -4,7 +4,7 @@ import { useOutletContext} from "react-router-dom";
 import { notify } from "../../norifications/notifications";
 
 const Card = ({data, searchType})=>{
-    const {auth, reAuth, goTo} = useOutletContext();
+    const {auth, reAuth, goTo,UpdateApp, chnls} = useOutletContext();
     const sendFriendRequest = async(id) =>{
         try{
             const response = await fetch(`http://localhost:3000/friend/send-request`,{
@@ -23,7 +23,7 @@ const Card = ({data, searchType})=>{
             }
             const result = await response.json()
             notify.success("request sent")
-            return result            
+            UpdateApp()          
         }catch(err){
             console.log(err.message)
             notify.warn(err.message)
@@ -46,7 +46,7 @@ const Card = ({data, searchType})=>{
             }
             const result = await response.json()
             notify.success("request sent")
-            return result            
+            UpdateApp();            
         }catch(err){
             console.log(err.message)
             notify.warn(err.message)
@@ -54,6 +54,13 @@ const Card = ({data, searchType})=>{
 
         
     };
+    //checks if connections already exist
+    const friendExists = chnls.friends.find(friends=>{
+        return friends.id === data.id
+    })
+    const groupExists = chnls.channels.find(channel=>{
+        return channel.id === data.id
+    })
     if(searchType){
         // case where user searches other users
         return(
@@ -68,7 +75,8 @@ const Card = ({data, searchType})=>{
                 </div>
                 <h3>{data.name}</h3>
                 <div className={style.options}>
-                    {auth.user.id === data.id?(
+                    {/*checks if user is current user or friendship exists*/}
+                    {auth.user.id === data.id || friendExists?(
                         <button
                         type="button"
                         onClick={()=>{
@@ -94,17 +102,24 @@ const Card = ({data, searchType})=>{
         if(data.type === 'FRIEND'|| data.email) return(
             <h2>no results found</h2>
         )
+         //check if group already exists in dashboard
+
         return(
             <div className={style.mainContainer}>
                 <h2 style={{color: '#4d4c4c'}}>#{data.id}</h2>
                 <GroupIcon size={45} />
                 <h3>{data.name}</h3>
                 <div className={style.options}>
-                    <button
-                    onClick={()=>{
-                        sendGroupJoinRequest(data.id)
-                    }}>join group</button>
-                    <button>visit profile</button>
+                    {groupExists? (
+                    <button>visit profile</button>                        
+                    ):(
+                        <button
+                        onClick={()=>{
+                            sendGroupJoinRequest(data.id)
+                        }}>join group</button>                        
+                    )}
+
+
                 </div>
             
             </div>
