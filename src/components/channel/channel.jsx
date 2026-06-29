@@ -24,6 +24,7 @@ const Channel = () =>{
     const [messageIndicator, setMessageIndicator]= useState(false);
     const [reply, setReply] = useState(null)
     const [editMode, setEditMode] = useState(null);
+    const [channelName, setChannelName]= useState('')
     //on initialization
     //get friend id:
     const getFriendId = (data) =>{
@@ -44,6 +45,19 @@ const Channel = () =>{
     }
     const resetEditor = () =>{
         setEditMode(null)
+    }
+    //handels namin friendchannels
+    const getChannelName = (data) =>{
+        if(!data) return
+        if(data.type === 'FRIEND'){
+            const channel = data.members.find(relation=>{
+                return relation.user.id !== auth.user.id
+            })   
+            return channel.user.name         
+        }else if(data.type === 'GROUP'){
+            return data.name
+        }
+
     }
 
   
@@ -67,9 +81,13 @@ const Channel = () =>{
             return
         }
         if(!channelData)return
+        //loads name
+        const name = getChannelName(channelData);
+        //loads channel messages
         const sortedChat = channelData.messages.sort(
             (a,b)=> new Date(a.createdAt) - new Date(b.createdAt)
         )  
+        setChannelName(name)
         setChnlMsgs(sortedChat)
         const modsList = getMods();
         //checks if user exists within mod list
@@ -87,6 +105,8 @@ const Channel = () =>{
             </div>
         )
     }
+    //extracts friend name
+
     return(
         <main className={style.channel}>
             <div className={style.channelBanner}>
@@ -120,7 +140,9 @@ const Channel = () =>{
                         <GroupIcon size={40}/>                  
                     </div>
                 )}
-                <div style={{alignSelf: 'center'}}> {channelData.name}</div>
+                <div style={{alignSelf: 'center'}}> 
+                    @ {channelName}
+                    </div>
                 {/*check if current user is a mod on this channel*/}
                 {isMod? (
                    <ShieldIcon size={30}/>  
