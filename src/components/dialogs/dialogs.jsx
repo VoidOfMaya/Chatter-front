@@ -2,7 +2,6 @@ import { useState } from 'react'
 import style from './dialogs.module.css'
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { notify } from '../norifications/notifications';
-
 const LoginDialog = ({referance, close})=>{
 
     const{onLoginSuccess} = useOutletContext();
@@ -72,7 +71,8 @@ const LoginDialog = ({referance, close})=>{
                 ></input>
 
                 <label htmlFor='password'>Password: </label>
-                <input  type='password' 
+                <input  
+                        type='password' 
                         id='password'
                         name='password' 
                         placeholder="********" 
@@ -100,7 +100,6 @@ const LoginDialog = ({referance, close})=>{
 }
 
 const SignupDialog = ({referance, close}) =>{
-    const {notifyHandler}= useOutletContext();
     const [data, setData]= useState({
         name: '',
         email: '',
@@ -204,7 +203,88 @@ const SignupDialog = ({referance, close}) =>{
     )
 }
 
+const NewGroupDialog =  ({referance, close, auth, reAuth})=>{
+    const [name, setName] = useState('');
+      //creates new channel
+      const createNewGroup = async(name) =>{
+          try{
+              console.log('creating new Group')
+              const response = await fetch('http://localhost:3000/channel/321/new',{
+                  method: 'POST',
+                  headers:{
+                    "Content-Type": 'Application/json',
+                    "Authorization": `Bearer ${auth.accessToken}`,
+                  },
+                  body: JSON.stringify({
+                      name : name.name,
+                  })
+              })
+              console.log('reauthing')
+              await reAuth(response);
+              console.log('reauth complete')
+              const result = await response.json();
+              if(!response.ok) throw new Error(`${result.msg}`)
+                console.log(result)
+              notify.success('Group created')
+              updateApp()
+          }catch(err){
+              notify.error(err)
+          }
+      }
+    return(
+        <dialog ref={referance} className={style.newGroup}>
+            <div style={{gridArea:'title', justifySelf: 'center'}}>
+                Create New Group
+            </div>
+            <form 
+                    style={{gridArea:'form'}}  
+                    className={style.groupForm}
+                    onSubmit={(e)=> {
+                        e.preventDefault();
+
+                        createNewGroup(name);
+                        referance.current.close();
+                        close()
+                    }}
+                    >
+                <label htmlFor='name'>Group Name: </label>
+                <input  
+                    style={{
+                        padding: '10px 0px 10px 0px'
+                    }}
+                        type='text' 
+                        id='name' 
+                        name='name' 
+                        placeholder="group name" 
+                        required
+                        onChange={(e) =>
+                            setName((prev)=>({
+                                ...prev,name : e.target.value
+                            }))
+                        }
+                ></input>
+                <button style={{padding: '10px'}}>
+                   Create
+                </button>
+
+                <button
+                    style={{
+                        padding: '10px 0px 10px 0px',
+                        backgroundColor: '#171717'
+                    }} 
+                    type='button'
+                    onClick={()=>{
+                        referance.current.close();
+                        close()
+                    }}
+                >Cancel</button>
+            </form>
+        </dialog>
+    )
+}
+
 export{
     LoginDialog,
-    SignupDialog
+    SignupDialog,
+    NewGroupDialog
 }

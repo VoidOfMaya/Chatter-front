@@ -1,10 +1,11 @@
-import { useEffect, useState} from 'react'
+import { useEffect, useState, useRef} from 'react'
 import style from './App.module.css'
 import { Outlet ,useNavigate } from 'react-router-dom'
 import { SideBar } from './components/sidebar/sidebar';
 import { MembersBar } from './components/members/members';
 import {ToastContainer, Bounce} from 'react-toastify'
 import { notify } from './components/norifications/notifications';
+import { NewGroupDialog } from './components/dialogs/dialogs';
 
 function App() {
   //authentication state
@@ -12,7 +13,10 @@ function App() {
   
   //component hide/show state:-
   const [channelView,setChannelView]=useState(true);//sidebar channel list display toggle
-  const [viewMembers,setViewMembers]=useState(false);//members list display toggle  
+  const [viewMembers,setViewMembers]=useState(false);//members list display toggle
+
+  const [displayDialog, setDisplayDialog] = useState(false)//displays create group dialog
+  const newGroupRef = useRef(null)
   //const [search, setSearch]= useState(false);// handels displaying search dialog
 
   //dashboard data states:-
@@ -36,6 +40,10 @@ function App() {
 
 
   //state handler Functions
+  const showDialog = () =>{
+    console.log('setting state')
+    setDisplayDialog(true)
+  }
   const handleCurrentChannel = (id) =>{
     setCurrentChannel(id);
   }
@@ -261,10 +269,12 @@ function App() {
         <SideBar  channelView={channelView} 
         triggerChannelView={setChannelView}
                   chnls={chnls} 
+                  reAuth={reAuth}
                   auth={auth}
                   loadChannel={handleCurrentChannel}
                   logout={onLogout}
                   inbox={inbox}
+                  showDialog={showDialog}
                   />
         <Outlet context={{
           onLoginSuccess,
@@ -291,6 +301,16 @@ function App() {
                     currentChannel={currentChannel}
                     />
       </div>
+      {displayDialog? (
+          <div className={style.createGroupDialog}>
+              < NewGroupDialog 
+              referance={newGroupRef}  c
+              lose={()=>setDisplayDialog(false)}
+              auth={auth}
+              reAuth={reAuth}
+              />
+          </div>
+        ):('')}   
       <ToastContainer
         theme='colored'
         position="top-center"

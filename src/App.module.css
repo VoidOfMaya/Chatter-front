@@ -21,3 +21,17 @@
     /*colors*/
     background-color: #0c0c0c;
 }
+.createGroupDialog{
+    position: absolute;
+    justify-items: center;
+    display: flex;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    z-index: 1000;
+}

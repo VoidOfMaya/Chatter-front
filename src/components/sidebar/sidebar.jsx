@@ -13,7 +13,8 @@ import { UserIcon,
 import { useSwipeable } from 'react-swipeable';
 import { useNavigate } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { NewGroupDialog } from '../dialogs/dialogs';
 
 const SideBar = (
     {
@@ -23,11 +24,11 @@ const SideBar = (
         auth,
         loadChannel, 
         logout,
-        search,
-        inbox
+        inbox,
+        showDialog
     }) =>{
     const [friends, setFriends]= useState(true);
-    const [groups, setGroups]= useState(false)
+    const [groups, setGroups]= useState(false);
     const redirect = useNavigate();
     const toggelChannelView=()=>{
         triggerChannelView(!channelView);
@@ -35,8 +36,7 @@ const SideBar = (
     const swipeSidebar = useSwipeable({
         onSwipedLeft: () => triggerChannelView(false),
         onSwipedRight: () => triggerChannelView(true),
-    });
-
+    }); 
     const populateFrinds = (data) =>{
         try{
 
@@ -88,6 +88,7 @@ const SideBar = (
             </div>
         }
     }
+
     // channel view toggle renderer:
     const toggleChannelBar = () =>{
         return channelView? (
@@ -137,11 +138,14 @@ const SideBar = (
                                     Groups  
                                 </h3> 
                                 <div title='Create New channel'>
-                                    <PlusIcon />  
+                                    <PlusIcon fn={()=>{
+                                        console.log('create new group')
+                                        showDialog()
+                                    }}/>  
                                 </div>                                     
                             </div>
 
-                            {populateGroups(chnls)}                    
+                            {populateGroups(chnls)}                 
                     </div>
                     {/*toggole channel sidebar view on and off via arrows:*/}
                     {toggleChannelBar()}

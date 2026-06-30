@@ -108,6 +108,11 @@
     cursor: pointer;
     background-color: #E84545;
 }
+.newGroupDialog{
+    position: absolute;
+    border: 1px solid red;
+    width: 100%;
+}
 @media (max-width: 1200px){
     .closeChannels{
         left: 13em;

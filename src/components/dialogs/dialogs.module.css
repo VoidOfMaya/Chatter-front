@@ -14,6 +14,20 @@
 
     color: rgb(111, 110, 110);    
 }
+.newGroup{
+    align-self: center;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+}
+.groupForm{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    gap: 10px;
+}
 .invalidField{
     border: 1px solid red;
 } 
