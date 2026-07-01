@@ -145,7 +145,9 @@ const Channel = () =>{
                     </div>
                 {/*check if current user is a mod on this channel*/}
                 {isMod? (
-                   <ShieldIcon size={30}/>  
+                   <ShieldIcon size={30} fn={()=>{
+                    goTo(`/modtool/${currentChannel}`)
+                   }}/>  
                 ):('')}
                 
             </div>

@@ -51,7 +51,6 @@ const Search=()=>{
             if(!response.ok){
              return result.status
             }
-            console.log(result)
             return result
         }catch(err){
             console.log(err.message)

@@ -24,7 +24,7 @@ required for app functionality orgenized by feature
     -[X]terminate friendship connection
 ### Channels
     -[X]get channel by id 
-    -[]create group channel
+    -[X]create group channel
     -[]leave channel
     -[]get channel info
     -[X]request to join channel
