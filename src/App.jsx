@@ -284,6 +284,7 @@ function App() {
           getChatlog,
           chnls,
           channelData,
+          members,
           updateApp,
           populateChannelData,
           chatLoader,

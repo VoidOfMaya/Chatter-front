@@ -16,6 +16,7 @@ const Channel = () =>{
         populateChannelData,
         getChatlog,
         currentChannel,
+        members,
         goTo
     }= useOutletContext();
     // is user a mod
@@ -153,12 +154,22 @@ const Channel = () =>{
                     @ {channelName}
                     </div>
                 {/*check if current user is a mod on this channel*/}
-                <Settings size={40} fn={()=>{
-                    setSettingsMode(!settingsMode)
-                }}/>                  
+                {channelData.type === 'GROUP'? (
+                    <div style={{marginRight: '20px'}}>
+                        <Settings size={40} fn={()=>{
+                            setSettingsMode(!settingsMode)
+                        }}/>                                             
+                    </div>
+
+                ):('')}
+                 
             </div>
             {settingsMode?(
-                <SettingPanel modStatus={isMod} channelId={currentChannel}/>
+                <SettingPanel 
+                modStatus={isMod}  
+                channelId={currentChannel}
+                members={members}
+                />
             ):(
               <>
                 <div className={style.chatDisplay}> 
