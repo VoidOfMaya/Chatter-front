@@ -1,5 +1,5 @@
 import style from './settings.module.css';
-import { GroupIcon, Settings, ShieldIcon } from "../../iconhelper/iconHelper";
+import { UserIcon, Settings, ShieldIcon, BlockeIcon } from "../../iconhelper/iconHelper";
 import { useOutletContext } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { notify } from '../../norifications/notifications';
@@ -20,6 +20,34 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         await reAuth(response);//handels 401 and 403 cases
         return await response.json()
       
+    }
+    const populateCard = (data) =>{
+        console.log(data)
+        if (!data) return 'no members yet!'
+        return data.map(member =>{
+            return(
+                <div key={member.user.id}  className={style.memberCard}>
+                    {member.isMod?(
+                        <>
+                            <ShieldIcon />
+                        </>
+                    ):(
+                        <>
+                            <UserIcon />
+                        </>
+                    )}
+                    @{member.user.name}
+                    {member.isMod?(
+                        <div>Disable Mod</div>
+                    ):(
+                        <div>Enable Mod</div>
+                    )}
+                    
+                    <div><BlockeIcon /></div>
+
+                </div>
+            )
+        }) 
     }
     useEffect(()=>{
         const getGroupInfo = async()=>{
@@ -86,7 +114,13 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                         </div>
                     </div>
                     <div className={style.activeOption}>
-
+                            {pendingReq?(
+                                <></>
+                            ):(
+                                <>
+                                {populateCard(members)}
+                                </>
+                            )}
                     </div>
                     {/*
                         -[] MOD: get all join requests by id

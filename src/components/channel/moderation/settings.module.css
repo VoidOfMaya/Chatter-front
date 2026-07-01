@@ -38,4 +38,8 @@
 .inactiveOption{
     background-color: #020202;
 }
+.memberCard{
+    display: flex;
+    justify-content: space-between;
+}
 .connections{}
