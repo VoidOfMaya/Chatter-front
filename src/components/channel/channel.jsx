@@ -67,7 +67,9 @@ const Channel = () =>{
 
     }
 
-  
+    useEffect(()=>{
+        setSettingsMode(false)
+    },[currentChannel])
     useEffect(()=>{
         if(!auth){
             redirect('/');
@@ -156,7 +158,7 @@ const Channel = () =>{
                 }}/>                  
             </div>
             {settingsMode?(
-                <SettingPanel />
+                <SettingPanel modStatus={isMod} channelId={currentChannel}/>
             ):(
               <>
                 <div className={style.chatDisplay}> 
