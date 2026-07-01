@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { Settings, ShieldIcon } from "../../iconhelper/iconHelper";
 
-const ModPanel = ({props}) =>{
+const SettingPanel = ({props}) =>{
     const {groupId} = useParams();
     return(
         <div>
@@ -27,5 +27,5 @@ const ModPanel = ({props}) =>{
 }
 
 export{
-    ModPanel
+    SettingPanel
 }

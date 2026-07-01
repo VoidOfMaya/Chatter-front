@@ -9,7 +9,6 @@ import { Profile } from './components/profile/profile.jsx'
 import { NotFound } from './components/404/404.jsx'
 import { Search } from './components/search/search.jsx'
 import { Inbox } from './components/inbox/inbox.jsx'
-import { ModPanel } from './components/channel/moderation/modtool.jsx'
 
 
 //page routing
@@ -19,7 +18,6 @@ const router = createBrowserRouter([
       {path:'/', element: <Signup />},
       {path:'/chatter', element:<Channel/>},
       {path: '/profile/:profileId', element:<Profile/>},
-      {path: '/settings/:groupId', element:<ModPanel />},
       {path: '/search',element:<Search/>},
       {path: '/inbox', element: <Inbox />}
     ],

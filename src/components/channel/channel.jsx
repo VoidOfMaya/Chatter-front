@@ -5,6 +5,7 @@ import { ChatLog } from './chatlog/chatlog';
 import { redirect, useNavigate, useOutletContext } from 'react-router-dom';
 import { notify } from '../norifications/notifications';
 import { FriendsIcon, GroupIcon, Settings } from '../iconhelper/iconHelper';
+import { SettingPanel } from './moderation/settings';
 
 const Channel = () =>{
     //context
@@ -17,13 +18,20 @@ const Channel = () =>{
         currentChannel,
         goTo
     }= useOutletContext();
-
+    // is user a mod
     const [isMod, setIsMod] = useState(false);
+    //channel message
     const [chnlMsgs, setChnlMsgs] = useState(null);
+    //updates channel data on new message from user
     const [messageIndicator, setMessageIndicator]= useState(false);
+    //handels reply to a message
     const [reply, setReply] = useState(null)
+    // handels edit own message mode
     const [editMode, setEditMode] = useState(null);
-    const [channelName, setChannelName]= useState('')
+    //populates channel name
+    const [channelName, setChannelName]= useState('');
+    //handels toggle between chatlog or setting
+    const [settingsMode, setSettingsMode] = useState(false)
     //on initialization
     //get friend id:
     const getFriendId = (data) =>{
@@ -143,27 +151,33 @@ const Channel = () =>{
                     @ {channelName}
                     </div>
                 {/*check if current user is a mod on this channel*/}
-                {isMod? (
-                   <Settings size={40} fn={()=>{
-                    goTo(`/settings/${currentChannel}`)
-                   }}/>  
-                ):('')}
+                <Settings size={40} fn={()=>{
+                    setSettingsMode(!settingsMode)
+                }}/>                  
+            </div>
+            {settingsMode?(
+                <SettingPanel />
+            ):(
+              <>
+                <div className={style.chatDisplay}> 
+
+                    {chnlMsgs? (
+                        <ChatLog messages={channelData.messages} 
+                                needsUpdate={setMessageIndicator}
+                                handleReply={handleReply} 
+                                isMod={isMod} 
+                                handleEditing={handleEditing}/>                       
+                    ):('no chat open!')}    
+                </div>
+                <ChatInterface needsUpdate={setMessageIndicator}  
+                            reply={reply} 
+                            cancleReply={cancleReply}
+                            editMode={editMode}
+                            resetEditor={resetEditor}/>              
+              </>      
                 
-            </div>
-            <div className={style.chatDisplay}> 
-                {chnlMsgs? (
-                    <ChatLog messages={channelData.messages} 
-                            needsUpdate={setMessageIndicator}
-                            handleReply={handleReply} 
-                            isMod={isMod} 
-                            handleEditing={handleEditing}/>                       
-                ):('no chat open!')}    
-            </div>
-            <ChatInterface needsUpdate={setMessageIndicator}  
-                        reply={reply} 
-                        cancleReply={cancleReply}
-                        editMode={editMode}
-                        resetEditor={resetEditor}/>
+            )}
+
         </main>
         
     )
