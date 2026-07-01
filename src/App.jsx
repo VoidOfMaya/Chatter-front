@@ -37,8 +37,6 @@ function App() {
   //global app update state :- should trigger refetch data
   const [update, setUpdate] = useState(false)
 
-
-
   //state handler Functions
   const showDialog = () =>{
     console.log('setting state')

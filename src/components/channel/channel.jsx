@@ -4,7 +4,7 @@ import { ChatInterface } from './chatInterface/chatinterface';
 import { ChatLog } from './chatlog/chatlog';
 import { redirect, useNavigate, useOutletContext } from 'react-router-dom';
 import { notify } from '../norifications/notifications';
-import { FriendsIcon, GroupIcon, ShieldIcon } from '../iconhelper/iconHelper';
+import { FriendsIcon, GroupIcon, Settings } from '../iconhelper/iconHelper';
 
 const Channel = () =>{
     //context
@@ -17,9 +17,8 @@ const Channel = () =>{
         currentChannel,
         goTo
     }= useOutletContext();
-    const direct = useNavigate();
 
-    const [isMod, setIsMod] = useState(false)
+    const [isMod, setIsMod] = useState(false);
     const [chnlMsgs, setChnlMsgs] = useState(null);
     const [messageIndicator, setMessageIndicator]= useState(false);
     const [reply, setReply] = useState(null)
@@ -145,8 +144,8 @@ const Channel = () =>{
                     </div>
                 {/*check if current user is a mod on this channel*/}
                 {isMod? (
-                   <ShieldIcon size={30} fn={()=>{
-                    goTo(`/modtool/${currentChannel}`)
+                   <Settings size={40} fn={()=>{
+                    goTo(`/settings/${currentChannel}`)
                    }}/>  
                 ):('')}
                 
