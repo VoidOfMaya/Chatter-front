@@ -25,15 +25,28 @@
     display: flex;
     align-items: center;
     background-color: #ca3131;
+    border-radius: 20px 20px 0px 0px;
 }
 .modOptions{
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
+.modOptions > div {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+}
 .activeOption{
     color: #ca3131;
     background-color: #aeaeae;
+
+}
+.activeOptionContainer{
+    color: #ca3131;
+    background-color: #aeaeae;
+    border-radius: 0px 0px 20px 20px;
 }
 .inactiveOption{
     background-color: #020202;
@@ -41,5 +54,11 @@
 .memberCard{
     display: flex;
     justify-content: space-between;
+
+}
+.reqCard{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .connections{}

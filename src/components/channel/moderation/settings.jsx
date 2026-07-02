@@ -1,5 +1,5 @@
 import style from './settings.module.css';
-import { UserIcon, Settings, ShieldIcon, BlockeIcon } from "../../iconhelper/iconHelper";
+import { UserIcon, Settings, ShieldIcon, BlockeIcon, PlusIcon } from "../../iconhelper/iconHelper";
 import { useOutletContext } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { notify } from '../../norifications/notifications';
@@ -76,6 +76,50 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             )
         }) 
     }
+    const populateReqs = (data) =>{
+        if(!data) return
+        console.log(data)
+        return data.map(request =>{
+            return(
+                <div key={request.id} className={style.reqCard}>
+                    {request.user.photo? (
+                        <img alt='user photo' src={request.user.photo} />
+                    ):(
+                        <UserIcon size={40}/>
+                    )}
+                    <div>
+                        {request.user.name}
+                    </div>
+                    <div className={style.reqOptions}>             
+                            <PlusIcon size={40}/>
+                            <BlockeIcon size={40}/>                     
+                    </div>
+
+                </div>
+            )
+        })
+    }
+    const getPendingRequests = async() =>{
+        try{
+            if(!auth.user) throw new Error('User not authenticated')
+            //validate that connection is not to global channel
+            if(currentChannel === 1) throw new Error('Can not remove From Global Group')
+            
+            const response = await fetch(`http://localhost:3000/channel/${currentChannel}/mod/joinreq`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${auth.accessToken}`,
+            },
+            })
+            await reAuth(response);//handels 401 and 403 cases
+            const result = await response.json()
+            //validate response status and return result message
+            if(!response.ok)throw new Error(`${result.message}`)
+            return result
+        }catch(err){
+            notify.error(err)
+        }    
+    }
     useEffect(()=>{
         const getGroupInfo = async()=>{
             try{
@@ -88,7 +132,14 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         getGroupInfo()
     },[])
     useEffect(()=>{
-        if(pendingReq){}
+        if(pendingReq){
+            const getRequests = async()=>{
+                //gets pending requests
+                const result = await getPendingRequests() 
+                setRequests(result)      
+            }
+            getRequests();
+        }
         if(!pendingReq){}
     },[pendingReq])
     if(!info){
@@ -98,6 +149,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             </>
         )
     }
+ 
     return(
         <div className={style.main}>
             <div className={style.userSettings}>
@@ -132,7 +184,9 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                         Moderation panel
                     </div>
                     <div className={style.modOptions }>
-                        <div className={
+                        <div 
+                            style={{}}
+                            className={
                             !pendingReq? style.activeOption: style.inactiveOption
                             }
                             onClick={()=>{
@@ -141,7 +195,9 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                         >
                             Members
                         </div>
-                        <div className={
+                        <div 
+                            style={{}}
+                            className={
                             pendingReq? style.activeOption: style.inactiveOption
                             }
                             onClick={()=>{
@@ -151,17 +207,27 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                             pending Requests
                         </div>
                     </div>
-                    <div className={style.activeOption}>
+                    <div className={style.activeOptionContainer}>
                             {pendingReq?(
-                                <></>
+                                <>
+                                    {!requests? (
+                                        <>Loading...</>
+                                    ):(
+                                        <>{populateReqs(requests)}</>
+                                    )}
+                                </>
                             ):(
                                 <>
-                                {populateCard(members)}
+                                {!members? (
+                                    <>Loading...</>
+                                    ):(
+                                    <>{populateCard(members)}</>
+                                    )}
                                 </>
                             )}
                     </div>
                     {/*
-                        -[] MOD: get all join requests by id
+ 
                         -[] MOD: approve join request by id
                         -[] MOD: reject join request by id
                         -[] MOD: remove user from group/ban
