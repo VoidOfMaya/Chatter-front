@@ -202,7 +202,6 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     }
     useEffect(()=>{
         if (!auth) return redirect('/');
-        console.log(chnls)
         const loadProfile = async() =>{
             setLoadingData(true)
             try{
