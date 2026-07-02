@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { notify } from '../../norifications/notifications';
 
 const SettingPanel = ({modStatus, channelId, members}) =>{
-    const {auth, reAuth} = useOutletContext();
+    const {auth, reAuth, handleCurrentChannel, currentChannel,updateApp, goTo} = useOutletContext();
     const [ info, setInfo] = useState(null)
     const [ pendingReq, setPendingReq] = useState(false)
     const [requests, setRequests] = useState(null)
@@ -21,8 +21,35 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         return await response.json()
       
     }
+    const leaveGroup = async(connection)=>{
+        try{
+            if(!auth.user) throw new Error('User not authenticated')
+            //validate that connection is not to global channel
+            if(currentChannel === 1) throw new Error('Can not remove From Global Group')
+            
+            const response = await fetch(`http://localhost:3000/channel/${currentChannel}/leave`,{
+            method: "DELETE",
+            headers: {
+                "Content-Type": 'Application/json',
+                "Authorization": `Bearer ${auth.accessToken}`,
+            },
+            body: JSON.stringify({
+                relationId: connection.id,
+            })
+            })
+            await reAuth(response);//handels 401 and 403 cases
+            const result = await response.json()
+            //validate response status and return result message
+            if(!response.ok)throw new Error(`${result.message}`)
+            notify.success(result)
+            handleCurrentChannel(1)
+            updateApp()
+            goTo('/')  
+        }catch(err){
+            notify.error(err)
+        }
+    }
     const populateCard = (data) =>{
-        console.log(data)
         if (!data) return 'no members yet!'
         return data.map(member =>{
             return(
@@ -82,7 +109,18 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                 <div>{info.createdAt}</div>
                 <div>{/* member count*/}</div>
                 <div className={style.userOptions}>
-                    <button style={{padding: '20px'}}>Leave channel</button>
+                    <button style={{padding: '20px'}}
+                        onClick={()=>{
+                            const confirm = window.confirm('This action will remove you from the channel!')
+                            if(!confirm) return
+                            // find specific member  connection to group
+                            const user = members.find(member =>{
+                                return member.user.id === auth.user.id
+                            })
+                            leaveGroup(user)
+                        
+                        }}
+                    >Leave channel</button>
                 </div>
                                 
             </div>

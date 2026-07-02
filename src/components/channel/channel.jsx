@@ -103,8 +103,10 @@ const Channel = () =>{
         //checks if user exists within mod list
         setIsMod(modsList.some(record => record.user.id === auth.user.id))
     },[channelData])
-    if (!auth?.user) return null;
+    if(!auth?.user) return null;
     //handels loading states on init and on new message
+    if(!channelData) return null;
+    
     if(chatLoader && !chnlMsgs){
         return(
             <div style={{
