@@ -80,6 +80,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         if(!data) return
         console.log(data)
         return data.map(request =>{
+            console.log(request)
             return(
                 <div key={request.id} className={style.reqCard}>
                     {request.user.photo? (
@@ -91,8 +92,50 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                         {request.user.name}
                     </div>
                     <div className={style.reqOptions}>             
-                            <PlusIcon size={40}/>
-                            <BlockeIcon size={40}/>                     
+                            <PlusIcon size={40} fn={async()=>{
+                                //accept
+                                try {
+                                    const response = await fetch(`http://localhost:3000/channel/${currentChannel}/mod/acceptreq`,{
+                                        method: "PUT",
+                                        headers: {
+                                            'Content-Type': 'Application/Json',
+                                            "Authorization": `Bearer ${auth.accessToken}`,
+                                        },
+                                        body: JSON.stringify({
+                                            relationId: request.id
+                                        })
+                                    })
+                                    if(!response.ok) throw new Error(`${response.message}`)
+                                    const result = await response.json();
+                                    notify.success(result.msg)    
+                                    updateApp()
+                                    const newReqList = await getPendingRequests() 
+                                setRequests(newReqList )   
+                                } catch (err) {
+                                    notify.error(err)
+                                }
+                            }}/>
+                            <BlockeIcon size={40} fn={ async()=>{
+                                //reject  
+                                try {
+                                    const response = await fetch(`http://localhost:3000/channel/${currentChannel}/mod/rejectreq`,{
+                                        method: "PUT",
+                                        headers: {
+                                            'Content-Type': 'Application/Json',
+                                            "Authorization": `Bearer ${auth.accessToken}`,
+                                        },
+                                        body: JSON.stringify({
+                                            relationId: request.id
+                                        })
+                                    })
+                                    if(!response.ok) throw new Error(`${response.message}`)
+                                    const result = await response.json();
+                                    notify.success(result.msg)
+                                    updateApp()
+                                } catch (err) {
+                                    notify.error(err)
+                                }   
+                            }}/>                     
                     </div>
 
                 </div>
@@ -142,6 +185,9 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         }
         if(!pendingReq){}
     },[pendingReq])
+    useEffect(()=>{
+
+    },[])
     if(!info){
         return(
             <>
@@ -149,7 +195,6 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             </>
         )
     }
- 
     return(
         <div className={style.main}>
             <div className={style.userSettings}>

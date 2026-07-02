@@ -28,7 +28,7 @@ required for app functionality orgenized by feature
     -[X]leave channel
     -[X]get channel info
     -[X]request to join channel
-    -[] MOD: get all join requests by id
+    -[X] MOD: get all join requests by id
     -[] MOD: approve join request by id
     -[] MOD: reject join request by id
     -[] MOD: remove user from group/ban
