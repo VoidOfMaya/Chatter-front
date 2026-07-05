@@ -241,7 +241,7 @@ function App() {
   useEffect(()=>{
     if(!channelData)return
     console.log(channelData.members)
-    setMembers(channelData.members)
+    setMembers(channelData.members.filter(record => record.isMember))
     console.log(channelData)
   },[channelData])
   useEffect(()=>{

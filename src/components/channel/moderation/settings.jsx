@@ -103,13 +103,14 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             if(!response.ok) throw new Error(`${response.message}`)
             const result = await response.json();
             notify.success(result.msg)    
-            updateApp()
+            
             //refetch and update request array state
             const newReqList = await getPendingRequests() 
             setRequests(newReqList )
             //refetch channel data from server and update state
             const newChannelData= await getChannel(currentChannel);
             populateChannelData(newChannelData)
+            updateApp()
                
         } catch (err) {
             notify.error(err)
@@ -118,7 +119,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     const rejectRequest = async (connectionId)=>{ 
         try {
             const response = await fetch(`http://localhost:3000/channel/${currentChannel}/mod/rejectreq`,{
-                method: "PUT",
+                method: "DELETE",
                 headers: {
                     'Content-Type': 'Application/Json',
                     "Authorization": `Bearer ${auth.accessToken}`,
@@ -129,7 +130,10 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             })
             if(!response.ok) throw new Error(`${response.message}`)
             const result = await response.json();
-            notify.success(result.msg)
+            notify.warn(result.msg)
+            //refetch channel data from server and update state
+            const newChannelData= await getChannel(currentChannel);
+            populateChannelData(newChannelData)
             updateApp()
         } catch (err) {
             notify.error(err)
@@ -237,7 +241,12 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             getRequests();
         }
         if(!pendingReq){
-            updateApp();
+            const updateTab = async()=>{
+                const newChannelData= await getChannel(currentChannel);
+                populateChannelData(newChannelData)
+            }
+            updateTab();
+            //updateApp();
         }
     },[pendingReq])
     useEffect(()=>{
