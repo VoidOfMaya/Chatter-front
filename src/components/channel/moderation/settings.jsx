@@ -31,6 +31,10 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         return await response.json()
       
     }
+    const isEnoughMods = async()=>{
+        //queries sever to validate the number of mods in a group
+        //returns boolean 
+    }
     const leaveGroup = async(connection)=>{
         try{
             if(!auth.user) throw new Error('User not authenticated')
@@ -60,6 +64,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         }
     }
     const removeUser = async (connectionId)=>{
+        //requires checking if there is atleast more then one moderator
         try {
             const response = await fetch(
                 `http://localhost:3000/channel/${currentChannel}/mod/removeuser`,{
@@ -180,8 +185,14 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                             <ShieldIcon color='green'/>+
                         </div>
                     )}
-                    
-                    <div><BlockeIcon fn={()=>removeUser(member.id)}/></div>
+                    {member.user.id !== auth.user.id? (
+                        <div><BlockeIcon fn={()=>{
+                            const confirm = window.confirm(`You are About to REMOVE, @${member.user.name} from the group, Are You Sure?`)
+                            if(!confirm)return;
+                            removeUser(member.id);
+                        }}/></div>                        
+                    ):('')}
+
 
                 </div>
             )
