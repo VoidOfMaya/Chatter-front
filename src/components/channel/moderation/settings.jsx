@@ -144,6 +144,8 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     }
     const disableMod =async()=>{
         console.log(`turn off mod premissions`)
+        //validate that there is more then one moderator
+        //important to not lock group out of mod privilages 
     }
     //client render functions
     const populateCard = (data) =>{
@@ -151,24 +153,32 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         return data.map(member =>{
             return(
                 <div key={member.user.id}  className={style.memberCard}>
-                    {member.isMod?(
-                        <>
-                            <ShieldIcon />
-                        </>
-                    ):(
-                        <>
-                            <UserIcon />
-                        </>
-                    )}
+                    {member.isMod?(<ShieldIcon />):(<UserIcon />)}
                     @{member.user.name}
                     {member.isMod?(
                         <div
-                        onClick={()=>disableMod()}
-                        >Disable Mod</div>
+                            className={style.disableOption} 
+                            onClick={()=>{
+                                const confirm = window.confirm(`this action will REMOVE Moderation level premission for ${member.user.name}, Are You Sure?`)
+                                if(!confirm) return
+                                disableMod()
+                            }}
+                        >
+                            <h5>disable moderator role</h5>
+                            <ShieldIcon color='#ee0d0d'/>-
+                        </div>
                     ):(
                         <div
-                        onClick={()=>enableMod()}
-                        >Enable Mod</div>
+                            className={style.enableOption} 
+                            onClick={()=>{
+                                const confirm = window.confirm(`this action will GIVE Moderation level premission for ${member.user.name}, Are You Sure?`)
+                                if(!confirm) return
+                                enableMod()
+                            }}
+                        >
+                            <h5>enable moderator role</h5>
+                            <ShieldIcon color='green'/>+
+                        </div>
                     )}
                     
                     <div><BlockeIcon fn={()=>removeUser(member.id)}/></div>
