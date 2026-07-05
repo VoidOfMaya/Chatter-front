@@ -15,7 +15,9 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     const [user, setUser] = useState({       
         name: '',
         bio: '',
-        photo: ''
+        photo: '',
+        email: '',
+        createdAt:'',
     });
     const [metadata, setMetadata]= useState(null);
     const [formData, setFormData] = useState({
@@ -213,7 +215,15 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                     setMetadata({connectionId: relation.connectionId,channelId:relation.channelId})
                 }
                 const profileData = await getProfileData();
-                setUser(profileData);
+                //console.log(profileData)
+                setUser(
+                    {   name: profileData.name,
+                        bio: profileData.bio,
+                        photo: profileData.photo,
+                        email: profileData.email,
+                        createdAt: profileData.createdAt
+                    }
+                );
                 setOnlineStatus(user.is_online);
                 setLoadingData(false)                
             }catch(err){
