@@ -29,9 +29,9 @@ required for app functionality orgenized by feature
     -[X]get channel info
     -[X]request to join channel
     -[X] MOD: get all join requests by id
-    -[] MOD: approve join request by id
-    -[] MOD: reject join request by id
-    -[] MOD: remove user from group/ban
+    -[X] MOD: approve join request by id
+    -[X] MOD: reject join request by id
+    -[X] MOD: remove user from group/ban
     -[] MOD: enable mod Privillage
     -[] MOD: remove mod privillage
 ### Messages

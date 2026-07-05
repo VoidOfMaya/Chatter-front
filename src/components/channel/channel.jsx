@@ -14,7 +14,7 @@ const Channel = () =>{
         channelData,
         chatLoader,
         populateChannelData,
-        getChatlog,
+        getChannel,
         currentChannel,
         members,
         goTo
@@ -78,7 +78,7 @@ const Channel = () =>{
         } 
         if(!messageIndicator) return;
         const loadChannel = async() =>{
-            const result = await getChatlog(currentChannel)
+            const result = await getChannel(currentChannel)
             populateChannelData(result)
         }
         loadChannel()

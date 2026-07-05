@@ -135,7 +135,7 @@ function App() {
     const result = await response.json()
     return {channels: result.channels, friends: result.friends}
   }
-  const getChatlog = async(id) =>{
+  const getChannel = async(id) =>{
     if(!auth.user)return
       try{
         setChatLoader(true);
@@ -219,7 +219,7 @@ function App() {
     }
     if(!currentChannel) return
       const loadChannel = async() =>{
-          const result = await getChatlog(currentChannel);
+          const result = await getChannel(currentChannel);
           setChannelData(result)
       }
     loadInbox();
@@ -231,7 +231,7 @@ function App() {
     if(!currentChannel) return
       const loadChannel = async() =>{
           console.log(`fetching chat data at: ${currentChannel}`)
-          const result = await getChatlog(currentChannel);
+          const result = await getChannel(currentChannel);
           setChannelData(result)
           goTo('/chatter')
       }
@@ -248,6 +248,7 @@ function App() {
 
   },[inbox])
   useEffect(()=>{
+    if(!auth) return
     console.log(`app update effect running`)
     const loadDashboard = async () =>{
       if(!auth) return
@@ -257,6 +258,8 @@ function App() {
     }
     loadDashboard();
     loadInbox();
+    console.log('current channel data:')
+    console.log(channelData)
   },[update])
 // render while loading
   if(authLoading){
@@ -283,7 +286,7 @@ function App() {
           reAuth,
           currentChannel,
           handleCurrentChannel,
-          getChatlog,
+          getChannel,
           chnls,
           channelData,
           members,
