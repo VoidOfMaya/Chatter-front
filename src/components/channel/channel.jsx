@@ -4,7 +4,7 @@ import { ChatInterface } from './chatInterface/chatinterface';
 import { ChatLog } from './chatlog/chatlog';
 import { redirect, useNavigate, useOutletContext } from 'react-router-dom';
 import { notify } from '../norifications/notifications';
-import { FriendsIcon, GroupIcon, Settings } from '../iconhelper/iconHelper';
+import { FriendsIcon, GroupIcon, Logout, Settings } from '../iconhelper/iconHelper';
 import { SettingPanel } from './moderation/settings';
 
 const Channel = () =>{
@@ -158,9 +158,15 @@ const Channel = () =>{
                 {/*check if current user is a mod on this channel*/}
                 {channelData.type === 'GROUP'? (
                     <div style={{marginRight: '20px'}}>
+                        {settingsMode?(
+                            <Logout size={40} fn={()=>{
+                            setSettingsMode(false)
+                        }}/>
+                        ):(
                         <Settings size={40} fn={()=>{
-                            setSettingsMode(!settingsMode)
-                        }}/>                                             
+                            setSettingsMode(true)
+                        }}/> 
+                        )}                                          
                     </div>
 
                 ):('')}

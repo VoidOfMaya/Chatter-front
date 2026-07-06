@@ -32,8 +32,8 @@ required for app functionality orgenized by feature
     -[X] MOD: approve join request by id
     -[X] MOD: reject join request by id
     -[X] MOD: remove user from group/ban
-    -[] MOD: enable mod Privillage
-    -[] MOD: remove mod privillage
+    -[X] MOD: enable mod Privillage
+    -[X] MOD: remove mod privillage
 ### Messages
     -[X]getChatlog
     -[X]edit message

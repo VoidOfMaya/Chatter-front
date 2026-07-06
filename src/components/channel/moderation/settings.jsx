@@ -21,22 +21,58 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     // server action functions
     const getInfo = async()=>{
         if(!auth.user)return
-        const response = await fetch(`http://localhost:3000/channel/${channelId}/info`,{
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${auth.accessToken}`,
-        },
-        })
-        await reAuth(response);//handels 401 and 403 cases
-        return await response.json()
-      
+        try {
+            const response = await fetch(`http://localhost:3000/channel/${channelId}/info`,{
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${auth.accessToken}`,
+            },
+            })
+            await reAuth(response);//handels 401 and 403 cases
+            return await response.json() 
+        } catch (err) {
+            notify.error(err)
+        }
+
     }
     const isEnoughMods = async()=>{
         //queries sever to validate the number of mods in a group
         //returns boolean 
+        try {
+            console.log('fetching request')
+            const response = await fetch(
+                `http://localhost:3000/channel/${currentChannel}/mod/modstat`,
+                {
+                    method:'GET',
+                    headers:{
+                        "Authorization": `Bearer ${auth.accessToken}`,
+                    }
+
+                }
+            )
+            console.log('authenticating')
+            await reAuth(response);//handels 401 and 403 cases
+            console.log('getting requset results and validating it')
+            const result = await response.json()
+            //validate response status and return result message
+            console.log(result)
+            if(!response.ok)throw new Error(`${result.message}`);
+            if(result === undefined) throw new Error(`status property is undefined`);
+            if(typeof result.status !== 'boolean')throw new Error(`status does not contain a boolean`);
+            
+            return result
+        } catch (err) {
+            notify.error(err.message)
+        }
+
     }
     const leaveGroup = async(connection)=>{
         try{
+            //validate that there is more then one moderator 
+            const modstat = await isEnoughMods();
+            console.log(modstat.status)
+            if(modstat.status === false) throw new Error(`${modstat.message}`);
+
             if(!auth.user) throw new Error('User not authenticated')
             //validate that connection is not to global channel
             if(currentChannel === 1) throw new Error('Can not remove From Global Group')
@@ -144,13 +180,68 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             notify.error(err)
         }
     }
-    const enableMod =async()=>{
+    const enableMod =async(id)=>{
         console.log(`turn on mod premissions`)
+        try{
+            console.log(`turn off mod premissions`)
+            const response = await fetch(
+                `http://localhost:3000/channel/${currentChannel}/mod/enablemod`,
+                {
+                    method:'PUT',
+                    headers:{
+                        'Content-Type': 'Application/Json',
+                        "Authorization": `Bearer ${auth.accessToken}`,
+                    },
+                    body:JSON.stringify({
+                        relationId: id
+                    })
+                }
+            )
+            await reAuth(response);//handels 401 and 403 cases
+            const result = await response.json()
+            //validate response status and return result message
+            if(!response.ok)throw new Error(`${result.message}`)
+            notify.success(result.msg)
+            //refetch new updated channel data from server and update state
+            const newChannelData= await getChannel(currentChannel);
+            populateChannelData(newChannelData)
+            
+        }catch(err){ 
+            notify.warn(err.message)
+        }
     }
-    const disableMod =async()=>{
-        console.log(`turn off mod premissions`)
-        //validate that there is more then one moderator
-        //important to not lock group out of mod privilages 
+    const disableMod =async(id)=>{
+        try{
+            console.log(`turn off mod premissions`)
+            //validate that there is more then one moderator
+            const modstat = await isEnoughMods();
+            console.log(modstat.status)
+            if(modstat.status === false) throw new Error(`${modstat.message}`);
+            const response = await fetch(
+                `http://localhost:3000/channel/${currentChannel}/mod/disablemod`,
+                {
+                    method:'PUT',
+                    headers:{
+                        'Content-Type': 'Application/Json',
+                        "Authorization": `Bearer ${auth.accessToken}`,
+                    },
+                    body:JSON.stringify({
+                        relationId: id
+                    })
+                }
+            )
+            await reAuth(response);//handels 401 and 403 cases
+            const result = await response.json()
+            //validate response status and return result message
+            if(!response.ok)throw new Error(`${result.message}`)
+            notify.success(result.msg)
+            //refetch new updated channel data from server and update state
+            const newChannelData= await getChannel(currentChannel);
+            populateChannelData(newChannelData);
+            updateApp();
+        }catch(err){ 
+            notify.error(err.message)
+        }
     }
     //client render functions
     const populateCard = (data) =>{
@@ -166,7 +257,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                             onClick={()=>{
                                 const confirm = window.confirm(`this action will REMOVE Moderation level premission for ${member.user.name}, Are You Sure?`)
                                 if(!confirm) return
-                                disableMod()
+                                disableMod(member.id)
                             }}
                         >
                             <h5>disable moderator role</h5>
@@ -178,7 +269,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
                             onClick={()=>{
                                 const confirm = window.confirm(`this action will GIVE Moderation level premission for ${member.user.name}, Are You Sure?`)
                                 if(!confirm) return
-                                enableMod()
+                                enableMod(member.id)
                             }}
                         >
                             <h5>enable moderator role</h5>
