@@ -1,4 +1,4 @@
-import { GroupIcon, LeftArrow, RightArrow } from '../iconhelper/iconHelper';
+import { GroupIcon, LeftArrow, RightArrow, ShieldIcon } from '../iconhelper/iconHelper';
 import style from './members.module.css'
 import { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
@@ -34,12 +34,13 @@ const MembersBar = ({data, membersView, triggerViewMember,auth,currentChannel}) 
         return data.map(member =>{
             return(
                 <div key={member.user.id} 
-                    className={`${style.memberCard}
+                    className={`${member.isMod? style.modCard:style.memberCard}
                     ${member.user.id === auth.user.id?style.meCard:''}
-                    ${member.isMod? style.modCard:''}
+                    ${style.card}
                     `}
                 >
                     @{member.user.name}
+                    {member.isMod? (<ShieldIcon color='#E84545' focusColor='red'/>):('')}
                 </div>
             )
         }) 

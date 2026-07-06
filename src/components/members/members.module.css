@@ -36,10 +36,17 @@
 .membersBtn{
     display: none;
 }
+.card{
+    display: flex;
+    
+    align-items: center;
+}
 .memberCard{
     color: white;
 }
-.modCard{ color: green;}
+.modCard{ 
+    color: white;
+}
 .meCard{ color: #487cff}
 /*arrow functions*/
 .displayChannels{

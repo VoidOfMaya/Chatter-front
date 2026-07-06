@@ -149,8 +149,9 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
     },[messages])
     if (!auth?.user) return null;
     if(!messages){
-        notify.error('Could not load chat Log')
+        notify.error('Could not access chaannel')
         handleCurrentChannel(1)
+        return
     }
     if(messages.length <= 0 || !messages){
         return(

@@ -96,7 +96,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             updateApp()
             goTo('/')  
         }catch(err){
-            notify.error(err)
+            notify.error(err.message)
         }
     }
     const removeUser = async (connectionId)=>{
