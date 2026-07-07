@@ -284,6 +284,11 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     }
     const populateReqs = (data) =>{
         if(!data) return
+        if(data.length === 0){
+            return(
+                <>No pending requests</>
+            )
+        }
         return data.map(request =>{
             return(
                 <div key={request.id} className={style.reqCard}>

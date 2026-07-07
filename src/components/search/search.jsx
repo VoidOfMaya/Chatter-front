@@ -26,14 +26,20 @@ const Search=()=>{
                     "Authorization": `Bearer ${auth.accessToken}`,
                 },
             })
-            reAuth(response);
+
             if(!response.ok){
+                const refetched = await reAuth(response);
+                //retries request
+                if(refetched){
+                    //const retry = await
+                }
                 throw new Error(`${response.status}`)
+
             }
             const result = await response.json()
             return result
         }catch(err){
-            console.log(err.message)
+            console.log(err)
             notify.warn(err.message)
         }
     }
