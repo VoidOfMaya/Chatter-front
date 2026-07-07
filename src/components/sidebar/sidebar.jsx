@@ -80,7 +80,7 @@ const SideBar = (
                 )
             })
         }catch(err){
-            console.log(err.message)
+            console.log(err)
             return <div className={style.channelOption}>
                 <div style={{gridArea: 'logo', alignContent: 'center'}}>
                     <BlockeIcon/>
@@ -140,7 +140,6 @@ const SideBar = (
                                 </h3> 
                                 <div title='Create New channel'>
                                     <PlusIcon fn={()=>{
-                                        console.log('create new group')
                                         showDialog()
                                     }}/>  
                                 </div>                                     

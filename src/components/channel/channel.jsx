@@ -127,21 +127,10 @@ const Channel = () =>{
                         <FriendsIcon size={40} 
                         fn={()=>{
                             try {
-                                console.log('start');
-
                                 const friend = getFriendId(channelData);
-
-                                console.log(friend);
-
-                                console.log(
-                                    'navigating to',
-                                    `/profile/${friend.user.id}`
-                                );
-
                                 goTo(`/profile/${friend.user.id}`);
-
-                                console.log('end');
                             } catch(err) {
+                                notify.error(err.message)
                                 console.error(err);
                             }
                         }}

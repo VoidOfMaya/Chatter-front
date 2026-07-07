@@ -53,7 +53,7 @@ const Search=()=>{
             }
             return result
         }catch(err){
-            console.log(err.message)
+            console.log(err)
             notify.warn(err.message)
         }
     }

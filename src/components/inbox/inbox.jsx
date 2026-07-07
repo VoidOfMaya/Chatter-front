@@ -8,7 +8,6 @@ const Inbox = () =>{
     const populateRequests = (requestArray) =>{
         if (!requestArray)return
         return requestArray.map((request)=>{
-            //console.log(request)
             return(
                 <div key={request.id} className={style.card} >
                     {request.friend.photo? (
@@ -42,37 +41,12 @@ const Inbox = () =>{
                             </div>
                         </>
                     )}
-                    {/*
-                    <h2>{request.friend.name}</h2>
-                    <div className={style.options}>
-                        {request.user.id === auth.user.id?(
-                            <h3 style={{color: '#686868'}}>{request.status}</h3>
-                        ):(
-                         <>
-                            <div    title="accept request">
-                                    <PlusIcon size={35} focusColor="green" fn={async()=>{
-                                        await acceptReq(request.id)
-                                        updateApp()
-                                    }}/>
-                            </div>
-                            <div title="reject request">
-                                    <BlockeIcon size={35} focusColor="red" fn={async()=>{
-                                        await rejectReq(request.id)
-                                        updateApp()
-                                    }} />
-                            </div>                         
-                         </>   
-                        )}
-
-                    </div>
-                    */}
                 </div>
             )
         })
     }
     const acceptReq = async(id) =>{
         try{
-            console.log('processing accept request')
             const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/accept-request`,{
                 method: 'PUT',
                 headers:{
@@ -86,18 +60,16 @@ const Inbox = () =>{
             await reAuth(response);
             const result = await response.json();
             if(!response.ok) throw new Error(`${result.msg}`)
-            console.log('befor notify')
             notify.success('friend added')
-            console.log('after notify')
             updateApp()
-            console.log('after update')
         }catch(err){
-            notify.error(err)
+            notify.error(err.message)
+            console.log(err)
         }
     }
     const rejectReq = async(id) =>{
         try{
-            console.log('processing reject request')
+
             const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/reject-request`,{
                 method: 'DELETE',
                 headers:{
@@ -115,14 +87,13 @@ const Inbox = () =>{
             notify.warn('friend request rejected');
             updateApp()
         }catch(err){
-            notify.error(err)
+            notify.error(err.message)
+            console.log(err)
         }
     }
     
     useEffect(()=>{
-        console.log(inbox)
         handleCurrentChannel(null)
-
     },[])
     if(!inbox){
         return(

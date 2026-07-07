@@ -208,7 +208,6 @@ const NewGroupDialog =  ({referance, close, auth, reAuth, updateApp})=>{
       //creates new channel
       const createNewGroup = async(name) =>{
           try{
-              console.log('creating new Group')
               const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/321/new`,{
                   method: 'POST',
                   headers:{
@@ -219,12 +218,9 @@ const NewGroupDialog =  ({referance, close, auth, reAuth, updateApp})=>{
                       name : name.name,
                   })
               })
-              console.log('reauthing')
               await reAuth(response);
-              console.log('reauth complete')
               const result = await response.json();
               if(!response.ok) throw new Error(`${result.msg}`)
-                console.log(result)
               notify.success('Group created')
               updateApp()
           }catch(err){

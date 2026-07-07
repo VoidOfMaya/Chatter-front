@@ -132,7 +132,8 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             )
             setEditMode(false);
         }catch(err){
-            console.log(err.message)
+            notify.error(err.message)
+            console.log(err)
         }
     }
     const getProfileData = async () =>{
@@ -151,7 +152,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
 
 
             }catch(err){
-                console.log(err.message)
+                console.log(err)
                 notify.error(err.message)
             }  
         }else{
@@ -166,7 +167,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                 return await response.json()
 
             }catch(err){
-                console.log(err.message)
+                console.log(err)
                 notify.error(err.message)
             }  
         }
@@ -196,7 +197,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             updateApp()          
             setIsFriend(false)
         }catch(err){
-            console.log(err.message)
+            console.log(err)
             notify.warn(err.message)
         }
 
@@ -215,7 +216,6 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                     setMetadata({connectionId: relation.connectionId,channelId:relation.channelId})
                 }
                 const profileData = await getProfileData();
-                //console.log(profileData)
                 setUser(
                     {   name: profileData.name,
                         bio: profileData.bio,
@@ -242,7 +242,6 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         handleFriend()
     },[])
     useEffect(()=>{
-        console.log(`profile id is : ${profileId}`)
         if(profileId){
             handleCurrentChannel(null)
         }
@@ -305,7 +304,6 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                                 fn={async()=>{
                                     const confirm = window.confirm('the following action will delete both your connection and conversation with this person!')
                                     if(!confirm) return;
-                                    console.log(metadata)
                                     await deleteFriend(metadata.connectionId, metadata.channelId )
                                 }} />    
                         </div>

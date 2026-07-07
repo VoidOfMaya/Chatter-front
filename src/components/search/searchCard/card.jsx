@@ -25,7 +25,7 @@ const Card = ({data, searchType})=>{
             notify.success("request sent")
             updateApp()          
         }catch(err){
-            console.log(err.message)
+            console.log(err)
             notify.warn(err.message)
         }
     };
@@ -46,7 +46,7 @@ const Card = ({data, searchType})=>{
             notify.success("request sent")
             UpdateApp();            
         }catch(err){
-            console.log(err.message)
+            console.log(err)
             notify.warn(err.message)
         }
 

@@ -39,7 +39,6 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         //queries sever to validate the number of mods in a group
         //returns boolean 
         try {
-            console.log('fetching request')
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/modstat`,
                 {
@@ -50,12 +49,9 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
 
                 }
             )
-            console.log('authenticating')
             await reAuth(response);//handels 401 and 403 cases
-            console.log('getting requset results and validating it')
             const result = await response.json()
             //validate response status and return result message
-            console.log(result)
             if(!response.ok)throw new Error(`${result.message}`);
             if(result === undefined) throw new Error(`status property is undefined`);
             if(typeof result.status !== 'boolean')throw new Error(`status does not contain a boolean`);
@@ -63,6 +59,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             return result
         } catch (err) {
             notify.error(err.message)
+            console.log(err)
         }
 
     }
@@ -70,7 +67,6 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         try{
             //validate that there is more then one moderator 
             const modstat = await isEnoughMods();
-            console.log(modstat.status)
             if(modstat.status === false) throw new Error(`${modstat.message}`);
 
             if(!auth.user) throw new Error('User not authenticated')
@@ -97,6 +93,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             goTo('/')  
         }catch(err){
             notify.error(err.message)
+            console.log(err)
         }
     }
     const removeUser = async (connectionId)=>{
@@ -181,9 +178,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         }
     }
     const enableMod =async(id)=>{
-        console.log(`turn on mod premissions`)
         try{
-            console.log(`turn off mod premissions`)
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/enablemod`,
                 {
@@ -212,10 +207,8 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     }
     const disableMod =async(id)=>{
         try{
-            console.log(`turn off mod premissions`)
             //validate that there is more then one moderator
             const modstat = await isEnoughMods();
-            console.log(modstat.status)
             if(modstat.status === false) throw new Error(`${modstat.message}`);
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/disablemod`,

@@ -11,7 +11,6 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
 
     const chatRef = useRef(null);
     const deleteMessage = async (id) =>{
-        console.log(`start delete`)
         try{
             const result = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/msgs`,{
                 method: "DELETE",
@@ -32,11 +31,9 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
                         notify.error(error.msg)
                     })
                 }
-                console.log(errBody)
                 throw new Error (`${errBody.msg}`)
             }
             needsUpdate(true)
-            console.log(`delete successful`)
             return await result.json();
         }catch(err){
             notify.error(err.message)

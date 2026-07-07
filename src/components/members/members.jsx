@@ -13,7 +13,6 @@ const MembersBar = ({data, membersView, triggerViewMember,auth,currentChannel}) 
         onSwipedRight: () => triggerViewMember(false),
     });
     const toggleArrows = () =>{
-        console.log('membersView:', membersView)
         return(
             <>
                 {!membersView? (

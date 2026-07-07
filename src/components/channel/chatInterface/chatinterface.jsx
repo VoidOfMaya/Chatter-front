@@ -38,7 +38,6 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                         notify.error(error.msg)
                     })
                 }
-                console.log(errBody)
                 throw new Error (`${errBody.msg}`)
             }
             needsUpdate(true)
@@ -71,7 +70,6 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                         notify.error(error.msg)
                     })
                 }
-                console.log(errBody)
                 throw new Error (`${errBody.msg}`)
             }
             needsUpdate(true)
@@ -111,7 +109,6 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                         <button style={{marginLeft: 'auto'}}
                         type='button'
                         onClick={()=>{
-                            console.log(` button clicked,edit mode true: ${editMode}`)
                             if(!editMode) return
                             setMessage('')
                             resetEditor()
@@ -164,7 +161,6 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                     <button htmlFor='message' 
                             className={`${style.msgButton} ${style.leftBtn}`}
                             onClick={ async()=> {
-                                console.log(` button clicked,edit mode true: ${editMode}`)
                                 await sendMessage(message, reply?.id) 
                                 if(!reply) return
                                 cancleReply();
