@@ -24,9 +24,7 @@ const router = createBrowserRouter([
     errorElement:<NotFound />
   },
 ])
-
+//removed strict mode to test auth issues 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
+    <RouterProvider router={router} />  
 )

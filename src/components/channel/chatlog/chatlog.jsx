@@ -13,7 +13,7 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
     const deleteMessage = async (id) =>{
         console.log(`start delete`)
         try{
-            const result = await fetch(`http://localhost:3000/channel/${currentChannel}/msgs`,{
+            const result = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/msgs`,{
                 method: "DELETE",
                 body: JSON.stringify({
                     id: id,

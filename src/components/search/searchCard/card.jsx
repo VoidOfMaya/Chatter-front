@@ -7,7 +7,7 @@ const Card = ({data, searchType})=>{
     const {auth, reAuth, goTo,updateApp,handleCurrentChannel, chnls} = useOutletContext();
     const sendFriendRequest = async(id) =>{
         try{
-            const response = await fetch(`http://localhost:3000/friend/send-request`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/send-request`,{
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const Card = ({data, searchType})=>{
     };
     const sendGroupJoinRequest = async(id)=>{
         try{
-            const response = await fetch(`http://localhost:3000/channel/${id}/joinReq`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${id}/joinReq`,{
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",

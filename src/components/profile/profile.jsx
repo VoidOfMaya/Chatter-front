@@ -101,7 +101,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     }
     const submitProfileInfo = async ()=>{
         try{
-            const result = await fetch(`http://localhost:3000/user/me/profile`,{
+            const result = await fetch(`${import.meta.env.VITE_API_URL}/user/me/profile`,{
                 method: "PUT",
                 body: JSON.stringify({
                     name: formData.name,
@@ -140,7 +140,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         if(!profileId) return notify.error('No profile found!')
         if(profileId === 'me'){
             try{
-                const response = await fetch('http://localhost:3000/user/me/profile',{
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/user/me/profile`,{
                     method: 'GET',
                     headers: {
                         "Authorization": `Bearer ${auth.accessToken}`,
@@ -156,7 +156,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             }  
         }else{
             try{
-                const response = await fetch(`http://localhost:3000/user/${profileId}`,{
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/user/${profileId}`,{
                     method: 'GET',
                     headers: {
                         "Authorization": `Bearer ${auth.accessToken}`,
@@ -176,7 +176,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     const deleteFriend =  async(connectionId, channelId) =>{
         if(!isFriend) return
         try{
-            const response = await fetch(`http://localhost:3000/friend/`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/`,{
                     method: 'DELETE',
                     headers: {
                         "Content-Type": "application/json",
@@ -203,7 +203,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         
     }
     useEffect(()=>{
-        if (!auth) return redirect('/');
+        if (!auth.user) return redirect('/');
         const loadProfile = async() =>{
             setLoadingData(true)
             try{

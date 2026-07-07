@@ -72,7 +72,7 @@ const Channel = () =>{
         setSettingsMode(false)
     },[currentChannel])
     useEffect(()=>{
-        if(!auth){
+        if(!auth.user){
             redirect('/');
             return
         } 

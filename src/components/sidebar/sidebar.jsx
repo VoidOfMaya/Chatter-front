@@ -27,6 +27,7 @@ const SideBar = (
         inbox,
         showDialog
     }) =>{
+
     const [friends, setFriends]= useState(true);
     const [groups, setGroups]= useState(false);
     const redirect = useNavigate();
@@ -163,7 +164,7 @@ const SideBar = (
                      onClick={()=> redirect('/Chatter')}>
                     Chatter<LogoIcon color={'#E84545'} size={25} />
                 </div> 
-                {auth? (
+                {auth.user? (
                     <>  
                         <div title='User Profile'>
                         <UserIcon 
@@ -217,7 +218,7 @@ const SideBar = (
                 ):(<></>)}                       
 
             </div>
-            {auth?(
+            {auth.user?(
                 displayChannels()
             ):(<></>)}
         </div>

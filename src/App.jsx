@@ -9,7 +9,7 @@ import { NewGroupDialog } from './components/dialogs/dialogs';
 
 function App() {
   //authentication state
-  const [auth, setAuth]= useState(null);//holds user auth data and tokens
+  const [auth, setAuth]= useState({token: null, user: null});//holds user auth data and tokens
   
   //component hide/show state:-
   const [channelView,setChannelView]=useState(true);//sidebar channel list display toggle
@@ -72,7 +72,7 @@ function App() {
       //checks if has session flag exists in local storage befor fetching data
       if(localStorage.getItem('has_session') !== 'true') throw new Error('No session Found')
       
-      const response = await fetch('http://localhost:3000/auth/refresh',{
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`,{
         method: "POST",
         credentials: 'include', //<= Important, this  is required to pass cookies
       })
@@ -92,7 +92,7 @@ function App() {
     }catch(err){
       console.log(err.message)
       notify.error(`${err.message}`)
-      setAuth(null)
+      setAuth({token: null, user: null})
     }
   }
   //re-authenticate//handels both 401 and 403 casses
@@ -109,11 +109,15 @@ function App() {
         try{
           //retry to refresh access token logic:-
           const result = await refresh();
-          if(!result) throw new Error('could not refresh')
+          if(!result){ 
+            localStorage.clear();
+            throw new Error('could not refresh')
+          }
           return result
         }catch(err){
           console.log('re-auth error')
           console.log(err)
+          localStorage.clear();
           notify.error( err.message);
           redirect('/');
         }
@@ -124,7 +128,7 @@ function App() {
   //fetches user, cahnnels,friends info to populate user dashboard
   const getDashbaordData = async(token)=>{
     if(!auth.user)return
-    const response = await fetch('http://localhost:3000/user/me',{
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/user/me`,{
       method: "GET",
       headers: {
         "Content-Type": 'Application/json',
@@ -139,7 +143,7 @@ function App() {
     if(!auth.user)return
       try{
         setChatLoader(true);
-          const response = await fetch(`http://localhost:3000/channel/${id}`,{
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${id}`,{
               method: 'GET',
               headers: {
                   "Content-Type": 'Application/json',
@@ -161,7 +165,7 @@ function App() {
   // fetch pending requests
   const getPendingRequests= async(token) =>{
     try{
-      const response = await fetch(`http://localhost:3000/friend/requests`,{
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/requests`,{
         method: 'GET',
         headers:{"Authorization": `Bearer ${token}`}
       })
@@ -177,7 +181,7 @@ function App() {
   }
   //update inbox:-
   const loadInbox = async() =>{
-    if(!auth) return
+    if(!auth.user) return
     const result = await getPendingRequests(auth.accessToken);
     setInbox(result);
   }
@@ -201,6 +205,7 @@ function App() {
         setLoadingAuth(false);
       }catch(err){
         notify.warn(err.message)
+        localStorage.clear();
         setLoadingAuth(false);
         redirect('/')
       }      
@@ -210,7 +215,7 @@ function App() {
   },[])
   useEffect(()=>{
     console.log(`auth effect accessed`)
-    if (!auth) return;
+    if (!auth ||!auth.user) return;
     console.log('fetching app data')
     const loadDashboard = async () =>{
       const dashboard = await getDashbaordData(auth.accessToken);
@@ -227,7 +232,7 @@ function App() {
     loadChannel();
   },[auth])
   useEffect(()=>{
-    if (!auth) return console.log(`attempting to load current channe;, no AUTH`);
+    if (!auth.user) return console.log(`attempting to load current channe;, no AUTH`);
     if(!currentChannel) return
       const loadChannel = async() =>{
           console.log(`fetching chat data at: ${currentChannel}`)
@@ -248,10 +253,10 @@ function App() {
 
   },[inbox])
   useEffect(()=>{
-    if(!auth) return
+    if(!auth || !auth.user) return
     console.log(`app update effect running`)
     const loadDashboard = async () =>{
-      if(!auth) return
+      if(!auth.user) return
       const dashboard = await getDashbaordData(auth.accessToken);
       console.log(dashboard)
       setChnls({channels: dashboard.channels, friends: dashboard.friends})

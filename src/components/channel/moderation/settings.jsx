@@ -22,7 +22,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     const getInfo = async()=>{
         if(!auth.user)return
         try {
-            const response = await fetch(`http://localhost:3000/channel/${channelId}/info`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${channelId}/info`,{
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${auth.accessToken}`,
@@ -41,7 +41,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         try {
             console.log('fetching request')
             const response = await fetch(
-                `http://localhost:3000/channel/${currentChannel}/mod/modstat`,
+                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/modstat`,
                 {
                     method:'GET',
                     headers:{
@@ -77,7 +77,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             //validate that connection is not to global channel
             if(currentChannel === 1) throw new Error('Can not remove From Global Group')
             
-            const response = await fetch(`http://localhost:3000/channel/${currentChannel}/leave`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/leave`,{
             method: "DELETE",
             headers: {
                 "Content-Type": 'Application/json',
@@ -103,7 +103,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         //requires checking if there is atleast more then one moderator
         try {
             const response = await fetch(
-                `http://localhost:3000/channel/${currentChannel}/mod/removeuser`,{
+                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/removeuser`,{
                 method: 'DELETE',
                 headers:{
                 "Authorization": `Bearer ${auth.accessToken}`,
@@ -131,7 +131,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     const acceptRequest = async (connectionId)=>{
         try {
             const response = await fetch(
-                `http://localhost:3000/channel/${currentChannel}/mod/acceptreq`,{
+                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/acceptreq`,{
                 method: "PUT",
                 headers: {
                     'Content-Type': 'Application/Json',
@@ -159,7 +159,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     }
     const rejectRequest = async (connectionId)=>{ 
         try {
-            const response = await fetch(`http://localhost:3000/channel/${currentChannel}/mod/rejectreq`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/rejectreq`,{
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'Application/Json',
@@ -185,7 +185,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         try{
             console.log(`turn off mod premissions`)
             const response = await fetch(
-                `http://localhost:3000/channel/${currentChannel}/mod/enablemod`,
+                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/enablemod`,
                 {
                     method:'PUT',
                     headers:{
@@ -218,7 +218,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             console.log(modstat.status)
             if(modstat.status === false) throw new Error(`${modstat.message}`);
             const response = await fetch(
-                `http://localhost:3000/channel/${currentChannel}/mod/disablemod`,
+                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/disablemod`,
                 {
                     method:'PUT',
                     headers:{
@@ -317,7 +317,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             //validate that connection is not to global channel
             if(currentChannel === 1) throw new Error('Can not remove From Global Group')
             
-            const response = await fetch(`http://localhost:3000/channel/${currentChannel}/mod/joinreq`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/joinreq`,{
             method: "GET",
             headers: {
                                 "Authorization": `Bearer ${auth.accessToken}`,

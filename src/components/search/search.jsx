@@ -20,7 +20,7 @@ const Search=()=>{
     const searchUsers= async()=>{   
         try{
             if(searchValue === '') return;
-            const response = await fetch(`http://localhost:3000/user/${searchValue}`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/user/${searchValue}`,{
                 method: 'GET',
                 headers: {
                     "Authorization": `Bearer ${auth.accessToken}`,
@@ -40,7 +40,7 @@ const Search=()=>{
     const searchGroups= async()=>{
         try{
             if(searchValue === '') return;
-            const response = await fetch(`http://localhost:3000/channel/${searchValue}/info`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${searchValue}/info`,{
                 method: 'GET',
                 headers: {
                     "Authorization": `Bearer ${auth.accessToken}`,

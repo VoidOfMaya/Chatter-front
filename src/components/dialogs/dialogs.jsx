@@ -17,7 +17,7 @@ const LoginDialog = ({referance, close})=>{
         registerData.append('password', data.password);
         //submits 
         try{
-            const result = fetch('http://localhost:3000/auth/login',{
+            const result = fetch(`${import.meta.env.VITE_API_URL}/auth/login`,{
                 method: 'POST',
                 credentials: 'include',
                 headers:{
@@ -116,7 +116,7 @@ const SignupDialog = ({referance, close}) =>{
         registerData.append('confirmPassword', data.confirmPassword);
         //submits 
         try{
-            fetch('http://localhost:3000/auth/register',{
+            fetch(`${import.meta.env.VITE_API_URL}/auth/register`,{
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -209,7 +209,7 @@ const NewGroupDialog =  ({referance, close, auth, reAuth, updateApp})=>{
       const createNewGroup = async(name) =>{
           try{
               console.log('creating new Group')
-              const response = await fetch('http://localhost:3000/channel/321/new',{
+              const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/321/new`,{
                   method: 'POST',
                   headers:{
                     "Content-Type": 'Application/json',

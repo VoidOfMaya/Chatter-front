@@ -73,7 +73,7 @@ const Inbox = () =>{
     const acceptReq = async(id) =>{
         try{
             console.log('processing accept request')
-            const response = await fetch('http://localhost:3000/friend/accept-request',{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/accept-request`,{
                 method: 'PUT',
                 headers:{
                   "Content-Type": 'Application/json',
@@ -98,7 +98,7 @@ const Inbox = () =>{
     const rejectReq = async(id) =>{
         try{
             console.log('processing reject request')
-            const response = await fetch('http://localhost:3000/friend/reject-request',{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/reject-request`,{
                 method: 'DELETE',
                 headers:{
                   "Content-Type": 'Application/json',

@@ -18,7 +18,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
     const [message, setMessage]= useState('')
     const sendMessage= async(message, parentId = null)=>{
         try{
-            const result = await fetch(`http://localhost:3000/channel/${currentChannel}/msgs`,{
+            const result = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/msgs`,{
                 method: "POST",
                 body: JSON.stringify({
                     content: message,
@@ -51,7 +51,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
     }
     const editMessage = async(newMessage, id)=>{
         try{
-            const result = await fetch(`http://localhost:3000/channel/${currentChannel}/msgs`,{
+            const result = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/msgs`,{
                 method: "PUT",
                 body: JSON.stringify({
                     content: newMessage,

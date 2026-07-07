@@ -25,7 +25,7 @@ const Signup = () =>{
         
     },[signup])
     useEffect(()=>{
-        if(auth) direct('/chatter')
+        if(auth.user) direct('/chatter')
     })
 
     return(
