@@ -39,7 +39,6 @@ function App() {
 
   //state handler Functions
   const showDialog = () =>{
-    console.log('setting state')
     setDisplayDialog(true)
   }
   const handleCurrentChannel = (id) =>{
@@ -49,7 +48,6 @@ function App() {
     setChannelData(data)
   }
   const updateApp =()=>{
-    console.log(`updating app`)
     setUpdate(prev => !prev);
   }
   //authentication:-
@@ -76,7 +74,6 @@ function App() {
         method: "POST",
         credentials: 'include', //<= Important, this  is required to pass cookies
       })
-      //console.log(response)
       if(response.status === 401)throw new Error(`${response.statusText}`)
       const result = await response.json()
       
@@ -90,39 +87,76 @@ function App() {
         accessToken: result.accessToken
       }
     }catch(err){
-      console.log(err.message)
+      console.log(err)
       notify.error(`${err.message}`)
       setAuth({token: null, user: null})
+      localStorage.clear
     }
   }
   //re-authenticate//handels both 401 and 403 casses
   const reAuth = async (response)=>{
-    if(response.ok) return
-    //handels forbidden access
-      if(response.status === 403){
-        notify.error('Forbidden')
-        console.log('reauth error 403')
-        return //redirect('/chatter')
+    if(!response.response.status === 401) return;
+    try{
+      //retry to refresh access token logic:-
+      const result = await refresh();
+      if(!result){ 
+        localStorage.clear();
+        throw new Error('could not refresh')
       }
-    // handels unauthentiated use
-      if(response.status === 401){
-        try{
-          //retry to refresh access token logic:-
-          const result = await refresh();
-          if(!result){ 
-            localStorage.clear();
-            throw new Error('could not refresh')
-          }
-          return result
-        }catch(err){
-          console.log('re-auth error')
-          console.log(err)
-          localStorage.clear();
-          notify.error( err.message);
-          redirect('/');
-        }
-        return
+      return true
+    }catch(err){
+        console.log('re-auth error')
+        console.log(err)
+        localStorage.clear();
+        notify.error( err.message);
+        redirect('/');
+    }
+  }
+  //api request constructor:
+  const callApi = async(options)=>{
+    if(!options) throw new Error(`No options where provided for api to call`);
+    if (!options.path)throw new Error(`No path was provided for api to call`);
+    if (!options.method)throw new Error(`no method provided for api to call`);
+    //options include: (example)
+    /*{
+    method: 'GET' type string defines request method
+    path:'/example/example' type string defines which resource to call
+    protected: true, type boolean defines if request is protected
+    body:{jsonObj} type object or null if not defined, sets sent objects
+    }*/
+   // default values when not provided in options
+    
+    const createHeader = ()=>{
+      const headers = {}
+      if( options.protected ){
+        headers.Authorization = `Bearer ${auth.accessToken}`;
       }
+      if(options.body){
+        headers["Content-Type"]= 'Application/json';
+      }
+      return headers
+   }
+   const reqMetadata = (header) =>{
+    if(options.body){
+      return{
+        method: `${options.method}`,
+        headers: header,
+        body: JSON.stringify(options.body)
+      }
+    }else{
+      return{
+        method: `${options.method}`,
+        headers: header
+      } 
+    }
+   }
+    const header = createHeader();
+    const fetchData = reqMetadata(header)
+
+    const request = await fetch(
+    `${import.meta.env.VITE_API_URL}/${options.path}`,
+      fetchData
+   )
   }
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
@@ -150,9 +184,8 @@ function App() {
                   "Authorization": `Bearer ${auth.accessToken}`,
                   },
           })
-          console.log('inside chatlog fetcher, pre Reauth')
+
           await reAuth(response);//handels 401 and 403 cases
-          console.log('inside chatlog fetcher, Post Reauth')
           const result = await response.json()
           setChatLoader(false);
           return result
@@ -196,7 +229,7 @@ function App() {
       //refresh()
       try{
         const result = await refresh();
-        //console.log( result);
+
         if(result && result.accessToken){
           redirect('/chatter')
         }else{
@@ -214,12 +247,10 @@ function App() {
     initAuth();
   },[])
   useEffect(()=>{
-    console.log(`auth effect accessed`)
     if (!auth ||!auth.user) return;
     console.log('fetching app data')
     const loadDashboard = async () =>{
       const dashboard = await getDashbaordData(auth.accessToken);
-      console.log(dashboard)
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
     }
     if(!currentChannel) return
@@ -232,10 +263,9 @@ function App() {
     loadChannel();
   },[auth])
   useEffect(()=>{
-    if (!auth.user) return console.log(`attempting to load current channe;, no AUTH`);
+    if (!auth.user) return
     if(!currentChannel) return
       const loadChannel = async() =>{
-          console.log(`fetching chat data at: ${currentChannel}`)
           const result = await getChannel(currentChannel);
           setChannelData(result)
           goTo('/chatter')
@@ -245,26 +275,20 @@ function App() {
   },[currentChannel])
   useEffect(()=>{
     if(!channelData)return
-    console.log(channelData.members)
     setMembers(channelData.members.filter(record => record.isMember))
-    console.log(channelData)
   },[channelData])
   useEffect(()=>{
 
   },[inbox])
   useEffect(()=>{
     if(!auth || !auth.user) return
-    console.log(`app update effect running`)
     const loadDashboard = async () =>{
       if(!auth.user) return
       const dashboard = await getDashbaordData(auth.accessToken);
-      console.log(dashboard)
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
     }
     loadDashboard();
     loadInbox();
-    console.log('current channel data:')
-    console.log(channelData)
   },[update])
 // render while loading
   if(authLoading){
