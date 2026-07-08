@@ -4,20 +4,15 @@ import { useOutletContext} from "react-router-dom";
 import { notify } from "../../norifications/notifications";
 
 const Card = ({data, searchType})=>{
-    const {auth, reAuth, goTo,updateApp,handleCurrentChannel, chnls} = useOutletContext();
+    const {auth, callApi, goTo,updateApp,handleCurrentChannel, chnls} = useOutletContext();
     const sendFriendRequest = async(id) =>{
         try{
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/send-request`,{
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    },
-                    body: JSON.stringify({
-                        recieverId:Number(id)
-                    }),
-                })
-            reAuth(response);
+            const response = await callApi({
+                method:'POST',
+                path:`friend/send-request`,
+                requiresAuth: true,
+                body:{ recieverId: id}
+            })
             if(!response.ok){
                 throw new Error(`${response.status}`)
             }
@@ -31,20 +26,17 @@ const Card = ({data, searchType})=>{
     };
     const sendGroupJoinRequest = async(id)=>{
         try{
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${id}/joinReq`,{
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    },
-                })
-            reAuth(response);
+            const response = await callApi({
+                method:'POST',
+                path: `channel/${id}/joinReq`,
+                requiresAuth: true,
+            })
             if(!response.ok){
                 throw new Error(`${response.status}`)
             }
             const result = await response.json()
             notify.success("request sent")
-            UpdateApp();            
+            updateApp();            
         }catch(err){
             console.log(err)
             notify.warn(err.message)
