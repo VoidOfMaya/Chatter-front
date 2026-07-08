@@ -52,10 +52,20 @@ function App() {
   }
   //authentication:-
   const redirect = useNavigate();
-  const onLogout= ()=>{
-    
-    localStorage.clear();
-    setAuth({token: null, user: null});
+  const onLogout= async()=>{
+    try{
+      const response = await callApi({
+        method:'DELETE',
+        path: `auth/logout`,
+        requiresAuth: true,
+      })
+      if(!response.ok) throw new Error (`${response.message}`)
+      localStorage.clear();
+      setAuth({token: null, user: null});
+      redirect('/')
+    }catch(err){
+      notify.err(err.message)
+    }
   }
   const onLoginSuccess = (user, accessToken) =>{
     setAuth({
@@ -151,8 +161,6 @@ function App() {
     // includes credentials to body if 
     if(options.includeCred) fetchData.credentials = 'include';
     //fetch
-    console.log('first Attempt')
-    console.log(`accessToken: ${auth.accessToken}`)
     const response = await fetch(
     `${import.meta.env.VITE_API_URL}/${options.path}`,
       fetchData
@@ -166,7 +174,6 @@ function App() {
       if(!newAuth) return response;
       //if retry = true  recall call api with retry attribute set to false
       if(!options.retry) return response;
-      console.log('second attempt')
       const retryResponse = await callApi({
         method: options.method,
         path: options.path,
