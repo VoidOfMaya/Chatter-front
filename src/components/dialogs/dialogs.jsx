@@ -4,7 +4,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom';
 import { notify } from '../norifications/notifications';
 const LoginDialog = ({referance, close})=>{
 
-    const{onLoginSuccess} = useOutletContext();
+    const{onLoginSuccess,callApi} = useOutletContext();
     
     const [data, setData] = useState({
         email: '',
@@ -17,28 +17,20 @@ const LoginDialog = ({referance, close})=>{
         registerData.append('password', data.password);
         //submits 
         try{
-            const result = fetch(`${import.meta.env.VITE_API_URL}/auth/login`,{
+            const response = await callApi({
                 method: 'POST',
-                credentials: 'include',
-                headers:{
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                path: 'auth/login',
+                requiresAuth: false,
+                body:{
+                    email: data.email,
+                    password: data.password
                 },
-                
-                body:registerData,
             })
-            .then((response)=>{
-                if(!response.ok) throw new Error(`${response.msg}`);
-                return response.json();
-            })
-            .catch((error) => {
-                console.error('Fetch failed:', error);
-                notify.error(`${error.message}`)
-            });
-            const {user, accessToken} = await result
+            if(!response.ok) throw new Error(`${response.msg}`);
+            const {user, accessToken} = await response.json()
             onLoginSuccess(user,accessToken)
             notify.success(`Authentication Successfull!`)
-            referance.current.close()
-            //close()                            
+            close()                            
         }catch(err){
             console.error(err.message)
         }

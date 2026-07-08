@@ -115,10 +115,13 @@ function App() {
   //api request constructor:
   const callApi = async(options)=>{
     //options: {method, path, requiresAuth,body,retry}
+    //validate and set options
     if(!options) throw new Error(`No options where provided for api to call`);
     if(!options.path)throw new Error(`No path was provided for api to call`);
     if(!options.method)throw new Error(`no method provided for api to call`);
-    if(!options.retry) options.retry = true
+    if(options.retry === undefined) options.retry = true
+
+    //construct fetch request body
     const createHeader = ()=>{
       const headers = {}
       if( options.requiresAuth ){
@@ -145,23 +148,20 @@ function App() {
     }
     const header = createHeader();
     const fetchData = constructReqBody(header)
-
+    //fetch
     const response = await fetch(
     `${import.meta.env.VITE_API_URL}/${options.path}`,
       fetchData
     )
-    const result = await response.json()
     //return if valid
     if(response.ok) return response;
-
      //if  status ===401 attempt fetch define retry as false
-    if(response.status === 401){
-      
+    if(response.status === 401){ 
       //reAuthenticating
       await reAuth(response)
 
       //if retry = true  recall call api with retry attribute set to false
-      if(!retry) return response;
+      if(!options.retry) return response;
       const retryResponse = await callApi({
         method: options.method,
         path: options.path,
@@ -175,9 +175,10 @@ function App() {
         localStorage.clear();
         redirect('/')
       }
-    //if retry valid(403 forbidden is valid still for auth purposes)return result!
-      return await retryResponse.json()
+      //if retry valid(403 forbidden is valid still for auth purposes)return result!
+      return retryResponse
     }
+    return response
   }
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
@@ -345,7 +346,8 @@ function App() {
           chatLoader,
           inbox,
           loadInbox,
-          goTo
+          goTo,
+          callApi,
 
         }}/>
         <MembersBar data={members} 
