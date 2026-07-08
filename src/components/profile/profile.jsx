@@ -9,7 +9,7 @@ const Profile = () =>{
 /*
 user data:{id, email, name, bio, photo, is_online, last_login, created_at}
 */
-    const {auth, reAuth, chnls,handleCurrentChannel,goTo, updateApp}= useOutletContext();
+    const {auth, callApi, chnls,handleCurrentChannel,goTo, updateApp}= useOutletContext();
     const redirect = useNavigate();
     const{profileId}= useParams();
     const [user, setUser] = useState({       
@@ -101,20 +101,18 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     }
     const submitProfileInfo = async ()=>{
         try{
-            const result = await fetch(`${import.meta.env.VITE_API_URL}/user/me/profile`,{
-                method: "PUT",
-                body: JSON.stringify({
+            const response = await callApi({
+                method:'PUT',
+                path:'user/me/profile',
+                requiresAuth: true,
+                body:{
                     name: formData.name,
                     bio: formData.bio,
-                    photo: formData.photo
-                }),
-                headers: {
-                    "Content-Type": 'application/json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
+                    photo: formData.photo,
+                }
             })
-            if(!result.ok){
-                const errBody = await result.json();
+            if(!response.ok){
+                const errBody = await response.json();
                 if(Array.isArray(errBody.errors)){
                     errBody.errors.map(error =>{
                         notify.error(error.msg)
@@ -122,7 +120,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                 }
                 throw new Error (`something went wrong`)
             }
-            const newData = await result.json();
+            const newData = await response.json();
             setUser(prev =>({
                     ...prev,
                     name: newData.name,
@@ -141,29 +139,23 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
         if(!profileId) return notify.error('No profile found!')
         if(profileId === 'me'){
             try{
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/user/me/profile`,{
+                const response =await callApi({
                     method: 'GET',
-                    headers: {
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    },
+                    path:`user/me/profile`,
+                    requiresAuth: true,
                 })
-                reAuth(response);
                 return await response.json()
-
-
             }catch(err){
-                console.log(err)
+                console.log(err.message)
                 notify.error(err.message)
             }  
         }else{
             try{
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/user/${profileId}`,{
+                const response = await callApi({
                     method: 'GET',
-                    headers: {
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    },
+                    path:`user/${profileId}`,
+                    requiresAuth: true,
                 })
-                reAuth(response);
                 return await response.json()
 
             }catch(err){
@@ -177,18 +169,15 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     const deleteFriend =  async(connectionId, channelId) =>{
         if(!isFriend) return
         try{
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/`,{
-                    method: 'DELETE',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    },
-                    body: JSON.stringify({
-                        relationId:Number(connectionId),
-                        channelId: Number(channelId)
-                    }),
-                })
-            reAuth(response);
+            const response = await callApi({
+                method: 'DELETE',
+                path:`friend/`,
+                requiresAuth: true,
+                body:{
+                    relationId: connectionId,
+                    channelId: channelId,
+                }
+            })
             if(!response.ok){
                 throw new Error(`${response.status}`)
             }
