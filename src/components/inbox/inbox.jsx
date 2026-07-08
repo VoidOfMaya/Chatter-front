@@ -4,7 +4,7 @@ import { BlockeIcon, PlusIcon, UserIcon } from "../iconhelper/iconHelper";
 import style from './inbox.module.css';
 import { notify } from "../norifications/notifications";
 const Inbox = () =>{
-    const{auth, reAuth,inbox,loadInbox, handleCurrentChannel,updateApp} = useOutletContext();
+    const{auth, callApi,inbox, handleCurrentChannel,updateApp} = useOutletContext();
     const populateRequests = (requestArray) =>{
         if (!requestArray)return
         return requestArray.map((request)=>{
@@ -47,17 +47,12 @@ const Inbox = () =>{
     }
     const acceptReq = async(id) =>{
         try{
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/accept-request`,{
+            const response = await callApi({
                 method: 'PUT',
-                headers:{
-                  "Content-Type": 'Application/json',
-                  "Authorization": `Bearer ${auth.accessToken}`,
-                },
-                body: JSON.stringify({
-                    requestId : id,
-                })
+                path:`friend/accept-request`,
+                requiresAuth: true,
+                body:{requestId: id}
             })
-            await reAuth(response);
             const result = await response.json();
             if(!response.ok) throw new Error(`${result.msg}`)
             notify.success('friend added')
@@ -69,18 +64,12 @@ const Inbox = () =>{
     }
     const rejectReq = async(id) =>{
         try{
-
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/reject-request`,{
-                method: 'DELETE',
-                headers:{
-                  "Content-Type": 'Application/json',
-                  "Authorization": `Bearer ${auth.accessToken}`,
-                },
-                body: JSON.stringify({
-                    requestId : id,
-                })
+            const response = await callApi({
+                method:'DELETE',
+                path:'friend/reject-request',
+                requiresAuth: true,
+                body: {requestId: id}
             })
-            await reAuth(response);
             const result = await response.json();
             if(!response.ok) throw new Error(`${result.msg}`)
         
