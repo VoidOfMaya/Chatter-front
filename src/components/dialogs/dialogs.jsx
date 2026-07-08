@@ -11,11 +11,6 @@ const LoginDialog = ({referance, close})=>{
         password: ''
     })
     const handleSubmit = async (e) =>{
-        //creates the form body to submit to server
-        const registerData = new URLSearchParams();
-        registerData.append('email', data.email);
-        registerData.append('password', data.password);
-        //submits 
         try{
             const response = await callApi({
                 method: 'POST',
@@ -92,40 +87,32 @@ const LoginDialog = ({referance, close})=>{
 }
 
 const SignupDialog = ({referance, close}) =>{
+
+    const {callApi} = useOutletContext();
+
     const [data, setData]= useState({
         name: '',
         email: '',
         password: '',
         confirmPassword:''
     })
-    const handleSubmit = (e) =>{
+    const handleSubmit = async(e) =>{
         e.preventDefault();
-        //creates the form body to submit to server
-        const registerData = new URLSearchParams();
-        registerData.append('email', data.email);
-        registerData.append('name', data.name);
-        registerData.append('password', data.password);
-        registerData.append('confirmPassword', data.confirmPassword);
-        //submits 
         try{
-            fetch(`${import.meta.env.VITE_API_URL}/auth/register`,{
+            const response = await callApi({
                 method: 'POST',
-                headers:{
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                path: 'auth/register',
+                requiresAuth: false,
+                body:{
+                    email: data.email,
+                    name: data.name,
+                    password: data.password,
+                    confirmPassword: data.confirmPassword
                 },
-                body:registerData,
             })
-            .then((response)=>{
-                if(!response.ok) throw new Error(response.msg);
-                notify.success('User registered')
-                return response.json()
-            })
-            .catch((error) => {
-                console.error('Fetch failed:', error);
-                notify.error(error)
-            });
-            referance.current.close()
-            //close()                            
+            if(!response.ok) throw new Error(response.msg);
+            notify.success('User registered')
+            close()                            
         }catch(err){
             console.error(err.message)
         }
@@ -198,19 +185,27 @@ const SignupDialog = ({referance, close}) =>{
 const NewGroupDialog =  ({referance, close, auth, reAuth, updateApp})=>{
     const [name, setName] = useState('');
       //creates new channel
-      const createNewGroup = async(name) =>{
-          try{
-              const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/321/new`,{
-                  method: 'POST',
-                  headers:{
-                    "Content-Type": 'Application/json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                  },
-                  body: JSON.stringify({
-                      name : name.name,
-                  })
-              })
-              await reAuth(response);
+    const createNewGroup = async(name) =>{
+        try{/*
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/321/new`,{
+                method: 'POST',
+                headers:{
+                "Content-Type": 'Application/json',
+                "Authorization": `Bearer ${auth.accessToken}`,
+              },
+                body: JSON.stringify({
+                    name : name.name,
+                })
+            })
+            await reAuth(response);*/
+            const response = await callApi({
+                method: 'POST',
+                path: 'channel/321/new',
+                requiresAuth: true,
+                body:{
+                    name: name.name,
+                },
+            })
               const result = await response.json();
               if(!response.ok) throw new Error(`${result.msg}`)
               notify.success('Group created')

@@ -95,7 +95,7 @@ function App() {
   }
   //re-authenticate//handels both 401 and 403 casses
   const reAuth = async (response)=>{
-    if(!response.response.status === 401) return;
+    if(!response.status === 401) return;
     try{
       //retry to refresh access token logic:-
       const result = await refresh();
@@ -149,6 +149,7 @@ function App() {
     const header = createHeader();
     const fetchData = constructReqBody(header)
     //fetch
+    console.log('first Attempt')
     const response = await fetch(
     `${import.meta.env.VITE_API_URL}/${options.path}`,
       fetchData
@@ -162,6 +163,7 @@ function App() {
 
       //if retry = true  recall call api with retry attribute set to false
       if(!options.retry) return response;
+      console.log('second attempt')
       const retryResponse = await callApi({
         method: options.method,
         path: options.path,
@@ -182,16 +184,13 @@ function App() {
   }
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
-  const getDashbaordData = async(token)=>{
+  const getDashbaordData = async()=>{
     if(!auth.user)return
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/user/me`,{
-      method: "GET",
-      headers: {
-        "Content-Type": 'Application/json',
-        "Authorization": `Bearer ${token}`,
-      },
+    const response = await callApi({
+      method: 'GET',
+      path:'user/me',
+      requiresAuth:true
     })
-    await reAuth(response);//handels 401 and 403 cases
     const result = await response.json()
     return {channels: result.channels, friends: result.friends}
   }
@@ -199,15 +198,11 @@ function App() {
     if(!auth.user)return
       try{
         setChatLoader(true);
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${id}`,{
-              method: 'GET',
-              headers: {
-                  "Content-Type": 'Application/json',
-                  "Authorization": `Bearer ${auth.accessToken}`,
-                  },
+          const response = await callApi({
+            method: 'GET',
+            path:`channel/${id}`,
+            requiresAuth:true
           })
-
-          await reAuth(response);//handels 401 and 403 cases
           const result = await response.json()
           setChatLoader(false);
           return result
@@ -218,13 +213,13 @@ function App() {
       }
   }
   // fetch pending requests
-  const getPendingRequests= async(token) =>{
+  const getPendingRequests= async() =>{
     try{
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/friend/requests`,{
+      const response = await callApi({
         method: 'GET',
-        headers:{"Authorization": `Bearer ${token}`}
+        path:'friend/requests',
+        requiresAuth:true
       })
-      await reAuth(response);
       const result = await response.json();
       if(!response.ok) throw new Error(`${result.msg}`)
   
@@ -237,7 +232,7 @@ function App() {
   //update inbox:-
   const loadInbox = async() =>{
     if(!auth.user) return
-    const result = await getPendingRequests(auth.accessToken);
+    const result = await getPendingRequests();
     setInbox(result);
   }
 //app navigationn
@@ -272,7 +267,7 @@ function App() {
     if (!auth ||!auth.user) return;
     console.log('fetching app data')
     const loadDashboard = async () =>{
-      const dashboard = await getDashbaordData(auth.accessToken);
+      const dashboard = await getDashbaordData();
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
     }
     if(!currentChannel) return
