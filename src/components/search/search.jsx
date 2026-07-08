@@ -5,7 +5,7 @@ import style from './search.module.css';
 import { useOutletContext } from 'react-router-dom';
 import { Card } from './searchCard/card';
 const Search=()=>{
-    const{ auth, reAuth, handleCurrentChannel,chnls}= useOutletContext();
+    const{ auth, callApi, handleCurrentChannel,chnls}= useOutletContext();
     const [searchValue, setSearchValue]= useState('');
     const [results, setResults] = useState(null);
     const [searchFriend, setSearchFriend] = useState(true);
@@ -20,22 +20,12 @@ const Search=()=>{
     const searchUsers= async()=>{   
         try{
             if(searchValue === '') return;
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/user/${searchValue}`,{
+            const response =  await callApi({
                 method: 'GET',
-                headers: {
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
+                path:`user/${searchValue}`,
+                requiresAuth: true,
             })
 
-            if(!response.ok){
-                const refetched = await reAuth(response);
-                //retries request
-                if(refetched){
-                    //const retry = await
-                }
-                throw new Error(`${response.status}`)
-
-            }
             const result = await response.json()
             return result
         }catch(err){
@@ -46,18 +36,12 @@ const Search=()=>{
     const searchGroups= async()=>{
         try{
             if(searchValue === '') return;
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${searchValue}/info`,{
-                method: 'GET',
-                headers: {
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
+            const response = await callApi({
+                method:'GET',
+                path:`channel/${searchValue}/info`,
+                requiresAuth: true,
             })
-            reAuth(response);
-            const result = await response.json()
-            if(!response.ok){
-             return result.status
-            }
-            return result
+            return await response.json()
         }catch(err){
             console.log(err)
             notify.warn(err.message)
