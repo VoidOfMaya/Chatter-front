@@ -87,7 +87,7 @@ function App() {
         accessToken: result.accessToken
       }
     }catch(err){
-      console.log(err)
+      console.log(err.message)
       notify.error(`${err.message}`)
       setAuth({token: null, user: null})
       localStorage.clear

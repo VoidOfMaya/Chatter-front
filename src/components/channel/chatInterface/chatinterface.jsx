@@ -14,25 +14,21 @@ required backend handelling functionality:-
 -> EXTRA: enable adding photos in the chat as messages or gifs and or emojies!
 */
 const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor}) =>{
-    const{auth, reAuth,currentChannel} = useOutletContext();
+    const{callApi ,currentChannel} = useOutletContext();
     const [message, setMessage]= useState('')
     const sendMessage= async(message, parentId = null)=>{
         try{
-            const result = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/msgs`,{
-                method: "POST",
-                body: JSON.stringify({
+            const response = await callApi({
+                method:'POST',
+                path: `channel/${currentChannel}/msgs`,
+                requiresAuth: true,
+                body:{
                     content: message,
                     parentId: parentId,
-                }),
-                headers: {
-                    "Content-Type": 'application/json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
+                }
             })
-            reAuth(result)
-            if(!result.ok){
-
-                const errBody = await result.json();
+            if(!response.ok){
+                const errBody = await response.json();
                 if(Array.isArray(errBody.errors)){
                     errBody.errors.map(error =>{ 
                         notify.error(error.msg)
@@ -42,7 +38,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
             }
             needsUpdate(true)
             setMessage('');
-            return await result.json();
+            return await response.json();
         }catch(err){
             notify.error(err.message)
             console.log(err)
@@ -50,21 +46,17 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
     }
     const editMessage = async(newMessage, id)=>{
         try{
-            const result = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/msgs`,{
-                method: "PUT",
-                body: JSON.stringify({
-                    content: newMessage,
+            const response = await callApi({
+                method:'PUT',
+                path: `channel/${currentChannel}/msgs`,
+                requiresAuth: true,
+                body:{
+                    content: message,
                     id: id,
-                }),
-                headers: {
-                    "Content-Type": 'application/json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
+                }
             })
-            reAuth(result)
-            if(!result.ok){
-
-                const errBody = await result.json();
+            if(!response.ok){
+                const errBody = await response.json();
                 if(Array.isArray(errBody.errors)){
                     errBody.errors.map(error =>{ 
                         notify.error(error.msg)
@@ -75,10 +67,10 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
             needsUpdate(true)
             setMessage('')
             resetEditor()
-            return await result.json();
+            return await response.json();
         }catch(err){
             notify.error(err.message)
-            console.log(err)
+            console.log(err.message)
         }
     }
     useEffect(()=>{
