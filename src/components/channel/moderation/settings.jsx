@@ -7,7 +7,7 @@ import { notify } from '../../norifications/notifications';
 const SettingPanel = ({modStatus, channelId, members}) =>{
     const {
         auth, 
-        reAuth, 
+        callApi, 
         handleCurrentChannel, 
         currentChannel,
         getChannel,
@@ -22,13 +22,11 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     const getInfo = async()=>{
         if(!auth.user)return
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${channelId}/info`,{
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${auth.accessToken}`,
-            },
+            const response = await callApi({
+                method: 'GET',
+                path: `channel/${channelId}/info`,
+                requiresAuth: true,
             })
-            await reAuth(response);//handels 401 and 403 cases
             return await response.json() 
         } catch (err) {
             notify.error(err)
@@ -39,17 +37,11 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         //queries sever to validate the number of mods in a group
         //returns boolean 
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/modstat`,
-                {
-                    method:'GET',
-                    headers:{
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    }
-
-                }
-            )
-            await reAuth(response);//handels 401 and 403 cases
+            const response = await callApi({
+                method:'GET',
+                path:`channel/${currentChannel}/mod/modstat`,
+                requiresAuth: true,
+            })
             const result = await response.json()
             //validate response status and return result message
             if(!response.ok)throw new Error(`${result.message}`);
@@ -72,18 +64,13 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             if(!auth.user) throw new Error('User not authenticated')
             //validate that connection is not to global channel
             if(currentChannel === 1) throw new Error('Can not remove From Global Group')
-            
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/leave`,{
-            method: "DELETE",
-            headers: {
-                "Content-Type": 'Application/json',
-                "Authorization": `Bearer ${auth.accessToken}`,
-            },
-            body: JSON.stringify({
-                relationId: connection.id,
+
+            const response = await callApi({
+                method: 'DELETE',
+                path: `channel/${currentChannel}/leave`,
+                requiresAuth: true,
+                body:{ relationId: connection.id}
             })
-            })
-            await reAuth(response);//handels 401 and 403 cases
             const result = await response.json()
             //validate response status and return result message
             if(!response.ok)throw new Error(`${result.message}`)
@@ -99,18 +86,12 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     const removeUser = async (connectionId)=>{
         //requires checking if there is atleast more then one moderator
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/removeuser`,{
+            const response = await callApi({
                 method: 'DELETE',
-                headers:{
-                "Authorization": `Bearer ${auth.accessToken}`,
-                "Content-Type": "Application/Json"
-                },
-                body:JSON.stringify({
-                    relationId: connectionId
-                })
+                path: `channel/${currentChannel}/mod/removeuser`,
+                requiresAuth: true,
+                body:{relationId: connectionId}
             })
-            await reAuth(response);//handels 401 and 403 cases
             const result = await response.json()
             //validate response status and return result message
             if(!response.ok)throw new Error(`${result.message}`)
@@ -127,16 +108,11 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     } 
     const acceptRequest = async (connectionId)=>{
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/acceptreq`,{
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'Application/Json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
-                body: JSON.stringify({
-                    relationId: connectionId
-                })
+            const response = await callApi({
+                method: 'PUT',
+                path:`channel/${currentChannel}/mod/acceptreq`,
+                requiresAuth: true,
+                body:{relationId: connectionId}
             })
             if(!response.ok) throw new Error(`${response.message}`)
             const result = await response.json();
@@ -156,16 +132,12 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     }
     const rejectRequest = async (connectionId)=>{ 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/rejectreq`,{
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'Application/Json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
-                body: JSON.stringify({
-                    relationId: connectionId
-                })
-            })
+           const response = await callApi({
+                method: 'DELETE',
+                path: `channel/${currentChannel}/mod/rejectreq`,
+                requiresAuth: true,
+                body: {relationId: connectionId}
+           })
             if(!response.ok) throw new Error(`${response.message}`)
             const result = await response.json();
             notify.warn(result.msg)
@@ -179,20 +151,12 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
     }
     const enableMod =async(id)=>{
         try{
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/enablemod`,
-                {
-                    method:'PUT',
-                    headers:{
-                        'Content-Type': 'Application/Json',
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    },
-                    body:JSON.stringify({
-                        relationId: id
-                    })
-                }
-            )
-            await reAuth(response);//handels 401 and 403 cases
+            const response = await callApi({
+                method: 'PUT',
+                path:`channel/${currentChannel}/mod/enablemod`,
+                requiresAuth:true,
+                body:{relationId: id},
+            })
             const result = await response.json()
             //validate response status and return result message
             if(!response.ok)throw new Error(`${result.message}`)
@@ -210,20 +174,13 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             //validate that there is more then one moderator
             const modstat = await isEnoughMods();
             if(modstat.status === false) throw new Error(`${modstat.message}`);
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/disablemod`,
-                {
-                    method:'PUT',
-                    headers:{
-                        'Content-Type': 'Application/Json',
-                        "Authorization": `Bearer ${auth.accessToken}`,
-                    },
-                    body:JSON.stringify({
-                        relationId: id
-                    })
-                }
-            )
-            await reAuth(response);//handels 401 and 403 cases
+
+            const response = await callApi({
+                method:'PUT',
+                path:`channel/${currentChannel}/mod/disablemod`,
+                requiresAuth: true,
+                body:{relationId: id}
+            })
             const result = await response.json()
             //validate response status and return result message
             if(!response.ok)throw new Error(`${result.message}`)
@@ -314,14 +271,12 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             if(!auth.user) throw new Error('User not authenticated')
             //validate that connection is not to global channel
             if(currentChannel === 1) throw new Error('Can not remove From Global Group')
-            
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/mod/joinreq`,{
-            method: "GET",
-            headers: {
-                                "Authorization": `Bearer ${auth.accessToken}`,
-            },
+
+            const response = await callApi({
+                method: 'GET',
+                path: `channel/${currentChannel}/mod/joinreq`,
+                requiresAuth: true,
             })
-            await reAuth(response);//handels 401 and 403 cases
             const result = await response.json()
             //validate response status and return result message
             if(!response.ok)throw new Error(`${result.message}`)
