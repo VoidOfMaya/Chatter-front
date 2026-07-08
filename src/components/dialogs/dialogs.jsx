@@ -16,6 +16,7 @@ const LoginDialog = ({referance, close})=>{
                 method: 'POST',
                 path: 'auth/login',
                 requiresAuth: false,
+                includeCred: true,
                 body:{
                     email: data.email,
                     password: data.password

@@ -90,12 +90,12 @@ function App() {
       console.log(err.message)
       notify.error(`${err.message}`)
       setAuth({token: null, user: null})
-      localStorage.clear
+      localStorage.clear()
     }
   }
   //re-authenticate//handels both 401 and 403 casses
   const reAuth = async (response)=>{
-    if(!response.status === 401) return;
+    if(response.status !== 401) return;
     try{
       //retry to refresh access token logic:-
       const result = await refresh();
@@ -103,7 +103,7 @@ function App() {
         localStorage.clear();
         throw new Error('could not refresh')
       }
-      return true
+      return result
     }catch(err){
         console.log('re-auth error')
         console.log(err)
@@ -114,18 +114,17 @@ function App() {
   }
   //api request constructor:
   const callApi = async(options)=>{
-    //options: {method, path, requiresAuth,body,retry}
+    //options: {method, path, requiresAuth,body, includeCred,retry}
     //validate and set options
     if(!options) throw new Error(`No options where provided for api to call`);
     if(!options.path)throw new Error(`No path was provided for api to call`);
     if(!options.method)throw new Error(`no method provided for api to call`);
     if(options.retry === undefined) options.retry = true
-
     //construct fetch request body
-    const createHeader = ()=>{
+    const createHeader = (token = auth.accessToken)=>{
       const headers = {}
       if( options.requiresAuth ){
-        headers.Authorization = `Bearer ${auth.accessToken}`;
+        headers.Authorization = `Bearer ${token}`;
       }
       if(options.body){
         headers["Content-Type"]= 'Application/json';
@@ -146,10 +145,14 @@ function App() {
       } 
     }
     }
-    const header = createHeader();
+    const header =createHeader(options.token);
+ 
     const fetchData = constructReqBody(header)
+    // includes credentials to body if 
+    if(options.includeCred) fetchData.credentials = 'include';
     //fetch
     console.log('first Attempt')
+    console.log(`accessToken: ${auth.accessToken}`)
     const response = await fetch(
     `${import.meta.env.VITE_API_URL}/${options.path}`,
       fetchData
@@ -159,8 +162,8 @@ function App() {
      //if  status ===401 attempt fetch define retry as false
     if(response.status === 401){ 
       //reAuthenticating
-      await reAuth(response)
-
+      const newAuth = await reAuth(response)
+      if(!newAuth) return response;
       //if retry = true  recall call api with retry attribute set to false
       if(!options.retry) return response;
       console.log('second attempt')
@@ -169,6 +172,7 @@ function App() {
         path: options.path,
         requiresAuth: options.requiresAuth,
         body: options.body,
+        token: newAuth.accessToken,
         retry: false
       })
       //if on retry still 401 wipe data and prompt log in
