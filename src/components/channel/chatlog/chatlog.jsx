@@ -6,26 +6,23 @@ import { notify
 
  } from '../../norifications/notifications'
 const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
-    const {auth, reAuth, currentChannel, handleCurrentChannel} = useOutletContext();
+    const {auth,callApi, currentChannel, handleCurrentChannel} = useOutletContext();
 
 
     const chatRef = useRef(null);
     const deleteMessage = async (id) =>{
         try{
-            const result = await fetch(`${import.meta.env.VITE_API_URL}/channel/${currentChannel}/msgs`,{
-                method: "DELETE",
-                body: JSON.stringify({
-                    id: id,
-                }),
-                headers: {
-                    "Content-Type": 'application/json',
-                    "Authorization": `Bearer ${auth.accessToken}`,
-                },
+            const response = await callApi({
+                method: 'DELETE',
+                path:`channel/${currentChannel}/msgs`,
+                requiresAuth: true,
+                body:{
+                    id:id
+                }
             })
-            reAuth(result)
-            if(!result.ok){
+            if(!response.ok){
 
-                const errBody = await result.json();
+                const errBody = await response.json();
                 if(Array.isArray(errBody.errors)){
                     errBody.errors.map(error =>{ 
                         notify.error(error.msg)
@@ -34,7 +31,7 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
                 throw new Error (`${errBody.msg}`)
             }
             needsUpdate(true)
-            return await result.json();
+            return await response.json();
         }catch(err){
             notify.error(err.message)
             console.log(err)
