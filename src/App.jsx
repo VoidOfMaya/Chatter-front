@@ -9,7 +9,7 @@ import { NewGroupDialog } from './components/dialogs/dialogs';
 
 function App() {
   //authentication state
-  const [auth, setAuth]= useState({token: null, user: null});//holds user auth data and tokens
+  const [auth, setAuth]= useState({accessToken: null, user: null});//holds user auth data and tokens
   
   //component hide/show state:-
   const [channelView,setChannelView]=useState(true);//sidebar channel list display toggle
@@ -50,6 +50,16 @@ function App() {
   const updateApp =()=>{
     setUpdate(prev => !prev);
   }
+  const resetAppState = () =>{
+    setChnls(null);
+    setMembers(null);
+    setCurrentChannel(1);
+    setChannelData(null);
+    setInbox(null);
+    setChatLoader(true);
+    setDisplayDialog(false);
+    setUpdate(false);
+  }
   //authentication:-
   const redirect = useNavigate();
   const onLogout= async()=>{
@@ -62,7 +72,8 @@ function App() {
       })
       if(!response.ok) throw new Error (`${response.message}`)
       localStorage.clear();
-      setAuth({token: null, user: null});
+      resetAppState();
+      setAuth({accessToken: null, user: null});
       redirect('/')
     }catch(err){
       notify.err(err.message)
@@ -203,6 +214,7 @@ function App() {
       path:'user/me',
       requiresAuth:true
     })
+    if(!response.ok) throw new Error(`${response.message}`)
     const result = await response.json()
     return {channels: result.channels, friends: result.friends}
   }
@@ -210,18 +222,19 @@ function App() {
     if(!auth.user)return
       try{
         setChatLoader(true);
-          const response = await callApi({
-            method: 'GET',
-            path:`channel/${id}`,
-            requiresAuth:true
-          })
-          const result = await response.json()
-          setChatLoader(false);
-          return result
+        const response = await callApi({
+          method: 'GET',
+          path:`channel/${id}`,
+          requiresAuth:true
+        })
+        if(!response.ok) throw new Error(`${response.message}`)
+        const result = await response.json()
+        setChatLoader(false);
+        return result
       }catch(err){
-          notify.error(err.message)
-          console.log(err || err.messaage || err.msg)
-          //redirect('/')
+        notify.error(err.message)
+        console.log(err || err.messaage || err.msg)
+        //redirect('/')
       }
   }
   // fetch pending requests
@@ -251,11 +264,16 @@ function App() {
   const goTo = (path) =>{
     redirect(path)
   }
+  //current channel setter
+  const loadChannel = async() =>{
+    const result = await getChannel(currentChannel);
+    setChannelData(result)
+    goTo('/chatter')
+  }
 //Effects:-
   useEffect(()=>{
     const initAuth = async() =>{
-      //intial onload page refresh
-      //refresh()
+
       try{
         const result = await refresh();
 
@@ -282,24 +300,18 @@ function App() {
       const dashboard = await getDashbaordData();
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
     }
-    if(!currentChannel) return
-      const loadChannel = async() =>{
-          const result = await getChannel(currentChannel);
-          setChannelData(result)
-      }
+    if(currentChannel){
+      loadChannel();      
+    }
+
     loadInbox();
     loadDashboard();
-    loadChannel();
+
   },[auth])
   useEffect(()=>{
     if (!auth.user) return
     if(!currentChannel) return
-      const loadChannel = async() =>{
-          const result = await getChannel(currentChannel);
-          setChannelData(result)
-          goTo('/chatter')
-      }
-      loadChannel();
+    loadChannel();
       
   },[currentChannel])
   useEffect(()=>{
