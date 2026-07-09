@@ -58,6 +58,7 @@ function App() {
         method:'DELETE',
         path: `auth/logout`,
         requiresAuth: true,
+        includeCred: true,
       })
       if(!response.ok) throw new Error (`${response.message}`)
       localStorage.clear();
