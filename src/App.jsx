@@ -6,6 +6,7 @@ import { MembersBar } from './components/members/members';
 import {ToastContainer, Bounce} from 'react-toastify'
 import { notify } from './components/norifications/notifications';
 import { NewGroupDialog } from './components/dialogs/dialogs';
+import { io } from 'socket.io-client';
 
 function App() {
   //authentication state
@@ -134,7 +135,8 @@ function App() {
         redirect('/');
     }
   }
-  //api request constructor:
+  //RESTapi request constructor:
+  const authPromis = useRef(null) //
   const callApi = async(options)=>{
     //options: {method, path, requiresAuth,body, includeCred,retry}
     //validate and set options
@@ -181,8 +183,16 @@ function App() {
     if(response.ok) return response;
      //if  status ===401 attempt fetch define retry as false
     if(response.status === 401){ 
+      
+      //validating singletone refresh
+      if(!authPromis.current){
+        authPromis.current= reAuth(response)
+        .finally(()=>{
+          authPromis.current= null; //once promise resolves  reset refreshState
+        })
+      }
       //reAuthenticating
-      const newAuth = await reAuth(response)
+      const newAuth = await authPromis.current;//turns to a promise on refresh
       if(!newAuth) return response;
       //if retry = true  recall call api with retry attribute set to false
       if(!options.retry) return response;
@@ -204,6 +214,16 @@ function App() {
       return retryResponse
     }
     return response
+  }
+  //SOCKET handler
+  const connectIo = async (id) =>{
+    const socket = io(`${import.meta.env.VITE_API_URL}`)
+    socket.emit(`is_online`,{
+      userId: id
+    });
+    socket.on('response',(data)=>{
+      console.log(data)
+    })
   }
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
@@ -303,7 +323,7 @@ function App() {
     if(currentChannel){
       loadChannel();      
     }
-
+    connectIo(auth.user.id);
     loadInbox();
     loadDashboard();
 
