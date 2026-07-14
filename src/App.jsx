@@ -216,14 +216,13 @@ function App() {
     return response
   }
   //SOCKET handler
-  const connectIo = async (id) =>{
-    const socket = io(`${import.meta.env.VITE_API_URL}`)
-    socket.emit(`is_online`,{
-      userId: id
-    });
-    socket.on('response',(data)=>{
-      console.log(data)
+  const connectIo = async () =>{
+    const socket = io(`${import.meta.env.VITE_API_URL}`,{
+      auth:{
+        token: auth.accessToken,
+      }
     })
+
   }
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
@@ -323,7 +322,7 @@ function App() {
     if(currentChannel){
       loadChannel();      
     }
-    connectIo(auth.user.id);
+    connectIo(auth);
     loadInbox();
     loadDashboard();
 
