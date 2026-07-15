@@ -6,7 +6,7 @@ import { MembersBar } from './components/members/members';
 import {ToastContainer, Bounce} from 'react-toastify'
 import { notify } from './components/norifications/notifications';
 import { NewGroupDialog } from './components/dialogs/dialogs';
-import { io } from 'socket.io-client';
+import { wsio } from './components/sockets/mainSocket';
 
 function App() {
   //authentication state
@@ -35,6 +35,8 @@ function App() {
   const [chatLoader, setChatLoader] = useState(true);
   const [authLoading, setLoadingAuth] = useState(true);
 
+  //all data Loaded state
+  const [initStatus, setInitStatus] = useState(false)
   //global app update state :- should trigger refetch data
   const [update, setUpdate] = useState(false)
 
@@ -52,6 +54,7 @@ function App() {
     setUpdate(prev => !prev);
   }
   const resetAppState = () =>{
+    wsio.disconnect()
     setChnls(null);
     setMembers(null);
     setCurrentChannel(1);
@@ -208,6 +211,7 @@ function App() {
       if(retryResponse.status === 401){
         setAuth({user: null, accessToken: null})
         localStorage.clear();
+        wsio.disconnect()
         redirect('/')
       }
       //if retry valid(403 forbidden is valid still for auth purposes)return result!
@@ -215,15 +219,7 @@ function App() {
     }
     return response
   }
-  //SOCKET handler
-  const connectIo = async () =>{
-    const socket = io(`${import.meta.env.VITE_API_URL}`,{
-      auth:{
-        token: auth.accessToken,
-      }
-    })
-
-  }
+ 
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
   const getDashbaordData = async()=>{
@@ -314,18 +310,20 @@ function App() {
   },[])
   useEffect(()=>{
     if (!auth ||!auth.user) return;
+
     console.log('fetching app data')
     const loadDashboard = async () =>{
       const dashboard = await getDashbaordData();
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
+      wsio.connect(auth.accessToken)
     }
     if(currentChannel){
       loadChannel();      
     }
-    connectIo(auth);
+    
     loadInbox();
     loadDashboard();
-
+    console.log("Registering friend_online listener");
   },[auth])
   useEffect(()=>{
     if (!auth.user) return
