@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef} from 'react'
 import style from './App.module.css'
-import { Outlet ,useNavigate } from 'react-router-dom'
+import { data, Outlet ,useNavigate } from 'react-router-dom'
 import { SideBar } from './components/sidebar/sidebar';
 import { MembersBar } from './components/members/members';
 import {ToastContainer, Bounce} from 'react-toastify'
@@ -34,9 +34,8 @@ function App() {
   // temporary loading states :-
   const [chatLoader, setChatLoader] = useState(true);
   const [authLoading, setLoadingAuth] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true) 
 
-  //all data Loaded state
-  const [initStatus, setInitStatus] = useState(false)
   //global app update state :- should trigger refetch data
   const [update, setUpdate] = useState(false)
 
@@ -63,6 +62,7 @@ function App() {
     setChatLoader(true);
     setDisplayDialog(false);
     setUpdate(false);
+    setDataLoading(true);
   }
   //authentication:-
   const redirect = useNavigate();
@@ -219,7 +219,7 @@ function App() {
     }
     return response
   }
- 
+
   // App Data:-
   //fetches user, cahnnels,friends info to populate user dashboard
   const getDashbaordData = async()=>{
@@ -288,7 +288,6 @@ function App() {
 //Effects:-
   useEffect(()=>{
     const initAuth = async() =>{
-
       try{
         const result = await refresh();
 
@@ -297,59 +296,94 @@ function App() {
         }else{
           throw new Error('Could not restor session, please log in')
         }
-        setLoadingAuth(false);
+        //setLoadingAuth(false);
       }catch(err){
         notify.warn(err.message)
         localStorage.clear();
-        setLoadingAuth(false);
         redirect('/')
-      }      
+      }finally{
+        setLoadingAuth(false);
+      }
     }
 
     initAuth();
   },[])
   useEffect(()=>{
-    if (!auth ||!auth.user) return;
-
+    if (!auth?.user) {
+      setDataLoading(false);
+      return;
+    };
     console.log('fetching app data')
-    const loadDashboard = async () =>{
+    const load = async () =>{
       const dashboard = await getDashbaordData();
+      const inbox = await getPendingRequests()
+
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
-      wsio.connect(auth.accessToken)
-    }
-    if(currentChannel){
-      loadChannel();      
-    }
+      setInbox(inbox);
     
-    loadInbox();
-    loadDashboard();
-    console.log("Registering friend_online listener");
+      if(currentChannel){
+        await loadChannel();      
+      }
+      setDataLoading(false)
+    }
+  load()  
   },[auth])
+  //newEffect
+  useEffect(() => {
+  if (!auth?.user) return;
+  if(dataLoading) return;
+  //create socket client
+  console.log('data has loaded')
+  const userSocket = wsio.connect(auth.accessToken);
+  //send event to server
+  userSocket.emit('user_connected',()=>{
+    console.log('userConnected')
+  })
+
+  //
+  const onlineStatusHandler = (data) =>{
+   console.log(`online status handler:`)
+   console.log(data)
+   setChnls(prev=>({
+      ...prev,friends: prev.friends.map(f=>{
+            if(f.id === data.id){
+              return{...f,onlineStatus: data.isOnline}
+            }
+            return f
+          })
+    }))
+  }
+  userSocket.on('friend_online',onlineStatusHandler)
+  userSocket.on("friend_offline",onlineStatusHandler)
+  //cleaner function
+  return ()=>{
+    userSocket.off('friend_online',onlineStatusHandler)
+    userSocket.on("friend_offline",onlineStatusHandler)
+  }
+
+},[auth, dataLoading]);
   useEffect(()=>{
-    if (!auth.user) return
-    if(!currentChannel) return
+    if (!auth.user || dataLoading || !currentChannel) return
     loadChannel();
       
   },[currentChannel])
   useEffect(()=>{
-    if(!channelData)return
+    if(!channelData|| !channelData.members)return
     setMembers(channelData.members.filter(record => record.isMember))
   },[channelData])
   useEffect(()=>{
-
-  },[inbox])
-  useEffect(()=>{
-    if(!auth || !auth.user) return
+    if(!auth || !auth.user || dataLoading) return
     const loadDashboard = async () =>{
-      if(!auth.user) return
-      const dashboard = await getDashbaordData(auth.accessToken);
+      const dashboard = await getDashbaordData();
+      if(!dashboard) return
       setChnls({channels: dashboard.channels, friends: dashboard.friends})
+      loadInbox()
     }
     loadDashboard();
-    loadInbox();
+    //loadInbox();
   },[update])
 // render while loading
-  if(authLoading){
+  if(authLoading || dataLoading){
     return <div>Loading ...</div>
   }
 //main render 

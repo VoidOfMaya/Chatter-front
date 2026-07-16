@@ -69,6 +69,18 @@
     color: white; 
     border-bottom: 1px solid white;
 }
+.friendLogo{
+    grid-area: 'logo';
+}
+.isOnline{
+    border: 1px solid rgb(27, 194, 27);
+    border-radius: 25px;
+
+}
+.isOffline{
+   border: 1px solid red; 
+   border-radius: 25px;
+}
 /*arrow icons*/
 .closeChannels{
     position: absolute;

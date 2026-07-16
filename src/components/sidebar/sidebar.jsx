@@ -49,7 +49,12 @@ const SideBar = (
                         onClick={()=>{
                             loadChannel(chnl.channelId);
                         }}>
-                        <div style={{gridArea: 'logo'}}><UserIcon/></div>
+                        <div 
+                        className={`
+                            ${style.friendLogo}
+                            ${chnl.onlineStatus? style.isOnline : style.isOffline }
+                            `}
+                        ><UserIcon/></div>
                         <div style={{gridArea: 'text'}}>{chnl.name}</div>
                     </div>                  
                 )

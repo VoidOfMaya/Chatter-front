@@ -1,5 +1,11 @@
-      socket.emit('friend_online');
-      socket.on('friend_online',(data)=>{
+ import { socket } from "./mainSocket";    
+
+const freindIsOnline = () =>{
+    if(!socket) return
+    socket.emit('friend_online');    
+}
+const recievefriend = (handler)=>{
+    socket.on('friend_online',(data)=>{
         console.log(`new friend online!`)
         console.log(data)
         console.log(chnls)
@@ -10,4 +16,12 @@
             }
           })
         }))
-      })     
+    })   
+}
+      
+const ioListener= {}
+const ioSender = {}
+export {
+    ioListener,
+    ioSender
+}
