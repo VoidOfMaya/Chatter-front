@@ -92,6 +92,26 @@
     padding: 5px;
    
 }
+.typingIndicator{
+    background-color: #000000;
+    color: #fff;
+    width: 100%;
+    padding: 10px;
+    position: absolute;
+    bottom: 70px;
+    animation: pulse 2s linear  infinite;
+}
+@keyframes pulse {
+    0%{
+        opacity: .5;
+    }
+    50%{
+        opacity: 1;
+    }
+    100%{
+        opacity: .5;
+    }
+}
 @media (max-width: 800px) {
     
 }

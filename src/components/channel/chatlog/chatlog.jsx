@@ -5,7 +5,13 @@ import { useRef, useEffect } from 'react'
 import { notify
 
  } from '../../norifications/notifications'
-const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
+const ChatLog=({
+    messages, 
+    handleReply, 
+    isMod, 
+    needsUpdate, 
+    handleEditing,typing,
+    typingArray})=>{
     const {auth,callApi, currentChannel, handleCurrentChannel} = useOutletContext();
 
 
@@ -134,6 +140,22 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
             )                   
         })
     }
+    const typingDisplay = ()=>{
+        //1-3 users typing
+        //4 or more
+        if(typingArray.length === 1){
+            return `${typingArray[0].name} is typing `   
+        }
+        if(typingArray.length > 1 && typingArray.length < 4){
+            const names = typingArray.map(user=> user.name)
+                                     .join(', ');
+            return`${names} are typing `
+        }                            
+        if(typingArray.length >3){
+            return `${typingArray.length} people are typing `
+        }
+
+    }
 
     useEffect(()=>{
         chatRef.current?.scrollTo({
@@ -155,6 +177,11 @@ const ChatLog=({messages, handleReply, isMod, needsUpdate, handleEditing})=>{
     return(
         <div ref={chatRef} className={style.ChatLog}>
         {populateChat(messages)}
+        {typing? (
+            <div className={style.typingIndicator}>
+                {typingDisplay()}...
+            </div>
+        ):('')}
         </div>
     )
 }

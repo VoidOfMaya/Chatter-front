@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import style from './channel.module.css';
 import { ChatInterface } from './chatInterface/chatinterface';
 import { ChatLog } from './chatlog/chatlog';
@@ -17,7 +17,8 @@ const Channel = () =>{
         getChannel,
         currentChannel,
         members,
-        goTo
+        goTo,
+        socket
     }= useOutletContext();
     // is user a mod
     const [isMod, setIsMod] = useState(false);
@@ -33,6 +34,19 @@ const Channel = () =>{
     const [channelName, setChannelName]= useState('');
     //handels toggle between chatlog or setting
     const [settingsMode, setSettingsMode] = useState(false)
+    //user is typing state:
+    const [isTyping, setIsTyping] = useState(false);
+    const [currentlyTyping, setCurrentlyTyping] = useState([])
+    //CHAT interface state:
+    const [message, setMessage]= useState('')
+    const handleMessage =(data)=>{
+        setMessage(data);
+    }
+    const typingTimer = useRef(null)
+    //state handler functions:-
+    const handleTyping =(stat)=>{
+        setIsTyping(stat)
+    }
     //on initialization
     //get friend id:
     const getFriendId = (data) =>{
@@ -67,9 +81,43 @@ const Channel = () =>{
         }
 
     }
+    //socket handler
+    const typeEventHandler = (data) =>{
+        setIsTyping(true);
+        setCurrentlyTyping(prev =>{
+            const exists = prev.some(
+                user=> user.userId === data.userId
+            )
+            if(exists) return prev
+            return[...prev,data]
+        })
+    }
+    const endTypingEvent = (data)=>{
+        setIsTyping(false);
+        setCurrentlyTyping(prev=>
+            prev.filter(user => user.userId !== data.userId)
+        )
+    }
+    const typeEvent =()=>{
+        clearTimeout(typingTimer.current)
+        socket.current.emit('typing_to',{id: currentChannel})
+        //createTimeout
+        typingTimer.current = setTimeout(() => {
+            socket.current.emit(`stop_typing`,{id: currentChannel})
 
+        }, 2000);
+    }
     useEffect(()=>{
         setSettingsMode(false)
+        console.log('socketMounted')
+        socket.current.emit("view_channel", {id :currentChannel})
+        socket.current.on('is_typing',typeEventHandler)
+        socket.current.on('not_typing',endTypingEvent)
+        return ()=>{
+            if(!socket.current) return
+            socket.current.off('is_typing',typeEventHandler)
+            socket.current.off('not_typing',endTypingEvent)
+        }
     },[currentChannel])
     useEffect(()=>{
         if(!auth.user){
@@ -103,6 +151,9 @@ const Channel = () =>{
         //checks if user exists within mod list
         setIsMod(modsList.some(record => record.user.id === auth.user.id))
     },[channelData])
+    useEffect(()=>{
+        typeEvent()
+    },[message])
     if(!auth?.user) return null;
     //handels loading states on init and on new message
     if(!channelData) return null;
@@ -176,14 +227,21 @@ const Channel = () =>{
                                 needsUpdate={setMessageIndicator}
                                 handleReply={handleReply} 
                                 isMod={isMod} 
-                                handleEditing={handleEditing}/>                       
+                                handleEditing={handleEditing}
+                                typing = {isTyping}
+                                typingArray ={currentlyTyping}/>                       
                     ):('no chat open!')}    
                 </div>
                 <ChatInterface needsUpdate={setMessageIndicator}  
+                            message={message}
+                            handleMessage={handleMessage}
                             reply={reply} 
                             cancleReply={cancleReply}
                             editMode={editMode}
-                            resetEditor={resetEditor}/>              
+                            resetEditor={resetEditor}
+                            setTyping= {handleTyping}
+                            socket={socket}
+                            typingEvent ={typeEvent}/>              
               </>      
                 
             )}

@@ -11,7 +11,7 @@ import { wsio } from './components/sockets/mainSocket';
 function App() {
   //authentication state
   const [auth, setAuth]= useState({accessToken: null, user: null});//holds user auth data and tokens
-  
+  const socket = useRef(null)
   //component hide/show state:-
   const [channelView,setChannelView]=useState(true);//sidebar channel list display toggle
   const [viewMembers,setViewMembers]=useState(false);//members list display toggle
@@ -334,13 +334,13 @@ function App() {
   if(dataLoading) return;
   //create socket client
   console.log('data has loaded')
-  const userSocket = wsio.connect(auth.accessToken);
+  socket.current = wsio.connect(auth.accessToken);
   //send event to server
-  userSocket.emit('user_connected',()=>{
+  socket.current.emit('user_connected',()=>{
     console.log('userConnected')
   })
 
-  //
+  // handels data updating regarding user online status
   const onlineStatusHandler = (data) =>{
    console.log(`online status handler:`)
    console.log(data)
@@ -353,19 +353,18 @@ function App() {
           })
     }))
   }
-  userSocket.on('friend_online',onlineStatusHandler)
-  userSocket.on("friend_offline",onlineStatusHandler)
+  socket.current.on('friend_online',onlineStatusHandler)
+  socket.current.on("friend_offline",onlineStatusHandler)
   //cleaner function
   return ()=>{
-    userSocket.off('friend_online',onlineStatusHandler)
-    userSocket.on("friend_offline",onlineStatusHandler)
+    socket.current.off('friend_online',onlineStatusHandler)
+    socket.current.off("friend_offline",onlineStatusHandler)
   }
 
 },[auth, dataLoading]);
   useEffect(()=>{
     if (!auth.user || dataLoading || !currentChannel) return
     loadChannel();
-      
   },[currentChannel])
   useEffect(()=>{
     if(!channelData|| !channelData.members)return
@@ -401,6 +400,7 @@ function App() {
                   showDialog={showDialog}
                   />
         <Outlet context={{
+          socket,
           onLoginSuccess,
           onLogout,
           auth,

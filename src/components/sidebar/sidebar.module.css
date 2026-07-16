@@ -71,6 +71,10 @@
 }
 .friendLogo{
     grid-area: 'logo';
+    display: flex;
+    justify-content: center;
+    padding: 2px;
+    margin-right: 5px;
 }
 .isOnline{
     border: 1px solid rgb(27, 194, 27);

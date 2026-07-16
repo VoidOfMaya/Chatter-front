@@ -2,7 +2,7 @@ import style from './chatinterface.module.css'
 import sendMsg from '../../../assets/icons/send.svg'
 import { SendIcon } from '../../iconhelper/iconHelper'
 import { redirect, useOutletContext } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { notify } from '../../norifications/notifications'
 /*
 required backend handelling functionality:-
@@ -13,9 +13,19 @@ required backend handelling functionality:-
 -> required: enable delete message function for users who are mods(in that channel)
 -> EXTRA: enable adding photos in the chat as messages or gifs and or emojies!
 */
-const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor}) =>{
+const ChatInterface = ({
+    needsUpdate, 
+    reply, 
+    cancleReply, 
+    editMode, 
+    resetEditor,
+    message,
+    handleMessage,
+
+}) =>{
     const{callApi ,currentChannel} = useOutletContext();
-    const [message, setMessage]= useState('')
+    //const [message, setMessage]= useState('')
+
     const sendMessage= async(message, parentId = null)=>{
         try{
             const response = await callApi({
@@ -37,7 +47,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                 throw new Error (`${errBody.msg}`)
             }
             needsUpdate(true)
-            setMessage('');
+            handleMessage('');
             return await response.json();
         }catch(err){
             notify.error(err.message)
@@ -75,7 +85,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
     }
     useEffect(()=>{
         if(!editMode) return
-        setMessage(editMode.message)
+        handleMessage(editMode.message)
     },[editMode])
     return(
         <div className={style.chatInterface}>
@@ -102,7 +112,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                         type='button'
                         onClick={()=>{
                             if(!editMode) return
-                            setMessage('')
+                            handleMessage('')
                             resetEditor()
                         }}
                         >x</button>
@@ -115,7 +125,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                             placeholder='message @Group'
                             value={message}
                                 onChange={(e)=>
-                                    setMessage(e.target.value)
+                                    handleMessage(e.target.value)
                                 }
                             >
                         </textarea>
@@ -145,7 +155,7 @@ const ChatInterface = ({needsUpdate, reply, cancleReply, editMode, resetEditor})
                             placeholder='message @Group'
                             value={message}
                                 onChange={(e)=>
-                                    setMessage(e.target.value)
+                                    handleMessage(e.target.value)
                                 }
                             >
                         </textarea>
