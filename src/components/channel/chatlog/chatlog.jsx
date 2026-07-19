@@ -141,20 +141,18 @@ const ChatLog=({
         })
     }
     const typingDisplay = ()=>{
-        //1-3 users typing
-        //4 or more
+        if(!Array.isArray(typingArray))return ''
         if(typingArray.length === 1){
             return `${typingArray[0].name} is typing `   
         }
         if(typingArray.length > 1 && typingArray.length < 4){
             const names = typingArray.map(user=> user.name)
-                                     .join(', ');
+                                    .join(', ');
             return`${names} are typing `
         }                            
         if(typingArray.length >3){
             return `${typingArray.length} people are typing `
         }
-
     }
 
     useEffect(()=>{

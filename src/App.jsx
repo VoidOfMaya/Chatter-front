@@ -336,6 +336,7 @@ function App() {
   console.log('data has loaded')
   socket.current = wsio.connect(auth.accessToken);
   //send event to server
+  if (!socket.current) return;
   socket.current.emit('user_connected',()=>{
     console.log('userConnected')
   })
@@ -353,6 +354,7 @@ function App() {
           })
     }))
   }
+  if (!socket.current) return;
   socket.current.on('friend_online',onlineStatusHandler)
   socket.current.on("friend_offline",onlineStatusHandler)
   //cleaner function
