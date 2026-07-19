@@ -15,6 +15,7 @@ required backend handelling functionality:-
 */
 const ChatInterface = ({
     needsUpdate, 
+    emitEvent,
     reply, 
     cancleReply, 
     editMode, 
@@ -46,7 +47,8 @@ const ChatInterface = ({
                 }
                 throw new Error (`${errBody.msg}`)
             }
-            needsUpdate(true)
+            needsUpdate(true);
+            emitEvent(true);
             handleMessage('');
             return await response.json();
         }catch(err){
@@ -74,8 +76,9 @@ const ChatInterface = ({
                 }
                 throw new Error (`${errBody.msg}`)
             }
-            needsUpdate(true)
-            setMessage('')
+            needsUpdate(true);
+            emitEvent(true);
+            handleMessage('');
             resetEditor()
             return await response.json();
         }catch(err){

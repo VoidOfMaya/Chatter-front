@@ -10,7 +10,9 @@ const ChatLog=({
     handleReply, 
     isMod, 
     needsUpdate, 
-    handleEditing,typing,
+    emitEvent,
+    handleEditing,
+    typing,
     typingArray})=>{
     const {auth,callApi, currentChannel, handleCurrentChannel} = useOutletContext();
 
@@ -37,6 +39,7 @@ const ChatLog=({
                 throw new Error (`${errBody.msg}`)
             }
             needsUpdate(true)
+            emitEvent(true)
             return await response.json();
         }catch(err){
             notify.error(err.message)

@@ -4,7 +4,7 @@ import { useOutletContext} from "react-router-dom";
 import { notify } from "../../norifications/notifications";
 
 const Card = ({data, searchType})=>{
-    const {auth, callApi, goTo,updateApp,handleCurrentChannel, chnls} = useOutletContext();
+    const {auth, callApi, goTo,updateApp,handleCurrentChannel,chnls} = useOutletContext();
     const sendFriendRequest = async(id) =>{
         try{
             const response = await callApi({

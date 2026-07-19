@@ -26,6 +26,8 @@ const Channel = () =>{
     const [chnlMsgs, setChnlMsgs] = useState(null);
     //updates channel data on new message from user
     const [messageIndicator, setMessageIndicator]= useState(false);
+    //triggers socket chatlog updated for other users
+    const [emission, setEmission] = useState(false)
     //handels reply to a message
     const [reply, setReply] = useState(null)
     // handels edit own message mode
@@ -107,6 +109,9 @@ const Channel = () =>{
 
         }, 2000);
     }
+    const updateLog =()=>{
+        setMessageIndicator(true)
+    }
     useEffect(()=>{
         setSettingsMode(false)
         console.log('socketMounted')
@@ -114,10 +119,13 @@ const Channel = () =>{
             socket.current.emit("view_channel", {id :currentChannel})
             socket.current.on('is_typing',typeEventHandler)
             socket.current.on('not_typing',endTypingEvent)
+            socket.current.on('update_log',updateLog)
             return ()=>{
                 if(!socket.current) return
                 socket.current.off('is_typing',typeEventHandler)
                 socket.current.off('not_typing',endTypingEvent)
+                socket.current.off('update_log',updateLog)
+                
             }            
         }
 
@@ -135,7 +143,14 @@ const Channel = () =>{
         loadChannel()
 
         setMessageIndicator(false)
+        setEmission(false)
     },[messageIndicator])
+    useEffect(()=>{
+        //emit chatlog update  on chatlog changes
+        if(socket){
+            socket.current.emit("log_update", {id :currentChannel})     
+        }
+    },[emission])
     useEffect(()=>{
         if(!auth?.user){
             redirect('/')
@@ -228,6 +243,7 @@ const Channel = () =>{
                     {chnlMsgs? (
                         <ChatLog messages={channelData.messages} 
                                 needsUpdate={setMessageIndicator}
+                                emitEvent ={setEmission}
                                 handleReply={handleReply} 
                                 isMod={isMod} 
                                 handleEditing={handleEditing}
@@ -235,7 +251,8 @@ const Channel = () =>{
                                 typingArray ={currentlyTyping}/>                       
                     ):('no chat open!')}    
                 </div>
-                <ChatInterface needsUpdate={setMessageIndicator}  
+                <ChatInterface needsUpdate={setMessageIndicator}
+                            emitEvent ={setEmission}  
                             message={message}
                             handleMessage={handleMessage}
                             reply={reply} 

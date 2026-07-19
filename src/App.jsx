@@ -343,8 +343,6 @@ function App() {
 
   // handels data updating regarding user online status
   const onlineStatusHandler = (data) =>{
-   console.log(`online status handler:`)
-   console.log(data)
    setChnls(prev=>({
       ...prev,friends: prev.friends.map(f=>{
             if(f.id === data.id){
