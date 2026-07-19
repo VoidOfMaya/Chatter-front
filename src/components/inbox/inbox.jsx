@@ -18,15 +18,8 @@ const Inbox = () =>{
                     {request.user.id === auth.user.id?(
                         //where user is the sender
                         <>
+                        {console.log(request)}
                         <h2>{request.friend.name}</h2>
-                            <div className={style.options}>
-                                <h3 style={{color: '#686868'}}>{request.status}</h3>                                
-                            </div>
-                        </>
-                    ):(
-                        //where user is the recipient
-                        <>
-                            <h2>{request.user.name}</h2>
                             <div className={style.options}>
                                 <div    title="accept request">
                                         <PlusIcon size={35} focusColor="green" fn={async()=>{
@@ -37,7 +30,15 @@ const Inbox = () =>{
                                         <BlockeIcon size={35} focusColor="red" fn={async()=>{
                                             await rejectReq(request.id)
                                         }} />
-                                </div>                         
+                                </div>                                  
+                            </div>
+                        </>
+                    ):(
+                        //where user is the recipient
+                        <>
+                            <h2>{request.user.name}</h2>
+                            <div className={style.options}>
+                                <h3 style={{color: '#686868'}}>{request.status}</h3>
                             </div>
                         </>
                     )}
