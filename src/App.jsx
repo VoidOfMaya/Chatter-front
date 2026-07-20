@@ -153,7 +153,7 @@ function App() {
       if( options.requiresAuth ){
         headers.Authorization = `Bearer ${token}`;
       }
-      if(options.body){
+      if(options.body && !(options.body instanceof FormData)){
         headers["Content-Type"]= 'Application/json';
       }
       return headers
@@ -163,7 +163,10 @@ function App() {
       return{
         method: `${options.method}`,
         headers: header,
-        body: JSON.stringify(options.body)
+        // formedata checker!
+        body: 
+          options.body instanceof FormData?
+            options.body : JSON.stringify(options.body)
       }
     }else{
       return{

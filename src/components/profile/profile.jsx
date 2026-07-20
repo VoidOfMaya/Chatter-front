@@ -1,10 +1,11 @@
     
 import { useNavigate, useParams } from "react-router-dom"
-import { BlockeIcon, EditeProfile, UserIcon } from "../iconhelper/iconHelper";
+import { BlockeIcon, EditeProfile, PlusIcon, UserIcon } from "../iconhelper/iconHelper";
 import style from './profile.module.css';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { notify } from "../norifications/notifications";
+import { UploadPhoto } from "../dialogs/dialogs";
 const Profile = () =>{
 /*
 user data:{id, email, name, bio, photo, is_online, last_login, created_at}
@@ -30,19 +31,46 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     const [loadingData, setLoadingData] = useState(true);
     const [onlineStatus, setOnlineStatus] = useState(null);
 
+    const [photo, setPhoto] = useState(false)
+    const photoDialog =useRef(null)
+
 
     const photoLogo = () =>{
         return(
-            <>
-                {(user.photo)? (
-                    <img src={user.photo} 
-                         width='100px'
-                         height='100px'
-                         className={`${style.pfp} ${onlineStatus? style.isOnline : style.isOffline } `}
-                    />
+            <>{editMode? (
+                <>
+                <div style={{position: 'relative'}}>
+                    <UserIcon size={100} focusColor="#27282c" />
+                    <div style={
+                        {
+                            position: 'absolute',
+                            bottom: '10px', 
+                            right: '0px',
+                            cursor: 'pointer'
+                        }
+                        }>
+                        <PlusIcon size={30} color="#fff" focusColor="#E84545"
+                            fn={()=>{
+                                setPhoto(true)
+                                //photoDialog.current.show()
+                            }}/>                 
+
+                    </div>                    
+                </div>
+                </>
                 ):(
-                    <UserIcon size={100}/>
-                )}            
+                <>
+                    {(user.photo)? (
+                        <img src={user.photo} 
+                            width='100px'
+                            height='100px'
+                            className={`${style.pfp} ${onlineStatus? style.isOnline : style.isOffline } `}
+                        />
+                    ):(
+                        <UserIcon size={100}/>
+                    )}  
+                </>
+            )}          
             </>
 
         )
@@ -76,7 +104,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                             }
                         }>        
                     </input>
-                    created at:<div className={style.dataTxt}>{user.created_at}</div>  
+                    created at:<div className={style.dataTxt}>{user.createdAt}</div>  
                 </div>
                 <div style={{display: 'flex', width: '100%'}}>
                     <button 
@@ -279,6 +307,11 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                         </div>
                         </>
                     )}
+                {photo && (
+                    <>
+                        <UploadPhoto referance={photoDialog} close={()=>setPhoto(false)}/>                            
+                    </>
+                )}  
             </main>
             </>
         )

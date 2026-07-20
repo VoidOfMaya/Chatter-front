@@ -28,6 +28,15 @@
     justify-items: center;
     gap: 10px;
 }
+.photoUpload{
+    align-self: center;
+    justify-self: center;
+    min-width: 400px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 .invalidField{
     border: 1px solid red;
 } 

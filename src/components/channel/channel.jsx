@@ -115,19 +115,19 @@ const Channel = () =>{
     useEffect(()=>{
         setSettingsMode(false)
         console.log('socketMounted')
-        if(socket){
+        if(!socket.current) return
             socket.current.emit("view_channel", {id :currentChannel})
             socket.current.on('is_typing',typeEventHandler)
             socket.current.on('not_typing',endTypingEvent)
             socket.current.on('update_log',updateLog)
             return ()=>{
-                if(!socket.current) return
-                socket.current.off('is_typing',typeEventHandler)
-                socket.current.off('not_typing',endTypingEvent)
-                socket.current.off('update_log',updateLog)
+            if(!socket.current) return
+            socket.current.off('is_typing',typeEventHandler)
+            socket.current.off('not_typing',endTypingEvent)
+            socket.current.off('update_log',updateLog)
                 
-            }            
-        }
+        }            
+        
 
     },[currentChannel])
     useEffect(()=>{
