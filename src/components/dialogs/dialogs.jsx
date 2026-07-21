@@ -257,7 +257,7 @@ const NewGroupDialog =  ({referance, close,updateApp})=>{
     )
 }
 const UploadPhoto =  ({referance, close,updateApp})=>{
-    const {callApi} = useOutletContext();
+    const {callApi,UpdateApp} = useOutletContext();
     const [file, setFile] = useState(null);
       //creates new channel
     const upload  = async() =>{

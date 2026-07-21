@@ -49,17 +49,30 @@ const SideBar = (
                         onClick={()=>{
                             loadChannel(chnl.channelId);
                         }}>
-                        <div 
-                        className={`
-                            ${style.friendLogo}
-                            ${chnl.onlineStatus? style.isOnline : style.isOffline }
-                            `}
-                        ><UserIcon/></div>
+                        {(chnl.photo)? (
+                            
+                            <img src={chnl.photo} 
+                                width='30px'
+                                height='30px'
+                                className={`${style.friendLogo} 
+                                ${chnl.onlineStatus? style.isOnline : style.isOffline } `}
+                            />
+                            
+                        ):(
+                            <div 
+                            className={`
+                                ${style.friendLogo}
+                                ${chnl.onlineStatus? style.isOnline : style.isOffline }
+                                `}
+                            ><UserIcon size={30}/></div>
+                            
+                        )}
                         <div style={{gridArea: 'text'}}>{chnl.name}</div>
                     </div>                  
                 )
             })
         }catch(err){
+            console.log(err.message)
             return( 
                 <div className={style.channelOption}>
                     <p style={{gridArea: 'text'}} >no Friends!</p> 
