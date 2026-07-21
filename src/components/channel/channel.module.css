@@ -20,6 +20,9 @@
     gap: 15px;
 
 }
+.pfp{
+     border-radius: 50px;
+}
 
 .chatDisplay{
     grid-area: chatDisplay;

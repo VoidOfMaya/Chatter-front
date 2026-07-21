@@ -77,7 +77,6 @@
 .pfp{
     outline: 3px solid #232020;
     border-radius: 50px;
-    outline-offset: -3px;
 }
 .authorname{
     display: inline;

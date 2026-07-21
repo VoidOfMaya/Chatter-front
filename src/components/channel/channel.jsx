@@ -187,13 +187,32 @@ const Channel = () =>{
         )
     }
     //extracts friend name
-
+    const friend = getFriendId(channelData)
     return(
         <main className={style.channel}>
             <div className={style.channelBanner}>
                 {channelData.type === 'FRIEND'?(
                     <div style={{marginLeft: '20px'}}>
-                        <FriendsIcon size={40} 
+                        {friend.user.photo? (
+                            <img src={friend.user.photo} 
+                                className={style.pfp}
+                                width='40px'
+                                height='40px'
+                                />
+                        ):(
+                            <FriendsIcon size={40} 
+                                fn={()=>{
+                                try {
+                                    goTo(`/profile/${friend.user.id}`);
+                                } catch(err) {
+                                    notify.error(err.message)
+                                    console.error(err);
+                                }
+                            }}
+                            />
+                        )}
+                        
+                        {/*<FriendsIcon size={40} 
                         fn={()=>{
                             try {
                                 const friend = getFriendId(channelData);
@@ -203,7 +222,7 @@ const Channel = () =>{
                                 console.error(err);
                             }
                         }}
-                        />                    
+                        />*/}                  
                     </div>
                 ):(
                     <div style={{marginLeft: '20px'}}>

@@ -180,18 +180,35 @@ const SideBar = (
                     title='Return to home page'
                      onClick={()=> redirect('/Chatter')}>
                     Chatter<LogoIcon color={'#E84545'} size={25} />
-                </div> 
+                </div>
                 {auth.user? (
                     <>  
                         <div title='User Profile'>
-                        <UserIcon 
+                        {/*<UserIcon 
                             color={'#27282c'}         
                             focusColor={'#62646b'} 
                             size={25}
                             fn={()=>{
                                 redirect('/profile/me')
                             }}
+                            />*/}
+                            {auth.user.photo? (
+                                <img src={auth.user.photo} 
+                                    width='30px'
+                                    height='30px'
+                                    className={style.pfp}
+                                />
+
+                            ):( 
+                                <UserIcon 
+                                color={'#27282c'}         
+                                focusColor={'#62646b'} 
+                                size={25}
+                                fn={()=>{
+                                    redirect('/profile/me')
+                                }}
                             />
+                            )}
                         </div>
                         <div
                             title='View Friends list' 

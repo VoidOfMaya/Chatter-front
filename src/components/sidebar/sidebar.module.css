@@ -16,6 +16,9 @@
     padding: 45px 0px;
 
 }
+.pfp{
+    border-radius: 50px;
+}
 .userNav{
     grid-area: user;
     display: flex;
