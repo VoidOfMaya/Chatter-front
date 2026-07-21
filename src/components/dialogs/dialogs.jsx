@@ -321,7 +321,7 @@ const UploadPhoto =  ({referance, close,updateApp})=>{
         </dialog>
     )
 }
-const MsgPhoto =  ({referance, close,updateApp})=>{
+const MsgPhoto =  ({referance, close,setPhotoData})=>{
     const {callApi,UpdateApp} = useOutletContext();
     const [file, setFile] = useState(null);
       //creates new channel
@@ -329,20 +329,22 @@ const MsgPhoto =  ({referance, close,updateApp})=>{
         try{
             console.log('start upload')
             const formData = new FormData();
+            const preview = URL.createObjectURL(file)
             formData.append("file", file)
-            const response = await callApi({
-                method: 'POST',
-                path: 'upload/file',
-                requiresAuth: true,
-                body:formData //only when sending FormData for file uploads else incase in {}
-            })
+            setPhotoData(formData, preview);
+            //const response = await callApi({
+            //    method: 'POST',
+            //    path: 'upload/msg',
+            //    requiresAuth: true,
+            //    body:formData //only when sending FormData for file uploads else incase in {}
+            //})
             
-              const result = await response.json();
+            //  const result = await response.json();
               
-              if(!response.ok) throw new Error(`${result.msg}`)
-                console.log('end upload')
-              notify.success(`${result.msg}`)
-              UpdateApp()
+            //  if(!response.ok) throw new Error(`${result.msg}`)
+            //    console.log('end upload')
+            //  notify.success(`${result.msg}`)
+            //  UpdateApp()
           }catch(err){
             console.log('upload error')
             notify.error(err.message)

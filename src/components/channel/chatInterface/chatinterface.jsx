@@ -27,8 +27,14 @@ const ChatInterface = ({
     const{callApi ,currentChannel} = useOutletContext();
     //const [message, setMessage]= useState('')
     const photoRef = useRef(null)
-    const [photo, setPhoto] = useState(false)
+    const [photoDialog, setPhotoDialog] = useState(false)
+    const [photoUrl, setPhotoUrl] = useState(null)
+    const [previewUrl, setPreviewUrl]= useState(null)
 
+    const getFileData = (data, previewUrl)=>{
+        setPhotoUrl(data)
+        setPreviewUrl(previewUrl)
+    }
     const sendMessage= async(message, parentId = null)=>{
         try{
             const response = await callApi({
@@ -94,6 +100,23 @@ const ChatInterface = ({
     },[editMode])
     return(
         <div className={style.chatInterface}>
+            {photoUrl && (
+                <div className={style.photoPreview}>
+                    <img src={previewUrl}
+                        style={{borderRadius: '15px 0px 0px 15px'}}
+                        width='50px'
+                        height='50px'/>
+                    <p style={{fontSize: '14px',width: 'fit-content'}}>Preview</p>
+                    <button 
+                        style={{width: 'fit-content'}} 
+                        type='button'
+                        onClick={()=>{
+                                setPhotoUrl(null)
+                                setPreviewUrl(null)
+                        }}>X</button>
+                </div>                
+            )}
+
             {/*handels reply messages*/}
             {reply?(
                 <div className={style.replyIndecator}>
@@ -154,7 +177,7 @@ const ChatInterface = ({
                     {/*handels send mode*/}
                     <button htmlFor='message' 
                     className={`${style.msgButton} ${style.rightBtn}`}
-                    onClick={()=>setPhoto(true)}>
+                    onClick={()=>setPhotoDialog(true)}>
                         +
                     </button>
                     <div className={style.textWrapper}>
@@ -184,9 +207,13 @@ const ChatInterface = ({
                     </button>
                 </>
             )}
-            {photo && (
+            {photoDialog && (
                 <div style={{position: 'absolute',top: '-80px',left:'50px'}}>
-                    <MsgPhoto referance={photoRef} close={()=>setPhoto(false)}/>                            
+                    <MsgPhoto 
+                    referance={photoRef} 
+                    close={()=>setPhotoDialog(false)}
+                    setPhotoData ={getFileData}
+                    />                            
                 </div >
             )}
         </div>
