@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import style from './dialogs.module.css'
 import { useOutletContext, useNavigate } from 'react-router-dom';
-import { notify } from '../norifications/notifications';
+import { notify } from '../norifications/notifications.jsx';
 const LoginDialog = ({referance, close})=>{
 
     const{onLoginSuccess,callApi} = useOutletContext();
@@ -274,12 +274,13 @@ const UploadPhoto =  ({referance, close,updateApp})=>{
             
               const result = await response.json();
               
-              if(!response.ok) throw new Error(`${result}`)
+              if(!response.ok) throw new Error(`${result.msg}`)
                 console.log('end upload')
               notify.success('file uploaded')
               updateApp()
           }catch(err){
-              notify.error(err)
+            console.log('upload error')
+            notify.error(err.message)
           }
       }
       const handleFileSelect = (e) =>{
