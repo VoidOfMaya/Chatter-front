@@ -1,8 +1,8 @@
 import style from './chatinterface.module.css'
-import sendMsg from '../../../assets/icons/send.svg'
 import { SendIcon } from '../../iconhelper/iconHelper'
-import { redirect, useOutletContext } from 'react-router-dom'
+import { useOutletContext } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
+import { MsgPhoto } from '../../dialogs/dialogs'
 import { notify } from '../../norifications/notifications'
 /*
 required backend handelling functionality:-
@@ -26,6 +26,8 @@ const ChatInterface = ({
 }) =>{
     const{callApi ,currentChannel} = useOutletContext();
     //const [message, setMessage]= useState('')
+    const photoRef = useRef(null)
+    const [photo, setPhoto] = useState(false)
 
     const sendMessage= async(message, parentId = null)=>{
         try{
@@ -150,7 +152,11 @@ const ChatInterface = ({
             ):(
                 <>
                     {/*handels send mode*/}
-                    <button htmlFor='message' className={`${style.msgButton} ${style.rightBtn}`}>+</button>
+                    <button htmlFor='message' 
+                    className={`${style.msgButton} ${style.rightBtn}`}
+                    onClick={()=>setPhoto(true)}>
+                        +
+                    </button>
                     <div className={style.textWrapper}>
                         <textarea id='message' 
                             name='message' 
@@ -177,6 +183,11 @@ const ChatInterface = ({
                                 size={24} />
                     </button>
                 </>
+            )}
+            {photo && (
+                <div style={{position: 'absolute',top: '-80px',left:'50px'}}>
+                    <MsgPhoto referance={photoRef} close={()=>setPhoto(false)}/>                            
+                </div >
             )}
         </div>
     )

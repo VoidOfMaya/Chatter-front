@@ -66,7 +66,6 @@ const SideBar = (
                                 ${chnl.onlineStatus? style.isOnline : style.isOffline }
                                 `}
                             ><UserIcon size={30}/></div>
-                            
                         )}
                         <div style={{gridArea: 'text'}}>{chnl.name}</div>
                     </div>                  
@@ -184,7 +183,8 @@ const SideBar = (
                 </div>
                 {auth.user? (
                     <>  
-                        <div title='User Profile'>
+                        <div title='User Profile'
+                            onClick={()=>redirect('/profile/me')}>
                             {auth.user.photo? (
                                 <img src={auth.user.photo} 
                                     width='30px'
@@ -199,9 +199,6 @@ const SideBar = (
                                 style={{cursor: 'pointer'}}         
                                 focusColor={'#27282c'} 
                                 size={25}
-                                fn={()=>{
-                                    redirect('/profile/me')
-                                }}
                             />
                             )}
                         </div>

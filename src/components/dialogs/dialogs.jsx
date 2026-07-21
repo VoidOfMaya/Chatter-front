@@ -321,10 +321,76 @@ const UploadPhoto =  ({referance, close,updateApp})=>{
         </dialog>
     )
 }
+const MsgPhoto =  ({referance, close,updateApp})=>{
+    const {callApi,UpdateApp} = useOutletContext();
+    const [file, setFile] = useState(null);
+      //creates new channel
+    const upload  = async() =>{
+        try{
+            console.log('start upload')
+            const formData = new FormData();
+            formData.append("file", file)
+            const response = await callApi({
+                method: 'POST',
+                path: 'upload/file',
+                requiresAuth: true,
+                body:formData //only when sending FormData for file uploads else incase in {}
+            })
+            
+              const result = await response.json();
+              
+              if(!response.ok) throw new Error(`${result.msg}`)
+                console.log('end upload')
+              notify.success(`${result.msg}`)
+              UpdateApp()
+          }catch(err){
+            console.log('upload error')
+            notify.error(err.message)
+          }
+      }
+      const handleFileSelect = (e) =>{
+        const selection = e.target.files[0];
+        if(!selection) return;
+        setFile(selection)
+      }
+    return(
+        <dialog ref={referance} className={style.msgUpload}>
+            <input type='file'
+            onChange={handleFileSelect} />
+            {file? (
+                <>
+                    <p style={{color: '#5a5a5a', fontSize: '12px'}}>{Math.round(file.size / 1000)} kb</p>
+                    <button
+                    style={{
+                        padding: '4px'
+                    }}
+                    type='button'
+                    onClick={async()=>{
+                        console.log('attempting upload')
+                        await upload()
+                        close()
+                    }}>upload</button>
+                    <button type='button'
+                    onClick={()=>{
+                        close()
+                    }}
+                    >cancle</button>
+                </>
+            ):(
+                <button type='button'
+                onClick={()=>{
+                    close()
+                }}
+                >cancle</button>
+            )}
+        </dialog>
+    )
+}
 
 export{
     LoginDialog,
     SignupDialog,
     NewGroupDialog,
-    UploadPhoto
+    UploadPhoto,
+    MsgPhoto
 }

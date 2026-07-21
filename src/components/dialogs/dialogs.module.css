@@ -37,6 +37,16 @@
     justify-content: space-between;
     align-items: center;
 }
+.msgUpload{
+    align-self: center;
+    justify-self: center;
+    min-width: 400px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(33, 33, 33);
+}
 .invalidField{
     border: 1px solid red;
 } 
