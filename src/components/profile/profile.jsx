@@ -40,7 +40,15 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             <>{editMode? (
                 <>
                 <div style={{position: 'relative'}}>
-                    <UserIcon size={100} focusColor="#27282c" />
+                    {(user.photo)? (
+                        <img src={user.photo} 
+                            width='100px'
+                            height='100px'
+                            className={`${style.pfp} ${onlineStatus? style.isOnline : style.isOffline } `}
+                        />
+                    ):(
+                        <UserIcon size={100} focusColor="#27282c" />
+                    )}  
                     <div style={
                         {
                             position: 'absolute',

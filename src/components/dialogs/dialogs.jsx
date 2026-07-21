@@ -276,8 +276,8 @@ const UploadPhoto =  ({referance, close,updateApp})=>{
               
               if(!response.ok) throw new Error(`${result.msg}`)
                 console.log('end upload')
-              notify.success('file uploaded')
-              updateApp()
+              notify.success(`${result.msg}`)
+              UpdateApp()
           }catch(err){
             console.log('upload error')
             notify.error(err.message)
