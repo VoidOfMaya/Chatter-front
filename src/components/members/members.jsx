@@ -1,4 +1,9 @@
-import { GroupIcon, LeftArrow, RightArrow, ShieldIcon } from '../iconhelper/iconHelper';
+import { 
+    GroupIcon, 
+    LeftArrow, 
+    RightArrow, 
+    ShieldIcon,
+    UserIcon } from '../iconhelper/iconHelper';
 import style from './members.module.css'
 import { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
@@ -37,9 +42,17 @@ const MembersBar = ({data, membersView, triggerViewMember,auth,currentChannel}) 
                     ${member.user.id === auth.user.id?style.meCard:''}
                     ${style.card}
                     `}
-                >
+                >   {member.user.photo?
+                    (
+                        <img src={member.user.photo} 
+                            className={style.pfp}
+                            width='30px'
+                            height='30px'
+                        />
+                    ):(<UserIcon size={30} focusColor="#27282c"/>)
+                }
                     @{member.user.name}
-                    {member.isMod? (<ShieldIcon color='#E84545' focusColor='red'/>):('')}
+                    {member.isMod? (<ShieldIcon color='#E84545' size={15} focusColor='red'/>):('')}
                 </div>
             )
         }) 

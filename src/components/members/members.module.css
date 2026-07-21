@@ -44,6 +44,9 @@
 .memberCard{
     color: white;
 }
+.pfp{
+    border-radius: 50px;
+}
 .modCard{ 
     color: white;
 }

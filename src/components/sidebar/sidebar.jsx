@@ -46,6 +46,7 @@ const SideBar = (
             return data.friends.map(chnl=>{
                 return (  
                     <div key={chnl.id} className={style.channelOption}
+                        style={{cursor: 'pointer'}}
                         onClick={()=>{
                             loadChannel(chnl.channelId);
                         }}>
@@ -184,25 +185,19 @@ const SideBar = (
                 {auth.user? (
                     <>  
                         <div title='User Profile'>
-                        {/*<UserIcon 
-                            color={'#27282c'}         
-                            focusColor={'#62646b'} 
-                            size={25}
-                            fn={()=>{
-                                redirect('/profile/me')
-                            }}
-                            />*/}
                             {auth.user.photo? (
                                 <img src={auth.user.photo} 
                                     width='30px'
                                     height='30px'
                                     className={style.pfp}
+                                    style={{cursor: 'pointer'}}
                                 />
 
                             ):( 
                                 <UserIcon 
-                                color={'#27282c'}         
-                                focusColor={'#62646b'} 
+                                color={'#27282c'}
+                                style={{cursor: 'pointer'}}         
+                                focusColor={'#27282c'} 
                                 size={25}
                                 fn={()=>{
                                     redirect('/profile/me')
@@ -212,6 +207,7 @@ const SideBar = (
                         </div>
                         <div
                             title='View Friends list' 
+                            style={{cursor: 'pointer'}}
                             onClick={()=>{
                             if(friends)return
                             setGroups(false)
@@ -221,6 +217,7 @@ const SideBar = (
                         </div>
                         <div
                             title='View Channels list'  
+                            style={{cursor: 'pointer'}}
                             onClick={()=>{
                             if(groups)return
                             setFriends(false)
@@ -229,14 +226,15 @@ const SideBar = (
                             <GroupIcon color={'#27282c'} focusColor={'#62646b'} size={25} />
                         </div>
 
-                        <div title='search channels & users'>
+                        <div title='search channels & users'
+                        style={{cursor: 'pointer'}}>
                             <SearchIcon color={'#27282c'} focusColor={'#62646b'} size={25}
                             fn={()=>{
                                 redirect('/search');
                             }} />                            
                         </div>
 
-                        <div style={{marginTop: 'auto', paddingBottom: '20px'}}
+                        <div style={{marginTop: 'auto', paddingBottom: '20px',cursor: 'pointer'}}
                              title='Logout'>
                             <Logout color={'#27282c'} focusColor={'#62646b'} size={25}
                                 fn={()=>{
