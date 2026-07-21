@@ -147,9 +147,9 @@ const Channel = () =>{
     },[messageIndicator])
     useEffect(()=>{
         //emit chatlog update  on chatlog changes
-        if(socket){
-            socket.current.emit("log_update", {id :currentChannel})     
-        }
+        if(!socket.current)return
+        socket.current.emit("log_update", {id :currentChannel})     
+        
     },[emission])
     useEffect(()=>{
         if(!auth?.user){
@@ -170,6 +170,7 @@ const Channel = () =>{
         setIsMod(modsList.some(record => record.user.id === auth.user.id))
     },[channelData])
     useEffect(()=>{
+        if(!socket.current) return
         typeEvent()
     },[message])
     if(!auth?.user) return null;
@@ -198,6 +199,9 @@ const Channel = () =>{
                                 className={style.pfp}
                                 width='40px'
                                 height='40px'
+                                onClick={()=>{
+                                    goTo(`/profile/${friend.user.id}`);
+                                }}
                                 />
                         ):(
                             <FriendsIcon size={40} 
