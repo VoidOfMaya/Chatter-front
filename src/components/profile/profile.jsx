@@ -33,15 +33,21 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
 
     const [photo, setPhoto] = useState(false)
     const photoDialog =useRef(null)
+    const [photoData, setPhotoData] = useState(null)
+    const [previewUrl, setPreviewUrl]= useState(null)
 
+    const getFileData = (data, previewUrl)=>{
+        setPhotoData(data)
+        setPreviewUrl(previewUrl)
+    }
 
     const photoLogo = () =>{
         return(
             <>{editMode? (
                 <>
                 <div style={{position: 'relative'}}>
-                    {(user.photo)? (
-                        <img src={user.photo} 
+                    {(user.photo || previewUrl)? (
+                        <img src={user.photo || previewUrl} 
                             width='100px'
                             height='100px'
                             className={`${style.pfp} ${onlineStatus? style.isOnline : style.isOffline } `}
@@ -137,15 +143,15 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
     }
     const submitProfileInfo = async ()=>{
         try{
+            const updatedData = new FormData()
+            if(formData.name)updatedData.append('name', formData.name);
+            if(formData.bio)updatedData.append('bio', formData.bio);
+            if(photoData)updatedData.append('file', photoData);  
             const response = await callApi({
                 method:'PUT',
                 path:'user/me/profile',
                 requiresAuth: true,
-                body:{
-                    name: formData.name,
-                    bio: formData.bio,
-                    photo: formData.photo,
-                }
+                body:updatedData
             })
             if(!response.ok){
                 const errBody = await response.json();
@@ -164,7 +170,9 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                     photo:newData.photo,
                 })
             )
+            
             setEditMode(false);
+            updateApp();
         }catch(err){
             notify.error(err.message)
             console.log(err)
@@ -317,7 +325,10 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                     )}
                 {photo && (
                     <>
-                        <UploadPhoto referance={photoDialog} close={()=>setPhoto(false)}/>                            
+                        <UploadPhoto 
+                        referance={photoDialog} 
+                        close={()=>setPhoto(false)}
+                        setPhotoData ={getFileData}/>                            
                     </>
                 )}  
             </main>

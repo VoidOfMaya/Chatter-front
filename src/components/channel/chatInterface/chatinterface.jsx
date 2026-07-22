@@ -102,7 +102,7 @@ const ChatInterface = ({
     },[editMode])
     return(
         <div className={style.chatInterface}>
-            {photoData&& (
+            {previewUrl&& (
                 <div className={style.photoPreview}>
                     <img src={previewUrl}
                         style={{borderRadius: '15px 0px 0px 15px'}}
@@ -201,6 +201,7 @@ const ChatInterface = ({
                                 if(!reply) return
                                 cancleReply();
                                 setPhotoData(null)
+                                setPreviewUrl(null)
                                 
                             }}
                             >
