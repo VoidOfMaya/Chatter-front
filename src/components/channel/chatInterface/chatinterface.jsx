@@ -28,23 +28,25 @@ const ChatInterface = ({
     //const [message, setMessage]= useState('')
     const photoRef = useRef(null)
     const [photoDialog, setPhotoDialog] = useState(false)
-    const [photoUrl, setPhotoUrl] = useState(null)
+    const [photoData, setPhotoData] = useState(null)
     const [previewUrl, setPreviewUrl]= useState(null)
 
     const getFileData = (data, previewUrl)=>{
-        setPhotoUrl(data)
+        setPhotoData(data)
         setPreviewUrl(previewUrl)
     }
-    const sendMessage= async(message, parentId = null)=>{
+    const sendMessage= async(message, parentId = null,photoFile = null)=>{
         try{
+            const formData = new FormData()
+            formData.append('content', message);
+            if(parentId)formData.append('parentId', parentId);
+            if(photoFile)formData.append("file", photoFile);
+            
             const response = await callApi({
                 method:'POST',
                 path: `channel/${currentChannel}/msgs`,
                 requiresAuth: true,
-                body:{
-                    content: message,
-                    parentId: parentId,
-                }
+                body:formData
             })
             if(!response.ok){
                 const errBody = await response.json();
@@ -100,7 +102,7 @@ const ChatInterface = ({
     },[editMode])
     return(
         <div className={style.chatInterface}>
-            {photoUrl && (
+            {photoData&& (
                 <div className={style.photoPreview}>
                     <img src={previewUrl}
                         style={{borderRadius: '15px 0px 0px 15px'}}
@@ -111,7 +113,7 @@ const ChatInterface = ({
                         style={{width: 'fit-content'}} 
                         type='button'
                         onClick={()=>{
-                                setPhotoUrl(null)
+                                setPhotoData(null)
                                 setPreviewUrl(null)
                         }}>X</button>
                 </div>                
@@ -195,9 +197,10 @@ const ChatInterface = ({
                     <button htmlFor='message' 
                             className={`${style.msgButton} ${style.leftBtn}`}
                             onClick={ async()=> {
-                                await sendMessage(message, reply?.id) 
+                                await sendMessage(message, reply?.id,photoData) 
                                 if(!reply) return
                                 cancleReply();
+                                setPhotoData(null)
                                 
                             }}
                             >

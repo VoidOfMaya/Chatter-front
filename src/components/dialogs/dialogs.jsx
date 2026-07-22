@@ -328,10 +328,8 @@ const MsgPhoto =  ({referance, close,setPhotoData})=>{
     const upload  = async() =>{
         try{
             console.log('start upload')
-            const formData = new FormData();
             const preview = URL.createObjectURL(file)
-            formData.append("file", file)
-            setPhotoData(formData, preview);
+            setPhotoData(file, preview);
             //const response = await callApi({
             //    method: 'POST',
             //    path: 'upload/msg',

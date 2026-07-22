@@ -50,6 +50,14 @@ const ChatLog=({
         return messages.map( msg=>{
             return msg.parent? (
                 <div key={msg.id} className={style.msgCardReply}>
+                    {msg.photo && (
+                        <div className={style.photoContainer}>
+                            <img src={msg.photo}
+                            className={style.messagePhoto} 
+                            height='300px'
+                            />
+                        </div>
+                    )}
                     <div className={style.options}>
                         <ReplyTo size={25} focusColor='#f34900' fn={()=>{
                             handleReply({id: msg.id, name: msg.user.name})
@@ -118,10 +126,18 @@ const ChatLog=({
                 </div>
             ):(
                 <div key={msg.id} className={style.msgCard}>
+                    {msg.photo && (
+                        <div className={style.photoContainer}>
+                            <img src={msg.photo} 
+                            className={style.messagePhoto}
+                            />
+                        </div>
+                    )}
                     {msg.user.photo ? (
                         <div className={style.msgSuthor}>    
                         <img src={msg.user.photo} 
                             className={style.pfp}
+                            
                             width='30px'
                             height='30px'
                             />
