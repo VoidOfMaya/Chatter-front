@@ -58,7 +58,12 @@ const Card = ({data, searchType})=>{
                 <h2 style={{color: '#4d4c4c'}}>#{data.id}</h2>
                 <div >
                     {data.photo? (
-                        <img alt="user profile photo" src={`${data.photo}`}/>
+                        <img 
+                        alt="user profile photo" 
+                        src={`${data.photo}`}
+                        width={'45px'}
+                        height={'45px'}
+                        style={{borderRadius: '50px'}}/>
                     ):(
                         <UserIcon size={45} />
                     )}

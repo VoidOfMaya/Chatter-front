@@ -175,7 +175,10 @@ const SignupDialog = ({referance, close}) =>{
                         close()
                     }}
                 >Cancel</button>
-                <button type='submit'>
+                <button type='submit'
+                onClick={()=>{
+
+                }}>
                     Signup
                 </button>
             </form>
