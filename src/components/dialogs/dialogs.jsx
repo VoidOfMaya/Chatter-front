@@ -186,8 +186,7 @@ const SignupDialog = ({referance, close}) =>{
     )
 }
 
-const NewGroupDialog =  ({referance, close,updateApp})=>{
-    const {callApi} = useOutletContext();
+const NewGroupDialog =  ({referance, close,updateApp, callApi})=>{
     const [name, setName] = useState('');
       //creates new channel
     const createNewGroup = async(name) =>{

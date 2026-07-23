@@ -430,17 +430,20 @@ function App() {
                     currentChannel={currentChannel}
                     />
       </div>
-      {displayDialog? (
-          <div className={style.createGroupDialog}>
+      {displayDialog && (
+        <>
+        <div className={style.createGroupDialog}>
               < NewGroupDialog 
               referance={newGroupRef}  
               close={()=>setDisplayDialog(false)}
               auth={auth}
               reAuth={reAuth}
               updateApp={updateApp}
+              callApi={callApi}
               />
           </div>
-        ):('')}   
+          </>
+        )}   
       <ToastContainer
         theme='colored'
         position="top-center"
