@@ -98,7 +98,7 @@ const SideBar = (
                 )
             })
         }catch(err){
-            console.log(err)
+            console.log(err.message)
             return <div className={style.channelOption}>
                 <div style={{gridArea: 'logo', alignContent: 'center'}}>
                     <BlockeIcon/>

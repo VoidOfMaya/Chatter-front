@@ -51,7 +51,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             return result
         } catch (err) {
             notify.error(err.message)
-            console.log(err)
+            console.log(err.message)
         }
 
     }
@@ -80,7 +80,7 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             goTo('/')  
         }catch(err){
             notify.error(err.message)
-            console.log(err)
+            console.log(err.message)
         }
     }
     const removeUser = async (connectionId)=>{

@@ -175,7 +175,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             updateApp();
         }catch(err){
             notify.error(err.message)
-            console.log(err)
+            console.log(err.message)
         }
     }
     const getProfileData = async () =>{
@@ -203,7 +203,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                 return await response.json()
 
             }catch(err){
-                console.log(err)
+                console.log(err.message)
                 notify.error(err.message)
             }  
         }
@@ -230,7 +230,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
             updateApp()          
             setIsFriend(false)
         }catch(err){
-            console.log(err)
+            console.log(err.message)
             notify.warn(err.message)
         }
 

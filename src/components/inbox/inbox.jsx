@@ -18,7 +18,6 @@ const Inbox = () =>{
                     {request.user.id === auth.user.id?(
                         //where user is the sender
                         <>
-                        {console.log(request)}
                         <h2>{request.friend.name}</h2>
                             <div className={style.options}>
                                 <div    title="accept request">
@@ -60,7 +59,7 @@ const Inbox = () =>{
             updateApp()
         }catch(err){
             notify.error(err.message)
-            console.log(err)
+            console.log(err.message)
         }
     }
     const rejectReq = async(id) =>{
@@ -78,7 +77,7 @@ const Inbox = () =>{
             updateApp()
         }catch(err){
             notify.error(err.message)
-            console.log(err)
+            console.log(err.message)
         }
     }
     

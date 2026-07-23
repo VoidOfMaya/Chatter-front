@@ -43,7 +43,7 @@ const ChatLog=({
             return await response.json();
         }catch(err){
             notify.error(err.message)
-            console.log(err)
+            console.log(err.message)
         }
     }
     const populateChat =(messages)=>{

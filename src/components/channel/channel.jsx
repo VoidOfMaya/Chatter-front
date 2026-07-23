@@ -114,7 +114,6 @@ const Channel = () =>{
     }
     useEffect(()=>{
         setSettingsMode(false)
-        console.log('socketMounted')
         if(!socket.current) return
             socket.current.emit("view_channel", {id :currentChannel})
             socket.current.on('is_typing',typeEventHandler)

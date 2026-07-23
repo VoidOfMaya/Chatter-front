@@ -29,7 +29,7 @@ const Search=()=>{
             const result = await response.json()
             return result
         }catch(err){
-            console.log(err)
+            console.log(err.message)
             notify.warn(err.message)
         }
     }
@@ -43,7 +43,7 @@ const Search=()=>{
             })
             return await response.json()
         }catch(err){
-            console.log(err)
+            console.log(err.message)
             notify.warn(err.message)
         }
     }

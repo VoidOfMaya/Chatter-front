@@ -264,7 +264,7 @@ const UploadPhoto =  ({referance, close,setPhotoData})=>{
             const preview = URL.createObjectURL(file)
             setPhotoData(file, preview);
           }catch(err){
-            console.log('upload error')
+            console.log(err.message)
             notify.error(err.message)
           }
       }
@@ -313,7 +313,7 @@ const MsgPhoto =  ({referance, close,setPhotoData})=>{
             const preview = URL.createObjectURL(file)
             setPhotoData(file, preview);
           }catch(err){
-            console.log('upload error')
+            console.log(err.message)
             notify.error(err.message)
           }
       }
@@ -335,7 +335,6 @@ const MsgPhoto =  ({referance, close,setPhotoData})=>{
                     }}
                     type='button'
                     onClick={async()=>{
-                        console.log('attempting upload')
                         await upload()
                         close()
                     }}>select</button>

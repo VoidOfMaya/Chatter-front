@@ -132,7 +132,7 @@ function App() {
       return result
     }catch(err){
         console.log('re-auth error')
-        console.log(err)
+        console.log(err.message)
         localStorage.clear();
         notify.error( err.message);
         redirect('/');
@@ -316,7 +316,7 @@ function App() {
       setDataLoading(false);
       return;
     };
-    console.log('fetching app data')
+    //fetch app data
     const load = async () =>{
       const dashboard = await getDashbaordData();
       const inbox = await getPendingRequests()
@@ -336,12 +336,12 @@ function App() {
   if (!auth?.user) return;
   if(dataLoading) return;
   //create socket client
-  console.log('data has loaded')
+
   socket.current = wsio.connect(auth.accessToken);
   //send event to server
   if (!socket.current) return;
   socket.current.emit('user_connected',()=>{
-    console.log('userConnected')
+
   })
 
   // handels data updating regarding user online status
