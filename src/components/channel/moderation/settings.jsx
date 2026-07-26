@@ -13,7 +13,8 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
         getChannel,
         populateChannelData,
         updateApp,
-        goTo
+        goTo,
+        socket
     } = useOutletContext();
     const [ info, setInfo] = useState(null)
     const [ pendingReq, setPendingReq] = useState(false)
@@ -285,6 +286,11 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             notify.error(err)
         }    
     }
+    const updateRequests = async()=>{
+        //gets pending requests
+            const result = await getPendingRequests() 
+            setRequests(result)      
+        }
     useEffect(()=>{
         const getGroupInfo = async()=>{
             try{
@@ -295,6 +301,11 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             }
         }
         getGroupInfo()
+        if(!socket.current)throw new Error(`no socket found!`)
+            socket.current.on('update_group',updateRequests)
+        return()=>{
+            socket.current.off('update_group',updateRequests)
+        }
     },[])
     useEffect(()=>{
         if(pendingReq){
@@ -314,9 +325,6 @@ const SettingPanel = ({modStatus, channelId, members}) =>{
             //updateApp();
         }
     },[pendingReq])
-    useEffect(()=>{
-
-    },[])
     if(!info){
         return(
             <>

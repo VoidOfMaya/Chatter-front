@@ -275,6 +275,7 @@ function App() {
   //update inbox:-
   const loadInbox = async() =>{
     if(!auth.user) return
+    console.log('updating inbox');
     const result = await getPendingRequests();
     setInbox(result);
   }
@@ -288,6 +289,7 @@ function App() {
     setChannelData(result)
     goTo('/chatter')
   }
+
 //Effects:-
   useEffect(()=>{
     const initAuth = async() =>{
@@ -358,10 +360,12 @@ function App() {
   if (!socket.current) return;
   socket.current.on('friend_online',onlineStatusHandler)
   socket.current.on("friend_offline",onlineStatusHandler)
+  socket.current.on("update_inbox", loadInbox)
   //cleaner function
   return ()=>{
     socket.current.off('friend_online',onlineStatusHandler)
     socket.current.off("friend_offline",onlineStatusHandler)
+    socket.current.off("update_inbox", loadInbox)
   }
 
 },[auth, dataLoading]);
@@ -382,7 +386,8 @@ function App() {
       loadInbox()
     }
     loadDashboard();
-    //loadInbox();
+    //handle inbox socet here
+
   },[update])
 // render while loading
   if(authLoading || dataLoading){

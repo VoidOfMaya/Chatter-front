@@ -5,7 +5,7 @@ import style from './search.module.css';
 import { useOutletContext } from 'react-router-dom';
 import { Card } from './searchCard/card';
 const Search=()=>{
-    const{ auth, callApi, handleCurrentChannel,chnls}= useOutletContext();
+    const{ callApi, handleCurrentChannel, socket}= useOutletContext();
     const [searchValue, setSearchValue]= useState('');
     const [results, setResults] = useState(null);
     const [searchFriend, setSearchFriend] = useState(true);

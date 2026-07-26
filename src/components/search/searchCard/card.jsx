@@ -4,7 +4,7 @@ import { useOutletContext} from "react-router-dom";
 import { notify } from "../../norifications/notifications";
 
 const Card = ({data, searchType})=>{
-    const {auth, callApi, goTo,updateApp,handleCurrentChannel,chnls} = useOutletContext();
+    const {auth, callApi, goTo,updateApp,handleCurrentChannel,chnls, socket} = useOutletContext();
     const sendFriendRequest = async(id) =>{
         try{
             const response = await callApi({
@@ -17,6 +17,9 @@ const Card = ({data, searchType})=>{
                 throw new Error(`${response.status}`)
             }
             const result = await response.json()
+            if(!socket.current) throw new Error('no socket was found')
+                console.log('sending socket')
+            socket.current.emit('friend_request',{recipient: id})
             notify.success("request sent")
             updateApp()          
         }catch(err){
@@ -36,6 +39,8 @@ const Card = ({data, searchType})=>{
             }
             const result = await response.json()
             notify.success("request sent")
+            if(!socket.current) throw new Error('no socket was found')
+            socket.current.emit('join_request',{channel: id})
             updateApp();            
         }catch(err){
             console.log(err.message)
