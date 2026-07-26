@@ -11,11 +11,17 @@ const Inbox = () =>{
             return(
                 <div key={request.id} className={style.card} >
                     {request.friend.photo? (
-                        <img src={`${request.friend.photo}`}  alt="profile photo"/>
+                        <img src={`${request.friend.photo}`}
+                        style={{
+                            borderRadius: '50px'
+                        }}
+                        height='42px'
+                        width='45px'  
+                        alt="profile photo"/>
                     ):(
                         <UserIcon size={60} />
                     )}
-                    {request.user.id === auth.user.id?(
+                    {request.friend.id === auth.user.id?(
                         //where user is the sender
                         <>
                         <h2>{request.friend.name}</h2>
