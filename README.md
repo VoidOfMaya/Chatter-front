@@ -7,6 +7,7 @@ however expanded on to explore production oriented concepts such as real time co
 
 ## Live Demo:
 for a live demo visit: [Chatter](https://msgchatter.netlify.app)
+app currently only supports desktop and tablet screen sizes
 
 ### demo account:
 
