@@ -213,7 +213,8 @@ function App() {
         requiresAuth: options.requiresAuth,
         body: options.body,
         token: newAuth.accessToken,
-        retry: false
+        retry: false,
+        includeCred:options.includeCred
       })
       //if on retry still 401 wipe data and prompt log in
       if(retryResponse.status === 401){
