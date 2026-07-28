@@ -201,9 +201,10 @@ function App() {
       const newAuth = await authPromis.current;//turns to a promise on refresh
       if(!newAuth) return response;
       //disconnect socket
-      if(socket) wsio.disconnect();
-      //create new socket
-      socket.current = wsio.connect(newAuth.accessToken)
+      if(socket){
+        wsio.disconnect();
+        socket.current = wsio.connect(newAuth.accessToken)
+      } 
       //if retry = true  recall call api with retry attribute set to false
       if(!options.retry) return response;
       const retryResponse = await callApi({

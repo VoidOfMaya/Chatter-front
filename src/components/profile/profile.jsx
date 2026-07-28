@@ -47,7 +47,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                 <>
                 <div style={{position: 'relative'}}>
                     {(user.photo || previewUrl)? (
-                        <img src={user.photo || previewUrl} 
+                        <img src={previewUrl || user.photo} 
                             width='100px'
                             height='100px'
                             className={`${style.pfp} ${onlineStatus? style.isOnline : style.isOffline } `}
@@ -135,6 +135,7 @@ user data:{id, email, name, bio, photo, is_online, last_login, created_at}
                                 photo: user.photo
                             })
                             setEditMode(false)
+                            setPreviewUrl(null)
                         }}>discard changes</button>                                
                 </div>
             </form>
