@@ -47,7 +47,12 @@ const Signup = () =>{
                             </div>
                         </div>                        
                     </div>
-
+                </div>
+                <div>
+                    OR 
+                </div>
+                <div>
+                    Continue as Guest
                 </div>
             </main>
             {login? (

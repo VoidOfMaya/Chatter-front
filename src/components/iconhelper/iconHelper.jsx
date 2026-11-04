@@ -289,6 +289,11 @@ const Settings  =({fn = null, color ='#27282c', focusColor='#62646b', size=25})=
         </svg>
     )
 }
+const Spinner = ({color ='#7d7d7d',size=20})=>{
+    return(
+        <div className={style.loading} style={{padding:`${size}px`}}></div>
+    )
+}
 export{
     LogoIcon,
     UserIcon,
@@ -307,6 +312,7 @@ export{
     PlusIcon,
     ShieldIcon,
     Logout,
-    Settings
+    Settings,
+    Spinner
     
 }

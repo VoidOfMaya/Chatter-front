@@ -3,7 +3,7 @@ import style from './App.module.css'
 import { data, Outlet ,useNavigate } from 'react-router-dom'
 import { SideBar } from './components/sidebar/sidebar';
 import { MembersBar } from './components/members/members';
-import {ToastContainer, Bounce} from 'react-toastify'
+import {ToastContainer, Bounce, Icons} from 'react-toastify'
 import { notify } from './components/norifications/notifications';
 import { NewGroupDialog } from './components/dialogs/dialogs';
 import { wsio } from './components/sockets/mainSocket';
@@ -396,7 +396,7 @@ function App() {
   },[update])
 // render while loading
   if(authLoading || dataLoading){
-    return <div>Loading ...</div>
+    return <div> <Icons.spinner /> Loading ...</div>
   }
 //main render 
   return (

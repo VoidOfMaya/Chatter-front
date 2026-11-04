@@ -4,3 +4,22 @@
     justify-self: flex-start;
     transform: translateX(-40px);
 }
+/*LOADING CSS*/
+.loading{
+    
+    padding: 20px;
+    background-color: transparent;
+    width: min-content;
+    border: 5px solid transparent;
+    border-radius: 25px;
+    border-top: 5px solid rgb(125, 125, 125);
+    animation:  spinner 1s  infinite;
+}
+@keyframes spinner {
+    to{
+        transform: rotate(360deg);
+    }
+}
+.arrowDown{
+    animation:  drone 2s  infinite;
+}
