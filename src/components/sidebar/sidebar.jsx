@@ -40,7 +40,7 @@ const SideBar = (
     }); 
     const populateFrinds = (data) =>{
         try{
-
+            if(data === null) return
             if(!data.friends)throw new Error('data.friends object not found')
             if(data.friends === 0)throw new Error(' no friends found')
             return data.friends.map(chnl=>{
