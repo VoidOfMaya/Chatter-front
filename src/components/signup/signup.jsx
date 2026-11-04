@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import {LogoIcon, SendIcon} from '../iconhelper/iconHelper';
+import {LogoIcon, UserIcon, SendIcon} from '../iconhelper/iconHelper';
 import style from './signup.module.css'
-import { LoginDialog, SignupDialog } from '../dialogs/dialogs';
+import { LoginDialog, SignupDialog} from '../dialogs/dialogs';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const Signup = () =>{
@@ -47,12 +47,14 @@ const Signup = () =>{
                             </div>
                         </div>                        
                     </div>
-                </div>
-                <div>
-                    OR 
-                </div>
-                <div>
-                    Continue as Guest
+                    <div className={style.guest}>
+                        <h4 style={{color:'#E84545'}}> OR </h4>
+                        <div 
+                        className={style.guestBtn}
+                        > Continue as Guest 
+                            <UserIcon color='#fff' focusColor='#fff' size={48} />
+                        </div>
+                    </div>
                 </div>
             </main>
             {login? (

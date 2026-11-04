@@ -1,10 +1,12 @@
 import { Navigate, Outlet, useOutletContext } from 'react-router-dom';
+import { notify } from './components/norifications/notifications';
 
 const SafeRoute = () => {
     const context = useOutletContext();
 
     if (!context.auth?.accessToken) {
-        alert('access Denied, please authenticate')
+        notify.error('access Denied, please authenticate')
+
         return <Navigate to="/" replace />;
     }
 

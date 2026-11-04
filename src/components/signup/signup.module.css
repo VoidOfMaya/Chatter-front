@@ -2,12 +2,12 @@
     height: 100%;
     display: grid;
     grid-template-columns: 2fr 3fr;
-    grid-template-rows: 1fr 4fr 1fr;
+    grid-template-rows: 1fr 8fr 1fr;
     
     grid-template-areas: 
     'signup login'
     'signup login'
-    'signup login';
+    'guest  guest';
 }
 /*Log in button and logo*/
 .signupRight{
@@ -36,6 +36,25 @@
     transform: rotate(46deg);
     top: -6px;
     left: 75px;
+}
+.guest{
+    position: absolute;
+    padding: 5px;
+    display: flex;
+    width: 400px;
+    top: 55%;
+    grid-area: 'guest';
+}
+.guestBtn{
+    display: flex; 
+    align-items: center;
+    padding: 0px 10px;
+    
+}
+.guestBtn:hover{
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: #1d1d1d;
 }
 .loginBtn:hover{
 
