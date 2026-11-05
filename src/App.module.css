@@ -35,3 +35,9 @@
 
     z-index: 1000;
 }
+@media (max-width: 780px) {
+ .appContainer{
+    display: flex;
+    grid-template-areas: 'main';
+ }
+}

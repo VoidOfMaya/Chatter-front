@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 html, body, #root{
-    height: 100%;
+    
     overflow: hidden;
 }
 
@@ -29,6 +29,14 @@ body{
 
 }
 #root{
+
+    height: 100vh;
+    margin: 0;
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    color: rgb(75, 75, 75);
 }
 dialog::backdrop {  
     backdrop-filter: blur(5px);
