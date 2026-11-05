@@ -85,14 +85,11 @@ const Signup = () =>{
                         onChange={(e)=>setData(prev=>({...prev, confirmPassword: e.target.value}))}
                         className={ data.password !== data.confirmPassword? style.invalidField : style.validField}
                 ></input>
-                
                 <button type='button'
-                    onClick={(e)=>{
-                        referance.current.close();
-                        close()
+                    style={{
+                        padding: '20px',
+                        marginBottom: '20px',
                     }}
-                >Cancel</button>
-                <button type='submit'
                 onClick={()=>{
 
                 }}>

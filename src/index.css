@@ -3,6 +3,11 @@ html, body, #root{
     
     overflow: hidden;
 }
+@media (max-width: 780px){
+    html, body, #root{
+        overflow: auto;
+    }
+}
 
 html{
     /*height width indicators remove on launch
