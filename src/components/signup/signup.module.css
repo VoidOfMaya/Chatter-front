@@ -101,7 +101,21 @@
     padding: 25px;
     font-size: large;
 }
-
+.registerContainer{
+    width: 90%;
+    align-self: center;
+}
+.registerForm{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-size: larger;
+    text-align: center; 
+}
+.registerForm input{
+    padding: 25px;
+    font-size: large;  
+}
 @media (max-width: 780px) {
     .signupMain{
         display: flex;
@@ -109,18 +123,13 @@
         width: 100%;
         height: fit-content;
         margin-top: 30%;
+        overflow-y: scroll;
     }
     .signup{
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-    .signupLeft{
-
-    }
-    .signupRight{
-        display: flex;
-        flex-direction: column;
+        height: 100vh;
     }
     .guest{
         position: relative;

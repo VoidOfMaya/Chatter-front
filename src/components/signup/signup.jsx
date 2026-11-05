@@ -12,6 +12,12 @@ const Signup = () =>{
     //handles dialog displays
     const [login, setLogin]= useState(false);
     const [signup, setSignup]= useState(false);
+    const [data, setData]= useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword:''
+    })
     const loginRef = useRef(null);
     const signupRef= useRef(null) ; 
     const handleGuestLogin =async()=>{
@@ -34,6 +40,66 @@ const Signup = () =>{
         }catch(err){
             console.error(err.message)
         }
+    }
+    const registerForm = ()=>{
+        return(
+            <form className={style.registerForm}>
+                <label htmlFor='email'>Email :</label>
+                <input  type='email' id='email' name='email' placeholder="email" required 
+                    value={data.email}
+                onChange={(e)=>
+                    setData((prev)=>({
+                        ...prev, email: e.target.value,
+                    }))
+                }
+                ></input>
+
+                <label htmlFor='name'>First name :</label>
+                <input  type='' id='name' name='name' placeholder="name" minLength='3'maxLength='12' required
+                value={data.name}
+                onChange={(e)=>
+                    setData((prev)=>({
+                        ...prev, name: e.target.value,
+                    }))
+                }
+                ></input>
+
+                <label htmlFor='password'>Password :</label>
+                <input  type='password' id='password' name='password' placeholder="password" minLength='8' required
+
+                        value={data.password}
+                        onChange={(e)=>
+                            setData((prev)=>({
+                                ...prev, 
+                                password: e.target.value,
+                            }))
+                        }
+                        className={ data.password !== data.confirmPassword? style.invalidField : style.validField}
+                ></input>
+
+                <label htmlFor='confirmPass'>Confirm password :</label>
+                <input  type='password' id='confirmPass'name='confirmPass'
+                        placeholder="Confirm password"minLength='8'required
+
+                        value={data.confirmPassword}
+                        onChange={(e)=>setData(prev=>({...prev, confirmPassword: e.target.value}))}
+                        className={ data.password !== data.confirmPassword? style.invalidField : style.validField}
+                ></input>
+                
+                <button type='button'
+                    onClick={(e)=>{
+                        referance.current.close();
+                        close()
+                    }}
+                >Cancel</button>
+                <button type='submit'
+                onClick={()=>{
+
+                }}>
+                    Signup
+                </button>
+            </form>
+        )
     }
 
     useEffect(()=>{
@@ -62,6 +128,7 @@ const Signup = () =>{
                     fontSize: '32px',
                     margin: '20px',
                 }}>Chatter <LogoIcon size={45} color={'#E84545'}/></div>
+                
                 <section className={style.signup}>
                     <div className={style.signupContainer}>
                         <form className={style.loginForm}>
@@ -101,8 +168,12 @@ const Signup = () =>{
                             <UserIcon color='#fff' focusColor='#fff' size={48} />
                         </div>
                     </div>
+                    <div>scroll Down to signup</div>
                 </section>
-
+                
+                <section className={style.registerContainer}>
+                    {registerForm()}
+                </section>
             </main>
             </>
         )
